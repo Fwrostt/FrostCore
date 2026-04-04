@@ -1,0 +1,86 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.5'
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+}
+
+group = 'dev.frost'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
+    maven { url = uri("https://repo.codemc.io/repository/maven-snapshots/") }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven {
+        url = 'https://repo.helpch.at/releases'
+    }
+}
+
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly 'com.mojang:authlib:3.2.38'
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+    implementation 'com.zaxxer:HikariCP:5.1.0'
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'org.xerial:sqlite-jdbc:3.47.1.0'
+    implementation 'com.google.code.gson:gson:2.11.0'
+}
+
+tasks {
+    runServer {
+        minecraftVersion("1.21")
+    }
+}
+
+jar {
+    archiveClassifier.set('plain')
+}
+
+shadowJar {
+    archiveClassifier.set('')
+    mergeServiceFiles()
+    relocate 'com.zaxxer.hikari', 'dev.frost.frostcore.lib.hikari'
+    relocate 'com.mysql.cj', 'dev.frost.frostcore.lib.mysql'
+    relocate 'org.sqlite', 'dev.frost.frostcore.lib.sqlite'
+    relocate 'com.google.gson', 'dev.frost.frostcore.lib.gson'
+}
+
+tasks.named('assemble') {
+    dependsOn tasks.shadowJar
+}
+
+tasks.named('runServer') {
+    dependsOn tasks.shadowJar
+    pluginJars.from(tasks.shadowJar)
+}
+
+def targetJavaVersion = 21
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}

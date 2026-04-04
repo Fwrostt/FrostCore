@@ -1,0 +1,61 @@
+# Mera plugin mai kuch bhi rakkhu tu kon bkl
+
+teams:
+  prefix: "<gradient:#C8732E:#D7942B>TEAMS</gradient> <#AAAAAA>» <#FFFFFF>"
+
+  # CHAT
+  chat-format: "<#AAAAAA>[<#FFD27F>{player}</#FFD27F>] <#FFFFFF>{chat}"
+
+  # CORE
+  create: "{teams.prefix}Team <#FFD27F>{team}</#FFD27F> created successfully!"
+  disband: "{teams.prefix}Team <#FF5555>{team}</#FF5555> has been disbanded."
+  leave: "{teams.prefix}You left team <#FFD27F>{team}</#FFD27F>."
+  kick: "{teams.prefix}Player <#FF5555>{player}</#FF5555> was kicked from the team."
+
+  # INVITES
+  invite: "{teams.prefix}You invited <#FFD27F>{player}</#FFD27F> to your team."
+  join: "{teams.prefix}You joined team <#FFD27F>{team}</#FFD27F>!"
+  invite-received: "{teams.prefix}<#FFD27F>{player}</#FFD27F> invited you to join <#FFD27F>{team}</#FFD27F>."
+  invite-expired: "{teams.prefix}Team invite from <#FFD27F>{team}</#FFD27F> has expired."
+  invite-accepted: "{teams.prefix}<#FFD27F>{player}</#FFD27F> joined your team."
+
+  # RELATIONS
+  ally: "{teams.prefix}Your team is now allied with <#55FF55>{team}</#55FF55>."
+  enemy: "{teams.prefix}<#FF5555>{team}</#FF5555> is now your enemy."
+  ally-accept: "{teams.prefix}Alliance accepted with <#55FF55>{team}</#55FF55>."
+  ally-decline: "{teams.prefix}Alliance request declined."
+
+  # PVP
+  pvp-toggle: "{teams.prefix}Team PvP is now {state}."
+
+  # HOME
+  home: "{teams.prefix}Teleporting to team home..."
+  home-set: "{teams.prefix}Team home has been set."
+  home-del: "{teams.prefix}Team home removed."
+  home-cooldown: "{teams.prefix}You must wait <#FFD27F>{time}s</#FFD27F> before using this again."
+  home-wait: "{teams.prefix}Teleporting in <#FFD27F>{time}s</#FFD27F>... Don't move!"
+  home-teleport: "{teams.prefix}Teleported to team home."
+  home-teleport-cancelled: "{teams.prefix}<#FF5555>Teleport cancelled.</#FF5555>"
+
+  # WARPS
+  warp: "{teams.prefix}Teleporting to warp <#FFD27F>{warp}</#FFD27F>..."
+  warp-set: "{teams.prefix}Warp <#FFD27F>{warp}</#FFD27F> created."
+  warp-del: "{teams.prefix}Warp <#FF5555>{warp}</#FF5555> deleted."
+  warp-cooldown: "{teams.prefix}Wait <#FFD27F>{time}s</#FFD27F> before warping again."
+  warp-wait: "{teams.prefix}Warping in <#FFD27F>{time}s</#FFD27F>... Don't move!"
+  warp-teleport: "{teams.prefix}Teleported to <#FFD27F>{warp}</#FFD27F>."
+  warp-teleport-cancelled: "{teams.prefix}<#FF5555>Warp cancelled.</#FF5555>"
+
+  # PERMISSIONS
+  only-owner: "{teams.prefix}<#FF5555>Only team owners can do this.</#FF5555>"
+  only-admin: "{teams.prefix}<#FF5555>Only admins or owners can do this.</#FF5555>"
+
+  # ERRORS
+  no-team: "{teams.prefix}<#FF5555>You are not in a team.</#FF5555>"
+  team-not-found: "{teams.prefix}<#FF5555>Team not found.</#FF5555>"
+  player-not-found: "{teams.prefix}<#FF5555>Player not found.</#FF5555>"
+  already-in-team: "{teams.prefix}<#FF5555>You are already in a team.</#FF5555>"
+  team-full: "{teams.prefix}<#FF5555>This team is full.</#FF5555>"
+  already-ally: "{teams.prefix}<#FF5555>You are already allied with that team.</#FF5555>"
+  already-enemy: "{teams.prefix}<#FF5555>This team is already your enemy.</#FF5555>"
+  cannot-self: "{teams.prefix}<#FF5555>You cannot target your own team.</#FF5555>"

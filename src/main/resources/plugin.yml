@@ -1,0 +1,23 @@
+name: FrostCore
+version: '1.0'
+main: dev.frost.frostcore.Main
+api-version: '1.21'
+authors: [ Frost ]
+softdepend:
+  - PlaceholderAPI
+commands:
+  team:
+    description: Main team management command
+    usage: /team <subcommand>
+    aliases: [teams, t]
+    permission: frostcore.team.use
+    permission-message: §cYou don't have permission to use team commands.
+
+permissions:
+  frostcore.team.use:
+    description: Allows basic access to /team command
+    default: true
+  frostcore.team.admin:
+    description: Allows admin-level team commands
+    default: op
+

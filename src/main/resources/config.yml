@@ -1,0 +1,43 @@
+# Mera plugin meri marzi
+
+teams:
+  enabled: true  # Enables or disables the entire teams system
+
+  # Role Limits
+  max-owners: 2    # Maximum number of owners (highest authority in team)
+  max-admins: 4    # Maximum number of admins (second-highest role)
+  player-limit: 10 # Total number of players allowed in one team
+
+  # Core Features
+  pvp-toggle: true  # Allows teams to enable/disable friendly fire (teammate damage)
+  team-chat: true   # Enables private team chat channel
+
+  # Team Name Settings
+  team-name-max-length: 16  # Maximum length of team name
+  team-name-min-length: 3   # Minimum length required for team name
+  team-name-banned: ["fuck", "nigger", "pussy", "bitch", "nigga", "faggot", "retard"] # add more as you think
+
+  # Team Home Settings
+  home:
+    enabled: true   # Allows use of /team home command
+    cooldown: 10    # Time (in seconds) before the command can be used again
+    delay: 5        # Delay before teleport (can be cancelled if player moves/damaged depending on code)
+
+  # Team Warps
+  warps:
+    enabled: true   # Allows teams to create warp points
+    limit: 5        # Maximum number of warps a team can have
+    cooldown: 10    # Cooldown between warp uses
+    delay: 5        # Delay before teleporting to a warp
+
+  # Relations System
+  relations:
+    allies-enabled: true   # Allows teams to add other teams as allies
+    enemies-enabled: true  # Allows teams to mark other teams as enemies
+    max-allies: 4          # Maximum number of allied teams
+    max-enemies: 4         # Maximum number of enemy teams
+
+  # Team Echest
+  echest:
+    enabled: true  # Enables shared team ender chest inventory
+    slots: 27      # Number of slots (must be multiple of 9 for proper inventory size)
