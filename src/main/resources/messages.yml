@@ -5,25 +5,45 @@ teams:
 
   # CHAT
   chat-format: "<#AAAAAA>[<#FFD27F>{player}</#FFD27F>] <#FFFFFF>{chat}"
+  chat-enabled: "{teams.prefix}Team chat has been <green>enabled</green>."
+  chat-disabled: "{teams.prefix}Team chat has been <red>disabled</red>."
 
   # CORE
   create: "{teams.prefix}Team <#FFD27F>{team}</#FFD27F> created successfully!"
   disband: "{teams.prefix}Team <#FF5555>{team}</#FF5555> has been disbanded."
   leave: "{teams.prefix}You left team <#FFD27F>{team}</#FFD27F>."
   kick: "{teams.prefix}Player <#FF5555>{player}</#FF5555> was kicked from the team."
+  join: "{teams.prefix}You joined team <#FFD27F>{team}</#FFD27F>!"
+  settag-success: "{teams.prefix}Team tag has been updated successfully!"
 
   # INVITES
-  invite: "{teams.prefix}You invited <#FFD27F>{player}</#FFD27F> to your team."
-  join: "{teams.prefix}You joined team <#FFD27F>{team}</#FFD27F>!"
-  invite-received: "{teams.prefix}<#FFD27F>{player}</#FFD27F> invited you to join <#FFD27F>{team}</#FFD27F>."
-  invite-expired: "{teams.prefix}Team invite from <#FFD27F>{team}</#FFD27F> has expired."
+  invite: "{teams.prefix}You invited <#FFD27F>{player}</#FFD27F> to join your team."
+  invite-received: "{teams.prefix}<#FFD27F>{player}</#FFD27F> invited you to join team <#FFD27F>{team}</#FFD27F>."
   invite-accepted: "{teams.prefix}<#FFD27F>{player}</#FFD27F> joined your team."
+  invite-declined-target: "{teams.prefix}You declined the team invite."
+  invite-declined-sender: "{teams.prefix}<#FF5555>{player}</#FF5555> declined your team invite."
+  invite-expired: "{teams.prefix}Team invite from <#FFD27F>{team}</#FFD27F> has expired."
+  invite-expired-sender: "{teams.prefix}Your invite to <#FFD27F>{player}</#FFD27F> has expired."
+  no-pending-invite: "{teams.prefix}<#FF5555>You have no pending invites.</#FF5555>"
 
-  # RELATIONS
-  ally: "{teams.prefix}Your team is now allied with <#55FF55>{team}</#55FF55>."
+  ally-request-sent: "{teams.prefix}Alliance request sent to <#55FF55>{team}</#55FF55>."
+  ally-request-received: "{teams.prefix}Team <#55FF55>{team}</#55FF55> wants to form an alliance!"
+  ally-accepted: "{teams.prefix}Your team is now allied with <#55FF55>{team}</#55FF55>!"
+  ally-declined-target: "{teams.prefix}You declined the alliance request from <#FFD27F>{team}</#FFD27F>."
+  ally-declined-sender: "{teams.prefix}<#FF5555>{team}</#FF5555> declined your alliance request."
+  ally-expired: "{teams.prefix}Alliance request with <#FFD27F>{team}</#FFD27F> has expired."
   enemy: "{teams.prefix}<#FF5555>{team}</#FF5555> is now your enemy."
-  ally-accept: "{teams.prefix}Alliance accepted with <#55FF55>{team}</#55FF55>."
-  ally-decline: "{teams.prefix}Alliance request declined."
+  unally: "{teams.prefix}You are no longer allied with <#FFD27F>{team}</#FFD27F>."
+  unenemy: "{teams.prefix}<#FFD27F>{team}</#FFD27F> is no longer your enemy."
+  allies-disabled: "{teams.prefix}<#FF5555>Allies system is disabled.</#FF5555>"
+  enemies-disabled: "{teams.prefix}<#FF5555>Enemies system is disabled.</#FF5555>"
+
+  # ROLES
+  promoted: "{teams.prefix}<#FFD27F>{player}</#FFD27F> has been promoted to <#55FF55>{role}</#55FF55>."
+  promoted-target: "{teams.prefix}You have been promoted to <#55FF55>{role}</#55FF55>!"
+  demoted: "{teams.prefix}<#FFD27F>{player}</#FFD27F> has been demoted to <#FF5555>{role}</#FF5555>."
+  demoted-target: "{teams.prefix}You have been demoted to <#FF5555>{role}</#FF5555>."
+  kicked: "{teams.prefix}You have been kicked from team <#FF5555>{team}</#FF5555>."
 
   # PVP
   pvp-toggle: "{teams.prefix}Team PvP is now {state}."
@@ -36,6 +56,7 @@ teams:
   home-wait: "{teams.prefix}Teleporting in <#FFD27F>{time}s</#FFD27F>... Don't move!"
   home-teleport: "{teams.prefix}Teleported to team home."
   home-teleport-cancelled: "{teams.prefix}<#FF5555>Teleport cancelled.</#FF5555>"
+  home-disabled: "{teams.prefix}<#FF5555>Team homes are currently disabled.</#FF5555>"
 
   # WARPS
   warp: "{teams.prefix}Teleporting to warp <#FFD27F>{warp}</#FFD27F>..."
@@ -45,6 +66,10 @@ teams:
   warp-wait: "{teams.prefix}Warping in <#FFD27F>{time}s</#FFD27F>... Don't move!"
   warp-teleport: "{teams.prefix}Teleported to <#FFD27F>{warp}</#FFD27F>."
   warp-teleport-cancelled: "{teams.prefix}<#FF5555>Warp cancelled.</#FF5555>"
+  warps-disabled: "{teams.prefix}<#FF5555>Team warps are currently disabled.</#FF5555>"
+  warp-not-found: "{teams.prefix}<#FF5555>Warp not found.</#FF5555>"
+  warp-already-exists: "{teams.prefix}<#FF5555>A warp with that name already exists.</#FF5555>"
+
 
   # PERMISSIONS
   only-owner: "{teams.prefix}<#FF5555>Only team owners can do this.</#FF5555>"
@@ -58,4 +83,28 @@ teams:
   team-full: "{teams.prefix}<#FF5555>This team is full.</#FF5555>"
   already-ally: "{teams.prefix}<#FF5555>You are already allied with that team.</#FF5555>"
   already-enemy: "{teams.prefix}<#FF5555>This team is already your enemy.</#FF5555>"
+  not-ally: "{teams.prefix}<#FF5555>You are not allied with that team.</#FF5555>"
+  not-enemy: "{teams.prefix}<#FF5555>That team is not your enemy.</#FF5555>"
   cannot-self: "{teams.prefix}<#FF5555>You cannot target your own team.</#FF5555>"
+  max-admins-reached: "{teams.prefix}<#FF5555>This team already has the maximum number of admins.</#FF5555>"
+  max-owners-reached: "{teams.prefix}<#FF5555>This team already has the maximum number of owners.</#FF5555>"
+  max-warps-reached: "{teams.prefix}<#FF5555>This team has reached the maximum number of warps.</#FF5555>"
+  max-allies-reached: "{teams.prefix}<#FF5555>This team has reached the maximum number of allies.</#FF5555>"
+  max-enemies-reached: "{teams.prefix}<#FF5555>This team has reached the maximum number of enemies.</#FF5555>"
+  team-already-exists: "{teams.prefix}<#FF5555>A team with that name already exists.</#FF5555>"
+  name-too-short: "{teams.prefix}<#FF5555>Team name must be at least {min} characters long.</#FF5555>"
+  name-too-long: "{teams.prefix}<#FF5555>Team name cannot be longer than {max} characters.</#FF5555>"
+  name-banned: "{teams.prefix}<#FF5555>That team name contains banned words.</#FF5555>"
+  not-in-team: "{teams.prefix}<#FF5555>That player is not in your team.</#FF5555>"
+  home-not-set: "{teams.prefix}<#FF5555>Your team does not have a home set.</#FF5555>"
+  cannot-leave-as-owner: "{teams.prefix}<#FF5555>You are the last owner! Disband or promote someone first.</#FF5555>"
+  cannot-kick-higher: "{teams.prefix}<#FF5555>You cannot kick someone of equal or higher rank.</#FF5555>"
+  already-highest-rank: "{teams.prefix}<#FF5555>That player is already the highest rank.</#FF5555>"
+  already-lowest-rank: "{teams.prefix}<#FF5555>That player is already the lowest rank.</#FF5555>"
+  cannot-demote-last-owner: "{teams.prefix}<#FF5555>Cannot demote the last owner. Promote someone first.</#FF5555>"
+  echest-disabled: "{teams.prefix}<#FF5555>Team echest is currently disabled.</#FF5555>"
+  tag-invalid-length: "{teams.prefix}<#FF5555>Tag must be between {min} and {max} characters long.</#FF5555>"
+  renamed: "{teams.prefix}<#FFD27F>Team renamed from <white>{old}</white> to <white>{new}</white>."
+  chat-format: "<dark_gray>[<gold>Team</gold>] <white>{player}</white><dark_gray>: <#FFD27F>{chat}"
+  chat-enabled: "{teams.prefix}<#FFD27F>Team chat <green>enabled</green>. Your messages will only be seen by teammates."
+  chat-disabled: "{teams.prefix}<#FFD27F>Team chat <red>disabled</red>. You are now speaking in global chat."

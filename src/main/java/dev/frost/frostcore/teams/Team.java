@@ -34,6 +34,25 @@ public class Team implements ConfigurationSerializable {
         this.color = "black";
     }
 
+    /**
+     * Factory method for loading a team from the database.
+     * Members/owners are added separately after creation.
+     */
+    public static Team createEmpty(String name, String tag, String color, boolean pvpToggle) {
+        Team team = new Team(name, tag, color, pvpToggle);
+        return team;
+    }
+
+    /**
+     * Private constructor for database loading — no owner added.
+     */
+    private Team(String name, String tag, String color, boolean pvpToggle) {
+        this.name = name;
+        this.tag = tag;
+        this.color = color;
+        this.pvpToggle = pvpToggle;
+    }
+
     public int getTotalMembers() {
         return owners.size() + admins.size() + members.size();
     }

@@ -1,7 +1,20 @@
-# Mera plugin meri marzi
+# FrostCore 1.0.1
+
+# Database Configuration
+# Supported types: SQLITE, MYSQL
+database:
+  type: SQLITE                  
+  # MySQL settings (only used when type is MYSQL)
+  mysql:
+    host: localhost
+    port: 3306
+    database: frostcore
+    username: root
+    password: ""
+    pool-size: 10
 
 teams:
-  enabled: true  # Enables or disables the entire teams system
+  enabled: true  # Enables or disables the entire teams system (blocks all /team commands)
 
   # Role Limits
   max-owners: 2    # Maximum number of owners (highest authority in team)
@@ -9,26 +22,36 @@ teams:
   player-limit: 10 # Total number of players allowed in one team
 
   # Core Features
-  pvp-toggle: true  # Allows teams to enable/disable friendly fire (teammate damage)
-  team-chat: true   # Enables private team chat channel
+  pvp-toggle: true      # Default PvP state when a new team is created (true = PvP enabled)
+  team-chat: true       # Enables private team chat channel (/team chat on/off)
+  friendly-fire: false  # If false, teammates cannot damage each other when PvP is disabled
 
   # Team Name Settings
   team-name-max-length: 16  # Maximum length of team name
   team-name-min-length: 3   # Minimum length required for team name
-  team-name-banned: ["fuck", "nigger", "pussy", "bitch", "nigga", "faggot", "retard"] # add more as you think
+  team-name-banned: ["fuck", "nigger", "pussy", "bitch", "nigga", "faggot", "retard"]
+
+  # Team Tag Settings
+  tag-max-length: 6     # Maximum length of team tag
+  tag-min-length: 1     # Minimum length of team tag
+
+  # Invite Settings
+  invites:
+    team-join-expiry: 60     # How long (in seconds) a team join invite lasts before expiring
+    team-ally-expiry: 120    # How long (in seconds) an ally request lasts before expiring
 
   # Team Home Settings
   home:
     enabled: true   # Allows use of /team home command
     cooldown: 10    # Time (in seconds) before the command can be used again
-    delay: 5        # Delay before teleport (can be cancelled if player moves/damaged depending on code)
+    delay: 5        # Delay (in seconds) before teleport - cancelled if player moves
 
   # Team Warps
   warps:
     enabled: true   # Allows teams to create warp points
     limit: 5        # Maximum number of warps a team can have
-    cooldown: 10    # Cooldown between warp uses
-    delay: 5        # Delay before teleporting to a warp
+    cooldown: 10    # Cooldown (in seconds) between warp uses
+    delay: 5        # Delay (in seconds) before teleporting to a warp
 
   # Relations System
   relations:
@@ -37,7 +60,11 @@ teams:
     max-allies: 4          # Maximum number of allied teams
     max-enemies: 4         # Maximum number of enemy teams
 
-  # Team Echest
+  # Team Echest (Shared Storage)
   echest:
     enabled: true  # Enables shared team ender chest inventory
-    slots: 27      # Number of slots (must be multiple of 9 for proper inventory size)
+    slots: 27      # Number of slots (must be multiple of 9: 9, 18, 27, 36, 45, 54)
+
+  # Team List Pagination
+  list:
+    teams-per-page: 10  # Number of teams shown per page in /team list
