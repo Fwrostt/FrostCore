@@ -41,14 +41,12 @@ public class OfflineTpCmd implements CommandExecutor, TabCompleter {
 
         final String targetName = args[0];
 
-        // Run the blocking getOfflinePlayers() call asynchronously to avoid main-thread freeze
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             OfflinePlayer target = Arrays.stream(Bukkit.getOfflinePlayers())
                     .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(targetName))
                     .findFirst()
                     .orElse(null);
 
-            // Return to main thread for the teleport
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                 if (!player.isOnline()) return;
 
@@ -75,8 +73,8 @@ public class OfflineTpCmd implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        // Avoid iterating all offline players in the tab completer — too expensive.
-        // Let the sender type the name manually.
+
         return Collections.emptyList();
     }
 }
+

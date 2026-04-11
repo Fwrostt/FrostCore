@@ -79,7 +79,7 @@ public class FrostLogger {
     public static void audit(String message) {
         if (auditLogFile == null) return;
         if (!Main.getConfigManager().getBoolean("logging.audit-enabled", true)) return;
-        
+
         String timestamp = LocalDateTime.now().format(DATE_FORMAT);
         String logEntry = String.format("[%s] [AUDIT] %s", timestamp, message);
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
@@ -92,3 +92,4 @@ public class FrostLogger {
         });
     }
 }
+

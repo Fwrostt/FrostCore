@@ -1,17 +1,18 @@
 package dev.frost.frostcore.cmds;
 
 import dev.frost.frostcore.Main;
+import dev.frost.frostcore.gui.impls.HomesGui;
+import dev.frost.frostcore.manager.ConfigManager;
 import dev.frost.frostcore.manager.MessageManager;
-import dev.frost.frostcore.manager.WarpManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SetSpawnCmd implements CommandExecutor {
+public class HomesCmd implements CommandExecutor {
 
     private final MessageManager mm = MessageManager.get();
-    private final WarpManager warpManager = Main.getWarpManager();
+    private final ConfigManager config = Main.getConfigManager();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -20,14 +21,18 @@ public class SetSpawnCmd implements CommandExecutor {
             return true;
         }
 
-        if (!player.hasPermission("frostcore.admin")) {
+        if (!player.hasPermission("frostcore.homes")) {
             mm.sendRaw(player, "<red>You don't have permission to use this command.");
             return true;
         }
 
-        warpManager.setSpawn(player.getLocation());
-        mm.send(player, "teleport.spawn-set");
+        if (!config.getBoolean("homes.enabled", true)) {
+            mm.send(player, "homes.disabled");
+            return true;
+        }
 
+        HomesGui gui = new HomesGui(player);
+        gui.open(player);
         return true;
     }
 }

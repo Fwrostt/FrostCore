@@ -32,14 +32,12 @@ public class DatabaseManager {
         this.plugin = plugin;
     }
 
-    // ==================== LIFECYCLE ====================
-
     /**
      * Initialize the connection pool and create tables.
      * Call this during onEnable, before loading data.
      */
     public void init() {
-        // Attempt to suppress HikariCP startup logs in Paper/Log4j2
+
         try {
             Class<?> configuratorClass = Class.forName("org.apache.logging.log4j.core.config.Configurator");
             Class<?> levelClass = Class.forName("org.apache.logging.log4j.Level");
@@ -78,10 +76,9 @@ public class DatabaseManager {
         } else {
             File dbFile = new File(plugin.getDataFolder(), "database.db");
             hikariConfig.setJdbcUrl("jdbc:sqlite:" + dbFile.getAbsolutePath());
-            hikariConfig.setMaximumPoolSize(1); // SQLite only supports one writer
+            hikariConfig.setMaximumPoolSize(1);
             hikariConfig.setDriverClassName("org.sqlite.JDBC");
 
-            // SQLite-specific optimizations
             hikariConfig.addDataSourceProperty("journal_mode", "WAL");
             hikariConfig.addDataSourceProperty("synchronous", "NORMAL");
 
@@ -112,12 +109,9 @@ public class DatabaseManager {
         return dataSource.getConnection();
     }
 
-    // ==================== TABLE CREATION ====================
-
     private void createTables() {
         try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
 
-            // Enable WAL mode for SQLite
             if (type == DatabaseType.SQLITE) {
                 stmt.execute("PRAGMA journal_mode=WAL;");
                 stmt.execute("PRAGMA foreign_keys=ON;");
@@ -210,13 +204,25 @@ public class DatabaseManager {
                 )
             """);
 
+            stmt.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS player_homes (
+                    uuid        VARCHAR(36) NOT NULL,
+                    name        VARCHAR(64) NOT NULL,
+                    world       VARCHAR(128) NOT NULL,
+                    x           DOUBLE NOT NULL,
+                    y           DOUBLE NOT NULL,
+                    z           DOUBLE NOT NULL,
+                    yaw         FLOAT NOT NULL,
+                    pitch       FLOAT NOT NULL,
+                    PRIMARY KEY (uuid, name)
+                )
+            """);
+
             FrostLogger.info("Database tables verified.");
         } catch (SQLException e) {
             FrostLogger.error("Failed to create database tables!", e);
         }
     }
-
-    // ==================== LOAD ====================
 
     /**
      * Load all teams from the database. Called synchronously on startup.
@@ -226,7 +232,6 @@ public class DatabaseManager {
     public List<Team> loadAllTeams() {
         Map<String, Team> teamMap = new LinkedHashMap<>();
 
-        // 1. Load base team data
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM teams");
              ResultSet rs = ps.executeQuery()) {
@@ -237,10 +242,8 @@ public class DatabaseManager {
                 String color = rs.getString("color");
                 boolean pvp = rs.getBoolean("pvp_toggle");
 
-                // Create team with a dummy owner — we'll populate members separately
                 Team team = Team.createEmpty(name, tag, color, pvp);
 
-                // Home location
                 String homeWorld = rs.getString("home_world");
                 if (homeWorld != null && !rs.wasNull()) {
                     World world = Bukkit.getWorld(homeWorld);
@@ -260,7 +263,6 @@ public class DatabaseManager {
             FrostLogger.error("Failed to load teams!", e);
         }
 
-        // 2. Load members
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM team_members");
              ResultSet rs = ps.executeQuery()) {
@@ -288,7 +290,6 @@ public class DatabaseManager {
             FrostLogger.error("Failed to load team members!", e);
         }
 
-        // 3. Load warps
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM team_warps");
              ResultSet rs = ps.executeQuery()) {
@@ -312,7 +313,6 @@ public class DatabaseManager {
             FrostLogger.error("Failed to load team warps!", e);
         }
 
-        // 4. Load relations
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM team_relations");
              ResultSet rs = ps.executeQuery()) {
@@ -339,8 +339,6 @@ public class DatabaseManager {
         return new ArrayList<>(teamMap.values());
     }
 
-    // ==================== SAVE (FULL TEAM) ====================
-
     /**
      * Save an entire team to the database (upsert all tables).
      * Use for initial creation or full sync.
@@ -358,8 +356,6 @@ public class DatabaseManager {
     public void saveTeamAsync(Team team) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveTeam(team));
     }
-
-    // ==================== SAVE (INDIVIDUAL) ====================
 
     /**
      * Save/update the base team row (name, tag, color, pvp, home).
@@ -417,7 +413,7 @@ public class DatabaseManager {
      */
     public void saveMembers(Team team) {
         try (Connection conn = getConnection()) {
-            // Delete existing members for this team
+
             try (PreparedStatement del = conn.prepareStatement("DELETE FROM team_members WHERE team_name = ?")) {
                 del.setString(1, team.getName());
                 del.executeUpdate();
@@ -529,14 +525,12 @@ public class DatabaseManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveRelations(team));
     }
 
-    // ==================== DELETE ====================
-
     /**
      * Delete a team and all associated data from the database.
      */
     public void deleteTeam(String teamName) {
         try (Connection conn = getConnection()) {
-            // Delete in order: relations, warps, members, then team
+
             for (String table : new String[]{"team_relations", "team_warps", "team_members"}) {
                 try (PreparedStatement ps = conn.prepareStatement("DELETE FROM " + table + " WHERE team_name = ?")) {
                     ps.setString(1, teamName);
@@ -556,8 +550,6 @@ public class DatabaseManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> deleteTeam(teamName));
     }
 
-    // ==================== SAVE ALL ====================
-
     /**
      * Synchronously save all provided teams. Called during onDisable.
      */
@@ -567,8 +559,6 @@ public class DatabaseManager {
         }
         FrostLogger.info("Saved " + teams.size() + " teams to database.");
     }
-
-    // ==================== ECHEST ====================
 
     /**
      * Load a team's echest contents from the database.
@@ -623,8 +613,6 @@ public class DatabaseManager {
         }
     }
 
-    // ==================== RENAME ====================
-
     /**
      * Atomically rename a team across all tables.
      * Uses a transaction to ensure all-or-nothing consistency.
@@ -641,7 +629,7 @@ public class DatabaseManager {
             conn.setAutoCommit(false);
 
             try {
-                // 1. Update teams table (primary key)
+
                 try (PreparedStatement ps = conn.prepareStatement(
                         "UPDATE teams SET name = ? WHERE name = ?")) {
                     ps.setString(1, newName);
@@ -649,7 +637,6 @@ public class DatabaseManager {
                     ps.executeUpdate();
                 }
 
-                // 2. Update team_members
                 try (PreparedStatement ps = conn.prepareStatement(
                         "UPDATE team_members SET team_name = ? WHERE team_name = ?")) {
                     ps.setString(1, newName);
@@ -657,7 +644,6 @@ public class DatabaseManager {
                     ps.executeUpdate();
                 }
 
-                // 3. Update team_warps
                 try (PreparedStatement ps = conn.prepareStatement(
                         "UPDATE team_warps SET team_name = ? WHERE team_name = ?")) {
                     ps.setString(1, newName);
@@ -665,7 +651,6 @@ public class DatabaseManager {
                     ps.executeUpdate();
                 }
 
-                // 4. Update team_relations (both sides)
                 try (PreparedStatement ps = conn.prepareStatement(
                         "UPDATE team_relations SET team_name = ? WHERE team_name = ?")) {
                     ps.setString(1, newName);
@@ -679,7 +664,6 @@ public class DatabaseManager {
                     ps.executeUpdate();
                 }
 
-                // 5. Update team_echests
                 try (PreparedStatement ps = conn.prepareStatement(
                         "UPDATE team_echests SET team_name = ? WHERE team_name = ?")) {
                     ps.setString(1, newName);
@@ -701,8 +685,6 @@ public class DatabaseManager {
             return false;
         }
     }
-
-    // ==================== SERVER WARPS ====================
 
     public Map<String, Location> loadServerWarps() {
         Map<String, Location> warps = new LinkedHashMap<>();
@@ -762,8 +744,6 @@ public class DatabaseManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> deleteServerWarp(name));
     }
 
-    // ==================== SERVER SPAWN ====================
-
     public Location loadSpawn() {
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM server_spawn WHERE id = 1");
@@ -803,8 +783,6 @@ public class DatabaseManager {
     public void saveSpawnAsync(Location loc) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveSpawn(loc));
     }
-
-    // ==================== PLAYER COOLDOWNS ====================
 
     /**
      * Load all stored (non-expired) cooldowns, keyed by player UUID.
@@ -863,6 +841,90 @@ public class DatabaseManager {
     /**
      * Delete ALL cooldowns for a player.
      */
+    public void deleteCooldowns(UUID uuid) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("DELETE FROM player_cooldowns WHERE uuid = ?")) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to delete cooldowns for " + uuid, e);
+        }
+    }
+
+    public Map<String, Location> loadPlayerHomes(UUID uuid) {
+        Map<String, Location> homes = new LinkedHashMap<>();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM player_homes WHERE uuid = ?")) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String name = rs.getString("name");
+                    World world = Bukkit.getWorld(rs.getString("world"));
+                    if (world != null) {
+                        homes.put(name.toLowerCase(), new Location(world,
+                                rs.getDouble("x"),
+                                rs.getDouble("y"),
+                                rs.getDouble("z"),
+                                rs.getFloat("yaw"),
+                                rs.getFloat("pitch")));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to load homes for player " + uuid, e);
+        }
+        return homes;
+    }
+
+    public void savePlayerHome(UUID uuid, String name, Location loc) {
+        String sql = type == DatabaseType.MYSQL
+                ? "INSERT INTO player_homes (uuid, name, world, x, y, z, yaw, pitch) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE world=VALUES(world), x=VALUES(x), y=VALUES(y), z=VALUES(z), yaw=VALUES(yaw), pitch=VALUES(pitch)"
+                : "INSERT OR REPLACE INTO player_homes (uuid, name, world, x, y, z, yaw, pitch) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, name);
+            ps.setString(3, loc.getWorld().getName());
+            ps.setDouble(4, loc.getX());
+            ps.setDouble(5, loc.getY());
+            ps.setDouble(6, loc.getZ());
+            ps.setFloat(7, loc.getYaw());
+            ps.setFloat(8, loc.getPitch());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to save home " + name + " for player " + uuid, e);
+        }
+    }
+
+    public void savePlayerHomeAsync(UUID uuid, String name, Location loc) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> savePlayerHome(uuid, name, loc));
+    }
+
+    public void deletePlayerHome(UUID uuid, String name) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("DELETE FROM player_homes WHERE uuid = ? AND name = ?")) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, name);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to delete home " + name + " for player " + uuid, e);
+        }
+    }
+
+    public void deletePlayerHomeAsync(UUID uuid, String name) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> deletePlayerHome(uuid, name));
+    }
+
+    public void clearPlayerHomes(UUID uuid) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("DELETE FROM player_homes WHERE uuid = ?")) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to clear homes for player " + uuid, e);
+        }
+    }
+
     public void deleteAllCooldowns(UUID uuid) {
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(
@@ -874,4 +936,5 @@ public class DatabaseManager {
         }
     }
 }
+
 

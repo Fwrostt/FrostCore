@@ -42,12 +42,8 @@ import java.util.List;
  */
 public class PagedGui extends Gui {
 
-    // ── Content ───────────────────────────────────────────────────────────────
-
     private final List<GuiItem> contentItems = new ArrayList<>();
     private int currentPage = 0;
-
-    // ── Layout ────────────────────────────────────────────────────────────────
 
     /** Slots that show paginated content (ordered). */
     private int[] contentSlots;
@@ -65,30 +61,24 @@ public class PagedGui extends Gui {
     /** Optional decorations applied once per populate (e.g. border fill). */
     private Runnable decoration;
 
-    // ── Constructor ───────────────────────────────────────────────────────────
-
     private PagedGui(Component title, int rows) {
         super(title, rows);
-        // Defaults: inner 4 rows × 9 cols of a 6-row chest, nav at bottom corners
+
         contentSlots = Slot.rectangle(1, 0, rows - 2, 8);
         prevSlot  = Slot.bottomLeft(rows);
         nextSlot  = Slot.bottomRight(rows);
     }
 
-    // ── Populate ──────────────────────────────────────────────────────────────
-
     @Override
     public void populate() {
         clear();
 
-        // Decorations (border, static items)
         if (decoration != null) decoration.run();
 
         int pageSize   = contentSlots.length;
         int totalPages = Math.max(1, (int) Math.ceil((double) contentItems.size() / pageSize));
         currentPage    = Math.min(currentPage, totalPages - 1);
 
-        // Place content items for current page
         int start = currentPage * pageSize;
         for (int i = 0; i < pageSize; i++) {
             int idx = start + i;
@@ -97,7 +87,6 @@ public class PagedGui extends Gui {
             }
         }
 
-        // Navigation buttons
         if (currentPage > 0) {
             setItem(prevSlot, resolvePrevButton());
         }
@@ -105,8 +94,6 @@ public class PagedGui extends Gui {
             setItem(nextSlot, resolveNextButton(totalPages));
         }
     }
-
-    // ── Navigation ────────────────────────────────────────────────────────────
 
     /**
      * Advance to the next page. Rebuilds the GUI in-place.
@@ -146,8 +133,6 @@ public class PagedGui extends Gui {
         return Math.max(1, (int) Math.ceil((double) contentItems.size() / pageSize));
     }
 
-    // ── Content management ────────────────────────────────────────────────────
-
     public PagedGui addItem(GuiItem item) {
         contentItems.add(item);
         return this;
@@ -168,8 +153,6 @@ public class PagedGui extends Gui {
         return Collections.unmodifiableList(contentItems);
     }
 
-    // ── Nav button resolution ─────────────────────────────────────────────────
-
     private GuiItem resolvePrevButton() {
         if (prevButtonProvider != null) return prevButtonProvider.get(currentPage, getTotalPages());
         return GuiTemplate.prevButton(currentPage, getTotalPages(), ctx -> prevPage(ctx.getPlayer()));
@@ -184,8 +167,6 @@ public class PagedGui extends Gui {
     public interface NavButtonProvider {
         GuiItem get(int currentPage, int totalPages);
     }
-
-    // ── Builder ───────────────────────────────────────────────────────────────
 
     /**
      * Start building a {@link PagedGui}.
@@ -264,7 +245,7 @@ public class PagedGui extends Gui {
 
         /** Border fill with the given {@link GuiItem}. Convenience shorthand. */
         public Builder border(GuiItem item) {
-            return this;   // Applied via decoration lambda below in build()
+            return this;
         }
 
         public Builder onOpen(GuiAction<Player> action) { this.openAction = action; return this; }
@@ -287,3 +268,4 @@ public class PagedGui extends Gui {
         }
     }
 }
+

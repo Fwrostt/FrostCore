@@ -223,7 +223,6 @@ public class Team implements ConfigurationSerializable {
         String color = (String) map.get("color");
         boolean pvp  = (boolean) map.get("pvp");
 
-        // Use createEmpty() so no owner is pre-added — we populate sets explicitly below
         Team team = createEmpty(name, tag, color != null ? color : "black", pvp);
 
         List<String> ownerList = (List<String>) map.get("owners");
@@ -276,7 +275,6 @@ public class Team implements ConfigurationSerializable {
 
         return team;
     }
-
 
     @Override
     public String toString() {

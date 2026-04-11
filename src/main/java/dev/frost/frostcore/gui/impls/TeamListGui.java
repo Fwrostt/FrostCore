@@ -38,7 +38,7 @@ public class TeamListGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
 
-    private static final int[] CONTENT_SLOTS = Slot.rectangle(1, 1, 4, 7); // 28 slots/page
+    private static final int[] CONTENT_SLOTS = Slot.rectangle(1, 1, 4, 7);
 
     private final Player viewer;
     private final TeamManager teamManager;
@@ -48,16 +48,12 @@ public class TeamListGui extends Gui {
 
     private int currentPage = 0;
 
-    // ── Constructor ───────────────────────────────────────────────────────────
-
     public TeamListGui(Player viewer) {
         super(MM.deserialize("<!italic><gradient:#FFD700:#FFA500>Teams"), 6);
         this.viewer      = viewer;
         this.teamManager = TeamManager.getInstance();
         this.viewerTeam  = safeGetTeam(viewer);
     }
-
-    // ── Populate ──────────────────────────────────────────────────────────────
 
     @Override
     public void populate() {
@@ -66,14 +62,13 @@ public class TeamListGui extends Gui {
         forceFillBorder(GuiTemplate.blackFiller());
 
         List<Team> allTeams = new ArrayList<>(teamManager.getAllTeams());
-        Collections.sort(allTeams, (a, b) -> b.getTotalMembers() - a.getTotalMembers()); // sort by size desc
+        Collections.sort(allTeams, (a, b) -> b.getTotalMembers() - a.getTotalMembers());
 
         int pageSize   = CONTENT_SLOTS.length;
         int total      = allTeams.size();
         int totalPages = Math.max(1, (int) Math.ceil((double) total / pageSize));
         currentPage    = Math.min(currentPage, totalPages - 1);
 
-        // Header item
         setItem(0, 4, Button.of(Material.NETHER_STAR)
                 .name("<!italic><gradient:#FFD700:#FFA500>Teams")
                 .lore(
@@ -82,7 +77,6 @@ public class TeamListGui extends Gui {
                 )
                 .build());
 
-        // Team items
         int start = currentPage * pageSize;
         for (int i = 0; i < pageSize; i++) {
             int idx = start + i;
@@ -91,17 +85,14 @@ public class TeamListGui extends Gui {
             }
         }
 
-        // Nav row interior fill
         int navRow = getRows() - 1;
         for (int c = 1; c <= 7; c++) setItem(navRow, c, GuiTemplate.blackFiller());
 
-        // Page indicator
         setItem(navRow, 4, Button.of(Material.PAPER)
                 .name("<!italic><gray>Page <white>" + (currentPage + 1) + " <dark_gray>/ <gray>" + totalPages)
                 .lore("<!italic><dark_gray>" + total + " team" + (total == 1 ? "" : "s") + " total")
                 .build());
 
-        // Prev button
         if (currentPage > 0) {
             int cp = currentPage;
             setItem(Slot.bottomLeft(getRows()), Button.of(Material.SPECTRAL_ARROW)
@@ -111,7 +102,6 @@ public class TeamListGui extends Gui {
                     .build());
         }
 
-        // Next button
         if (currentPage < totalPages - 1) {
             int cp = currentPage;
             setItem(Slot.bottomRight(getRows()), Button.of(Material.ARROW)
@@ -122,13 +112,10 @@ public class TeamListGui extends Gui {
         }
     }
 
-    // ── Team item ─────────────────────────────────────────────────────────────
-
     private GuiItem buildTeamItem(Team team) {
-        // Pick the "primary owner" for the skull
+
         UUID ownerUUID = team.getOwners().isEmpty() ? null : team.getOwners().iterator().next();
 
-        // Determine relationship label
         String relationLine = buildRelationLine(team);
         boolean isEnemy = viewerTeam != null && viewerTeam.isEnemy(team.getName());
 
@@ -157,7 +144,7 @@ public class TeamListGui extends Gui {
                 .lore(lore);
 
         if (isEnemy) {
-            // Still shows in the list but click is denied
+
             return btn.onClick(ctx ->
                     Main.getMessageManager().sendRaw(ctx.getPlayer(),
                             "<red>✘ <gray>You cannot view info about an enemy team.")
@@ -168,8 +155,6 @@ public class TeamListGui extends Gui {
                 GuiManager.schedule(() -> new TeamInfoGui(ctx.getPlayer(), team).open(ctx.getPlayer()))
         ).build();
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private String buildRelationLine(Team team) {
         if (viewerTeam == null) return "<!italic><dark_gray>Relation: <gray>None";
@@ -197,3 +182,4 @@ public class TeamListGui extends Gui {
         }
     }
 }
+

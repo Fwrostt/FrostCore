@@ -30,25 +30,18 @@ import java.util.Set;
  */
 public class WarpManager {
 
-    // ── Location storage (database) ──────────────────────────────────────────
-
     private final Map<String, Location> warps = new LinkedHashMap<>();
     private Location spawn;
     private final DatabaseManager db;
-
-    // ── GUI config storage (warps.yml) ───────────────────────────────────────
 
     private final Map<String, WarpItemConfig> warpConfigs = new LinkedHashMap<>();
     private final File           warpsFile;
     private       FileConfiguration warpsYml;
 
-    // ── Constructor ───────────────────────────────────────────────────────────
-
     public WarpManager(JavaPlugin plugin, DatabaseManager db) {
         this.db        = db;
         this.warpsFile = new File(plugin.getDataFolder(), "warps.yml");
 
-        // Save the default warps.yml template from resources if it doesn't exist
         if (!this.warpsFile.exists()) {
             plugin.saveResource("warps.yml", false);
         }
@@ -56,10 +49,8 @@ public class WarpManager {
         loadAll();
     }
 
-    // ── Loading ───────────────────────────────────────────────────────────────
-
     private void loadAll() {
-        // 1. Load warp locations from DB
+
         warps.putAll(db.loadServerWarps());
         spawn = db.loadSpawn();
 
@@ -67,10 +58,8 @@ public class WarpManager {
             FrostLogger.info("Server spawn loaded.");
         }
 
-        // 2. Load warps.yml
         warpsYml = YamlConfiguration.loadConfiguration(warpsFile);
 
-        // 3. Load item configs for each warp
         ConfigurationSection section = warpsYml.getConfigurationSection("warps");
         if (section != null) {
             for (String key : section.getKeys(false)) {
@@ -81,7 +70,6 @@ public class WarpManager {
             }
         }
 
-        // 4. Auto-generate default config for any warp that exists in DB but not in warps.yml
         boolean dirty = false;
         for (String warpName : warps.keySet()) {
             if (!warpConfigs.containsKey(warpName)) {
@@ -96,8 +84,6 @@ public class WarpManager {
         FrostLogger.info("Loaded " + warps.size() + " warp(s) and their configurations.");
     }
 
-    // ── Location operations ───────────────────────────────────────────────────
-
     public Location getWarp(String name) {
         return warps.get(name.toLowerCase());
     }
@@ -111,7 +97,6 @@ public class WarpManager {
         warps.put(key, loc);
         db.saveServerWarpAsync(key, loc);
 
-        // Create default GUI config if one doesn't exist yet
         if (!warpConfigs.containsKey(key)) {
             WarpItemConfig def = WarpItemConfig.defaultFor(key);
             warpConfigs.put(key, def);
@@ -129,7 +114,6 @@ public class WarpManager {
         warpConfigs.remove(key);
         db.deleteServerWarpAsync(key);
 
-        // Remove from warps.yml
         if (warpsYml.isSet("warps." + key)) {
             warpsYml.set("warps." + key, null);
             saveWarpsYml();
@@ -148,16 +132,12 @@ public class WarpManager {
         return Collections.unmodifiableMap(warps);
     }
 
-    // ── Spawn ─────────────────────────────────────────────────────────────────
-
     public Location getSpawn() { return spawn; }
 
     public void setSpawn(Location loc) {
         this.spawn = loc;
         db.saveSpawnAsync(loc);
     }
-
-    // ── Item config operations ────────────────────────────────────────────────
 
     /**
      * Get the GUI display config for a warp.
@@ -197,8 +177,6 @@ public class WarpManager {
         FrostLogger.info("warps.yml reloaded — " + warpConfigs.size() + " warp config(s) loaded.");
     }
 
-    // ── YAML helpers ──────────────────────────────────────────────────────────
-
     private void writeConfigToYml(String key, WarpItemConfig cfg) {
         ConfigurationSection section = warpsYml.createSection("warps." + key);
         cfg.saveTo(section);
@@ -212,3 +190,4 @@ public class WarpManager {
         }
     }
 }
+

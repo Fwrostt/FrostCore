@@ -31,6 +31,7 @@ public final class Main extends JavaPlugin {
     @Getter private static TeleportUtil teleportUtil;
     @Getter private static TeamEchestManager echestManager;
     @Getter private static WarpManager warpManager;
+    @Getter private static HomeManager homeManager;
     private static CmdUtil cmdUtil;
     private TeamExpansion teamExpansion;
 
@@ -59,10 +60,8 @@ public final class Main extends JavaPlugin {
         databaseManager = new DatabaseManager(this);
         databaseManager.init();
 
-        // Initialise the GUI API event hub
         GuiManager.init(this);
 
-        // Initialise cooldown manager with DB reference (enables persistence + concurrent maps)
         CooldownManager.init(databaseManager);
 
         teamManager = TeamManager.getInstance();
@@ -72,6 +71,7 @@ public final class Main extends JavaPlugin {
         inviteManager = new InviteManager(this);
         echestManager = new TeamEchestManager(databaseManager);
         warpManager = new WarpManager(this, databaseManager);
+        homeManager = new HomeManager(this, configManager);
         cmdUtil = new CmdUtil();
         ConfigurationSerialization.registerClass(Team.class);
     }
@@ -97,6 +97,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TeamPvPListener(), this);
         getServer().getPluginManager().registerEvents(
                 new SpawnListener(configManager, warpManager, teleportUtil), this);
+        getServer().getPluginManager().registerEvents(homeManager, this);
     }
 
     private void setupCmds() {
@@ -141,6 +142,21 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("setwarp", setwarpCmd, setwarpCmd);
         cmdUtil.registerCommand("delwarp", setwarpCmd, setwarpCmd);
 
+        SetHomeCmd sethomeCmd = new SetHomeCmd();
+        cmdUtil.registerCommand("sethome", sethomeCmd, null);
+
+        HomeCmd homeCmd = new HomeCmd();
+        cmdUtil.registerCommand("home", homeCmd, homeCmd);
+
+        DelHomeCmd delhomeCmd = new DelHomeCmd();
+        cmdUtil.registerCommand("delhome", delhomeCmd, delhomeCmd);
+
+        RenameHomeCmd renamehomeCmd = new RenameHomeCmd();
+        cmdUtil.registerCommand("renamehome", renamehomeCmd, renamehomeCmd);
+
+        HomesCmd homesCmd = new HomesCmd();
+        cmdUtil.registerCommand("homes", homesCmd, null);
+
         SetSpawnCmd setspawnCmd = new SetSpawnCmd();
         cmdUtil.registerCommand("setspawn", setspawnCmd, null);
 
@@ -167,3 +183,4 @@ public final class Main extends JavaPlugin {
         }
     }
 }
+

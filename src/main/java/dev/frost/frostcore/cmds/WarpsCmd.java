@@ -37,7 +37,6 @@ public class WarpsCmd implements CommandExecutor {
             return true;
         }
 
-        // If GUI is disabled, fall back to chat list
         if (!config.getBoolean("warps.gui-enabled", true)) {
             sender.sendMessage("Use /warp <name> to teleport to a warp.");
             return true;
@@ -48,3 +47,4 @@ public class WarpsCmd implements CommandExecutor {
         return true;
     }
 }
+

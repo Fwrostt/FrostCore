@@ -43,7 +43,6 @@ public class CmdUtil {
         registerCommand(commandName, executor, null);
     }
 
-
     public void unregisterCommand(String commandName) {
         commands.remove(commandName.toLowerCase());
     }

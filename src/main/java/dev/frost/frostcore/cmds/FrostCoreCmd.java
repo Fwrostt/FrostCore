@@ -39,19 +39,16 @@ public class FrostCoreCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Reload config
         ConfigManager config = Main.getConfigManager();
         if (config != null) {
             config.reloadConfig();
         }
 
-        // Reload messages
         MessageManager messages = Main.getMessageManager();
         if (messages != null) {
             messages.reload();
         }
 
-        // Reload warps.yml (GUI display configs)
         if (Main.getWarpManager() != null) {
             Main.getWarpManager().reloadWarpsYml();
         }
@@ -72,3 +69,4 @@ public class FrostCoreCmd implements CommandExecutor, TabCompleter {
         return Collections.emptyList();
     }
 }
+

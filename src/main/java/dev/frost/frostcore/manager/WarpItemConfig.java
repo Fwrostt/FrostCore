@@ -14,13 +14,11 @@ import java.util.List;
  */
 public class WarpItemConfig {
 
-    private String displayName;   // MiniMessage
+    private String displayName;
     private Material material;
-    private List<String> lore;    // MiniMessage lore lines
+    private List<String> lore;
     private boolean glow;
-    private String permission;    // empty string = public / no permission required
-
-    // ── Constructors ─────────────────────────────────────────────────────────
+    private String permission;
 
     public WarpItemConfig(String displayName, Material material,
                           List<String> lore, boolean glow, String permission) {
@@ -30,8 +28,6 @@ public class WarpItemConfig {
         this.glow        = glow;
         this.permission  = permission == null ? "" : permission;
     }
-
-    // ── Default factory ───────────────────────────────────────────────────────
 
     /**
      * Build a sensible default config for a warp that doesn't yet have one.
@@ -51,8 +47,6 @@ public class WarpItemConfig {
                 ""
         );
     }
-
-    // ── YAML serialisation ────────────────────────────────────────────────────
 
     /**
      * Write this config into a {@link ConfigurationSection} (a key under {@code warps.<name>}).
@@ -92,8 +86,6 @@ public class WarpItemConfig {
         return new WarpItemConfig(displayName, material, lore, glow, permission);
     }
 
-    // ── Accessors ─────────────────────────────────────────────────────────────
-
     public String       getDisplayName()              { return displayName; }
     public void         setDisplayName(String n)      { this.displayName = n; }
 
@@ -112,3 +104,4 @@ public class WarpItemConfig {
     /** Returns true if this warp requires a specific permission. */
     public boolean requiresPermission()               { return !permission.isEmpty(); }
 }
+

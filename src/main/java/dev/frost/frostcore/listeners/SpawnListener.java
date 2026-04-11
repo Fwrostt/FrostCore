@@ -41,7 +41,7 @@ public class SpawnListener implements Listener {
         if (spawn == null) return;
 
         Player player = event.getPlayer();
-        // Delay by 1 tick so the player is fully initialised before teleporting
+
         org.bukkit.Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
             if (player.isOnline()) {
                 teleportUtil.teleportInstant(player, spawn);
@@ -57,7 +57,7 @@ public class SpawnListener implements Listener {
         Location spawn = warpManager.getSpawn();
         if (spawn == null) return;
 
-        // Override the respawn location with the server spawn
         event.setRespawnLocation(spawn);
     }
 }
+

@@ -32,8 +32,6 @@ public final class Button {
 
     private Button() {}
 
-    // ── Entry points ─────────────────────────────────────────────────────────
-
     public static Builder of(Material material) {
         return new Builder(new ItemStack(material));
     }
@@ -41,10 +39,6 @@ public final class Button {
     public static Builder of(ItemStack base) {
         return new Builder(base.clone());
     }
-
-    // =========================================================================
-    // Builder
-    // =========================================================================
 
     public static final class Builder {
 
@@ -54,8 +48,6 @@ public final class Button {
         private Builder(ItemStack item) {
             this.item = item;
         }
-
-        // ── Display ───────────────────────────────────────────────────────────
 
         /** Set the display name using MiniMessage formatting. */
         public Builder name(String miniMessage) {
@@ -160,22 +152,16 @@ public final class Button {
             return this;
         }
 
-        // ── Behaviour ─────────────────────────────────────────────────────────
-
         /** Assign a click action to this button. */
         public Builder onClick(GuiAction<ClickContext> action) {
             this.action = action;
             return this;
         }
 
-        // ── Build ─────────────────────────────────────────────────────────────
-
         /** Build a {@link GuiItem} from this builder. */
         public GuiItem build() {
             return new GuiItem(item, action);
         }
-
-        // ── Helpers ───────────────────────────────────────────────────────────
 
         @FunctionalInterface
         private interface MetaConsumer {
@@ -191,3 +177,4 @@ public final class Button {
         }
     }
 }
+

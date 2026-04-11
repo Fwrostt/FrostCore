@@ -20,14 +20,10 @@ public class ClickContext {
         this.gui = gui;
     }
 
-    // ── Player ───────────────────────────────────────────────────────────────
-
     /** The player who clicked. */
     public Player getPlayer() {
         return (Player) event.getWhoClicked();
     }
-
-    // ── Slot info ────────────────────────────────────────────────────────────
 
     /** The slot index inside the GUI inventory that was clicked. */
     public int getSlot() {
@@ -44,16 +40,12 @@ public class ClickContext {
         return event.getSlot() % 9;
     }
 
-    // ── Click type ───────────────────────────────────────────────────────────
-
     public ClickType getClickType() { return event.getClick(); }
     public boolean isLeftClick()    { return event.isLeftClick(); }
     public boolean isRightClick()   { return event.isRightClick(); }
     public boolean isShiftClick()   { return event.isShiftClick(); }
     public boolean isMiddleClick()  { return event.getClick() == ClickType.MIDDLE; }
     public boolean isNumberKey()    { return event.getClick() == ClickType.NUMBER_KEY; }
-
-    // ── Actions ──────────────────────────────────────────────────────────────
 
     /**
      * Cancel the underlying event (prevents item movement).
@@ -76,11 +68,10 @@ public class ClickContext {
         GuiManager.schedule(() -> newGui.open(getPlayer()));
     }
 
-    // ── Raw access ───────────────────────────────────────────────────────────
-
     /** The underlying Bukkit click event, for advanced use. */
     public InventoryClickEvent getEvent() { return event; }
 
     /** The GUI that was clicked. */
     public Gui getGui() { return gui; }
 }
+

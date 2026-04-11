@@ -51,7 +51,6 @@ public class WarpCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Check per-warp permission (configured in warps.yml)
         dev.frost.frostcore.manager.WarpItemConfig warpCfg = warpManager.getWarpConfig(warpName);
         if (warpCfg.requiresPermission() && !player.hasPermission(warpCfg.getPermission())) {
             mm.sendRaw(player, "<red>✘ You don't have permission to use the <white>"
@@ -104,7 +103,7 @@ public class WarpCmd implements CommandExecutor, TabCompleter {
             warpLine = warpLine.append(warp);
             count++;
         }
-        
+
         if (count > 0) {
             player.sendMessage(warpLine);
         }
@@ -121,3 +120,4 @@ public class WarpCmd implements CommandExecutor, TabCompleter {
         return Collections.emptyList();
     }
 }
+

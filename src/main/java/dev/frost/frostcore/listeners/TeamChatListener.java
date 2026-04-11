@@ -35,32 +35,25 @@ public class TeamChatListener implements Listener {
     public void onChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
 
-        // Check if team chat feature is enabled globally
         if (!Main.getConfigManager().getBoolean("teams.team-chat", true)) return;
 
-        // Check if the player is in a team
         if (!teamManager.hasTeam(player.getUniqueId())) return;
 
         try {
             Team team = teamManager.getTeam(player.getUniqueId());
 
-            // Check if this player has team chat toggled on
             if (!team.isTeamChatEnabled(player.getUniqueId())) return;
 
-            // Cancel the global message
             event.setCancelled(true);
 
-            // Extract plain text from the Component message
             String plainMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
 
-            // Build the team chat message using the format from messages.yml
             Map<String, String> placeholders = Map.of(
                     "player", player.getName(),
                     "chat", plainMessage
             );
             Component formatted = mm.getComponent("teams.chat-format", placeholders);
 
-            // Send to all online team members
             Set<UUID> allMembers = new java.util.HashSet<>();
             allMembers.addAll(team.getOwners());
             allMembers.addAll(team.getAdmins());
@@ -73,14 +66,14 @@ public class TeamChatListener implements Listener {
                 }
             }
 
-            // Also log to console so admins can see
             Bukkit.getConsoleSender().sendMessage(
                     Component.text("[TeamChat:" + team.getName() + "] ").append(formatted)
             );
 
         } catch (Exception e) {
-            // Don't let a chat-routing error silence the player's message
+
             FrostLogger.warn("TeamChatListener error for " + player.getName() + ": " + e.getMessage());
         }
     }
 }
+

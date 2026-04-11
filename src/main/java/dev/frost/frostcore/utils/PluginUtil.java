@@ -51,18 +51,15 @@ public class PluginUtil {
         );
     }
 
-    // Get a player by UUID (null-safe)
     public static Player getPlayer(UUID uuid) {
         return Bukkit.getPlayer(uuid);
     }
 
-    // Kick a player with a message
     public static void kickPlayer(Player player, String reason) {
         Component component = MiniMessage.miniMessage().deserialize(reason);
         player.kick(component);
     }
 
-    // Send multiple lines of messages to a player
     public static void sendMessages(Player player, List<String> messages) {
         for (String message : messages) {
             sendMessage(player, message);
@@ -70,3 +67,4 @@ public class PluginUtil {
     }
 
 }
+

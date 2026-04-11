@@ -33,23 +33,19 @@ public class TeamInfoGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
 
-    // ── Soothing colour palette ───────────────────────────────────────────────
     private static final String GOLD      = "<#FFD27F>";
     private static final String BLUE      = "<#A3C4FF>";
     private static final String SKY       = "<#81CFFA>";
     private static final String SILVER    = "<#BBBBBB>";
     private static final String DIM       = "<#888888>";
-    private static final String POS       = "<#78D97B>";  // muted green  (on / set / ally)
-    private static final String NEG       = "<#E07070>";  // muted red    (off / enemy)
+    private static final String POS       = "<#78D97B>";
+    private static final String NEG       = "<#E07070>";
     private static final String SEP_LINE  = "<!italic><dark_gray>──────────────";
 
-    // Player head slots: rows 1-3, cols 1-6  →  18 slots
     private static final int[] PLAYER_SLOTS = Slot.rectangle(1, 1, 3, 6);
 
     private final Team   team;
     private final Player viewer;
-
-    // ── Constructor ───────────────────────────────────────────────────────────
 
     public TeamInfoGui(Player viewer, Team team) {
         super(MM.deserialize("<!italic><gradient:#FFD700:#FFA500>" + team.getDisplayName()), 5);
@@ -57,26 +53,22 @@ public class TeamInfoGui extends Gui {
         this.viewer = viewer;
     }
 
-    // ── Populate ──────────────────────────────────────────────────────────────
-
     @Override
     public void populate() {
         clear();
 
-        // Full black-glass border
         forceFillBorder(GuiTemplate.blackFiller());
 
-        // Col 7: gray-glass visual separator between player heads and side panel
-        for (int r = 1; r <= 3; r++) {
-            setItem(r, 7, GuiTemplate.filler(Material.GRAY_STAINED_GLASS_PANE));
+        if (dev.frost.frostcore.Main.getConfigManager().getBoolean("gui.borders", true)) {
+            for (int r = 1; r <= 3; r++) {
+                setItem(r, 7, GuiTemplate.filler(Material.GRAY_STAINED_GLASS_PANE));
+            }
         }
 
-        // ── Row 0: Team skull header ──────────────────────────────────────────
         UUID primaryOwner = team.getOwners().isEmpty() ? null
                 : team.getOwners().iterator().next();
         setItem(0, 4, buildHeaderItem(primaryOwner));
 
-        // ── Rows 1-3 cols 1-6: Player skulls ─────────────────────────────────
         List<RosterEntry> roster = buildRoster();
         int shown    = Math.min(roster.size(), PLAYER_SLOTS.length);
         int overflow = Math.max(0, roster.size() - PLAYER_SLOTS.length);
@@ -85,19 +77,15 @@ public class TeamInfoGui extends Gui {
             setItem(PLAYER_SLOTS[i], buildMemberHead(roster.get(i)));
         }
 
-        // ── Col 8: Stats (row 1) + Relations (row 2) ─────────────────────────
         setItem(1, 8, buildStatsItem(overflow));
         setItem(2, 8, buildRelationsItem());
 
-        // ── Row 4 centre: Back button ─────────────────────────────────────────
         setItem(4, 4, Button.of(Material.ARROW)
                 .name("<!italic>" + BLUE + "← Back to Teams")
                 .lore("<!italic>" + DIM + "Return to the team list")
                 .onClick(ctx -> GuiManager.schedule(() -> new TeamListGui(viewer).open(viewer)))
                 .build());
     }
-
-    // ── Header ────────────────────────────────────────────────────────────────
 
     private GuiItem buildHeaderItem(UUID ownerUUID) {
         return Button.of(makeSkull(ownerUUID))
@@ -110,8 +98,6 @@ public class TeamInfoGui extends Gui {
                 )
                 .build();
     }
-
-    // ── Member skulls ─────────────────────────────────────────────────────────
 
     private GuiItem buildMemberHead(RosterEntry entry) {
         OfflinePlayer op   = Bukkit.getOfflinePlayer(entry.uuid());
@@ -138,8 +124,6 @@ public class TeamInfoGui extends Gui {
                 .build();
     }
 
-    // ── Stats item (col 8, row 1) ─────────────────────────────────────────────
-
     private GuiItem buildStatsItem(int overflow) {
         List<String> lore = new ArrayList<>();
         lore.add(SEP_LINE);
@@ -159,8 +143,6 @@ public class TeamInfoGui extends Gui {
                 .lore(lore)
                 .build();
     }
-
-    // ── Relations item (col 8, row 2) ─────────────────────────────────────────
 
     private GuiItem buildRelationsItem() {
         List<String> lore = new ArrayList<>();
@@ -192,8 +174,6 @@ public class TeamInfoGui extends Gui {
                 .build();
     }
 
-    // ── Roster helpers ────────────────────────────────────────────────────────
-
     private enum Role { OWNER, ADMIN, MEMBER }
 
     private record RosterEntry(UUID uuid, Role role) {}
@@ -205,8 +185,6 @@ public class TeamInfoGui extends Gui {
         for (UUID u : team.getMembers()) list.add(new RosterEntry(u, Role.MEMBER));
         return list;
     }
-
-    // ── Skull factory ─────────────────────────────────────────────────────────
 
     private ItemStack makeSkull(UUID uuid) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
@@ -222,3 +200,4 @@ public class TeamInfoGui extends Gui {
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 }
+

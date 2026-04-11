@@ -24,8 +24,6 @@ public final class Slot {
 
     private Slot() {}
 
-    // ── Conversion ───────────────────────────────────────────────────────────
-
     /** Convert (row, col) to a flat slot index. */
     public static int of(int row, int col) {
         return row * 9 + col;
@@ -41,8 +39,6 @@ public final class Slot {
         return slot % 9;
     }
 
-    // ── Row helpers ──────────────────────────────────────────────────────────
-
     /** Return all 9 slots in a given row. */
     public static int[] row(int rowIndex, int unusedOverload) {
         int[] slots = new int[9];
@@ -56,8 +52,6 @@ public final class Slot {
         for (int c = 0; c < 9; c++) slots[c] = of(rowIndex, c);
         return slots;
     }
-
-    // ── Region helpers ───────────────────────────────────────────────────────
 
     /**
      * Return all slots in a rectangular region (inclusive on both ends).
@@ -90,11 +84,11 @@ public final class Slot {
         if (rows == 1) return rowSlots(0);
 
         java.util.Set<Integer> set = new java.util.LinkedHashSet<>();
-        // Top row
+
         for (int c = 0; c < 9; c++) set.add(of(0, c));
-        // Bottom row
+
         for (int c = 0; c < 9; c++) set.add(of(rows - 1, c));
-        // Left & right columns (middle rows only)
+
         for (int r = 1; r < rows - 1; r++) {
             set.add(of(r, 0));
             set.add(of(r, 8));
@@ -111,8 +105,6 @@ public final class Slot {
         return rectangle(1, 1, rows - 2, 7);
     }
 
-    // ── Checks ───────────────────────────────────────────────────────────────
-
     /** Returns true if the slot lies on the border of a chest with the given row count. */
     public static boolean isBorder(int slot, int rows) {
         int r = row(slot);
@@ -125,8 +117,6 @@ public final class Slot {
         return rawSlot >= 0 && rawSlot < guiSize;
     }
 
-    // ── Common preset indices ────────────────────────────────────────────────
-
     public static final int TOP_LEFT     = of(0, 0);
     public static final int TOP_CENTER   = of(0, 4);
     public static final int TOP_RIGHT    = of(0, 8);
@@ -135,4 +125,37 @@ public final class Slot {
     public static int bottomLeft(int rows)   { return of(rows - 1, 0); }
     public static int bottomCenter(int rows) { return of(rows - 1, 4); }
     public static int bottomRight(int rows)  { return of(rows - 1, 8); }
+
+    /**
+     * Determines the optimal index offsets to symmetrically center or uniformly spread
+     * a number of items across a given flat array length.
+     * <p>
+     * Particularly tuned for 7-slot wide container strips common in GUIs.
+     */
+    public static int[] getCenteredIndices(int totalSlots, int items) {
+        if (items <= 0) return new int[0];
+        if (items >= totalSlots) {
+            int[] res = new int[totalSlots];
+            for (int i = 0; i < totalSlots; i++) res[i] = i;
+            return res;
+        }
+
+        if (totalSlots == 7) {
+            switch (items) {
+                case 1: return new int[]{3};
+                case 2: return new int[]{2, 4};
+                case 3: return new int[]{1, 3, 5};
+                case 4: return new int[]{1, 2, 4, 5};
+                case 5: return new int[]{1, 2, 3, 4, 5};
+                case 6: return new int[]{0, 1, 2, 4, 5, 6};
+            }
+        }
+
+        // Generic fallback: strictly consecutive centering
+        int margin = (totalSlots - items) / 2;
+        int[] res = new int[items];
+        for (int i = 0; i < items; i++) res[i] = margin + i;
+        return res;
+    }
 }
+

@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CooldownManager {
 
-    // player UUID → (cooldown ID → expiry epoch-ms)
     private static final Map<UUID, Map<String, Long>> cooldowns = new ConcurrentHashMap<>();
 
     private static DatabaseManager db;
@@ -31,8 +30,6 @@ public class CooldownManager {
         db = database;
         loadCooldowns();
     }
-
-    // ==================== PUBLIC API ====================
 
     /**
      * Set a cooldown for a player.
@@ -109,8 +106,6 @@ public class CooldownManager {
         deleteAllCooldownsAsync(player.getUniqueId());
     }
 
-    // ==================== PERSISTENCE ====================
-
     /**
      * Load all non-expired cooldowns from the database into memory.
      * Called synchronously on startup.
@@ -122,7 +117,7 @@ public class CooldownManager {
         for (Map.Entry<UUID, Map<String, Long>> entry : loaded.entrySet()) {
             Map<String, Long> active = new ConcurrentHashMap<>();
             for (Map.Entry<String, Long> cd : entry.getValue().entrySet()) {
-                if (cd.getValue() > now) {          // only load non-expired entries
+                if (cd.getValue() > now) {
                     active.put(cd.getKey(), cd.getValue());
                 }
             }
@@ -132,8 +127,6 @@ public class CooldownManager {
         }
         FrostLogger.info("Loaded cooldowns for " + cooldowns.size() + " player(s).");
     }
-
-    // ==================== ASYNC DB HELPERS ====================
 
     private static void saveCooldownAsync(UUID uuid, String id, long expiry) {
         if (db == null) return;
@@ -159,3 +152,4 @@ public class CooldownManager {
         );
     }
 }
+

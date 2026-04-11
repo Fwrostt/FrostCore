@@ -28,13 +28,12 @@ public class InviteManager {
 
     private final Map<InviteType, InviteHandler> handlers = new EnumMap<>(InviteType.class);
 
-    // target UUID -> (type -> list of pending invites)
     private final Map<UUID, Map<InviteType, List<Invite>>> invites = new ConcurrentHashMap<>();
 
     private BukkitTask cleanupTask;
 
     public InviteManager(Main plugin) {
-        // Run cleanup every second (20 ticks)
+
         cleanupTask = Bukkit.getScheduler().runTaskTimer(plugin, this::cleanupExpired, 20L, 20L);
     }
 
@@ -60,7 +59,6 @@ public class InviteManager {
 
         List<Invite> list = invites.get(target).get(type);
 
-        // Remove existing duplicate (same sender + target + type)
         list.removeIf(existing -> existing.getSender().equals(sender));
 
         list.add(invite);
@@ -116,7 +114,6 @@ public class InviteManager {
         List<Invite> list = byType.get(type);
         if (list == null) return Collections.emptyList();
 
-        // Return non-expired only
         synchronized (list) {
             return list.stream()
                     .filter(inv -> !inv.isExpired())
@@ -205,8 +202,6 @@ public class InviteManager {
         invites.clear();
     }
 
-    // ==================== INTERNAL ====================
-
     /**
      * Find the most recent non-expired invite matching the criteria.
      * If fromSender is null, returns the latest invite of that type.
@@ -219,7 +214,7 @@ public class InviteManager {
         if (list == null) return null;
 
         synchronized (list) {
-            // Iterate backwards to find the most recent
+
             for (int i = list.size() - 1; i >= 0; i--) {
                 Invite inv = list.get(i);
                 if (inv.isExpired()) continue;
@@ -266,3 +261,4 @@ public class InviteManager {
         }
     }
 }
+

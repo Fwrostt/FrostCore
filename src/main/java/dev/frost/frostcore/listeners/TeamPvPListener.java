@@ -25,16 +25,14 @@ public class TeamPvPListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        // Only care about player-on-player damage
+
         if (!(event.getEntity() instanceof Player victim)) return;
 
         Player attacker = resolveAttacker(event.getDamager());
         if (attacker == null) return;
 
-        // Don't block self-damage
         if (attacker.getUniqueId().equals(victim.getUniqueId())) return;
 
-        // Both players must be in a team
         if (!teamManager.hasTeam(attacker.getUniqueId())) return;
         if (!teamManager.hasTeam(victim.getUniqueId())) return;
 
@@ -42,7 +40,6 @@ public class TeamPvPListener implements Listener {
             Team attackerTeam = teamManager.getTeam(attacker.getUniqueId());
             Team victimTeam = teamManager.getTeam(victim.getUniqueId());
 
-            // Same team — check PvP toggle
             if (attackerTeam.getName().equalsIgnoreCase(victimTeam.getName())) {
                 if (!attackerTeam.isPvpToggle()) {
                     event.setCancelled(true);
@@ -50,7 +47,6 @@ public class TeamPvPListener implements Listener {
                 }
             }
 
-            // Allied teams — check friendly-fire config
             if (!Main.getConfigManager().getBoolean("teams.friendly-fire", false)) {
                 if (attackerTeam.isAlly(victimTeam.getName())) {
                     event.setCancelled(true);
@@ -58,7 +54,7 @@ public class TeamPvPListener implements Listener {
             }
 
         } catch (Exception e) {
-            // Fail open — if team lookup fails, allow the hit. Log for debugging.
+
             FrostLogger.warn("TeamPvPListener error: " + e.getMessage());
         }
     }
@@ -78,3 +74,4 @@ public class TeamPvPListener implements Listener {
         return null;
     }
 }
+

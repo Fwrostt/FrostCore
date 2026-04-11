@@ -24,7 +24,6 @@ public class TeamConfirmGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
 
-    // ── Colour palette ────────────────────────────────────────────────────────
     private static final String GOLD    = "<#FFD27F>";
     private static final String BLUE    = "<#A3C4FF>";
     private static final String DIM     = "<#888888>";
@@ -32,14 +31,12 @@ public class TeamConfirmGui extends Gui {
     private static final String NEG     = "<#E07070>";
     private static final String SEP     = "<!italic><dark_gray>──────────────";
 
-    // ── Fields ────────────────────────────────────────────────────────────────
     private final Material           infoIcon;
-    private final String             infoTitle;   // MiniMessage
+    private final String             infoTitle;
     private final List<String>       infoLore;
     private final GuiAction<ClickContext> onConfirm;
     private final GuiAction<ClickContext> onCancel;
 
-    // ── Private constructor ───────────────────────────────────────────────────
     private TeamConfirmGui(String title, Material infoIcon, String infoTitle,
                            List<String> infoLore,
                            GuiAction<ClickContext> onConfirm,
@@ -52,20 +49,16 @@ public class TeamConfirmGui extends Gui {
         this.onCancel  = onCancel;
     }
 
-    // ── Populate ──────────────────────────────────────────────────────────────
-
     @Override
     public void populate() {
         clear();
         forceFillBorder(GuiTemplate.blackFiller());
 
-        // Centre of row 0: the info item
         setItem(0, 4, Button.of(infoIcon)
                 .name(infoTitle)
                 .lore(infoLore)
                 .build());
 
-        // Row 1: confirm × 2  |  divider  |  cancel × 2
         GuiItem confirmBtn = Button.of(Material.LIME_DYE)
                 .name("<!italic>" + POS + "✔  Confirm")
                 .lore("<!italic>" + DIM + "Click to confirm")
@@ -85,8 +78,6 @@ public class TeamConfirmGui extends Gui {
         setItem(1, 4, divider);
         setItem(1, 6, cancelBtn);
     }
-
-    // ── Static factories ──────────────────────────────────────────────────────
 
     /**
      * Open a <b>disband</b> confirmation for the given team.
@@ -169,3 +160,4 @@ public class TeamConfirmGui extends Gui {
         ).open(player);
     }
 }
+

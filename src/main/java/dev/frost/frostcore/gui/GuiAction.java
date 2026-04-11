@@ -10,3 +10,4 @@ package dev.frost.frostcore.gui;
 public interface GuiAction<T> {
     void execute(T context);
 }
+

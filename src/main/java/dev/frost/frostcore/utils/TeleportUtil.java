@@ -23,7 +23,6 @@ public class TeleportUtil {
     private final MessageManager mm;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    // ━━━ Progress bar characters ━━━
     private static final String BAR_FILLED = "●";
     private static final String BAR_EMPTY  = "○";
     private static final int BAR_LENGTH = 10;
@@ -80,7 +79,8 @@ public class TeleportUtil {
         boolean bypassDelay = hasDelayBypass(player);
         if (!bypassCooldown && CooldownManager.isOnCooldown(player, cooldownId)) {
             int remaining = CooldownManager.getRemainingTime(player, cooldownId);
-            Map<String, String> ph = Map.of("time", String.valueOf(remaining));
+            java.util.Map<String, String> ph = new java.util.HashMap<>(extraPlaceholders);
+            ph.put("time", String.valueOf(remaining));
             mm.send(player, cooldownMsgPath, ph);
             return false;
         }
@@ -141,12 +141,12 @@ public class TeleportUtil {
                                       String cancelMsgPath,
                                       Map<String, String> extraPlaceholders, boolean bypassCooldown) {
 
-        // Preload chunk asynchronously for lag-less TP
         if (target.getWorld() != null) {
             target.getWorld().getChunkAtAsync(target);
         }
 
-        Map<String, String> ph = Map.of("time", String.valueOf(delaySeconds));
+        java.util.Map<String, String> ph = new java.util.HashMap<>(extraPlaceholders);
+        ph.put("time", String.valueOf(delaySeconds));
         mm.send(player, waitMsgPath, ph);
 
         new CountdownTask(player, target, player.getLocation().clone(), delaySeconds,
@@ -163,10 +163,6 @@ public class TeleportUtil {
         player.getWorld().spawnParticle(Particle.PORTAL, loc, 40, 0.3, 0.8, 0.3, 0.5);
         player.getWorld().spawnParticle(Particle.END_ROD, loc, 10, 0.2, 0.5, 0.2, 0.02);
     }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // Countdown Task
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     private class CountdownTask {
         private final Player player;
@@ -202,30 +198,27 @@ public class TeleportUtil {
         }
 
         public void start() {
-            // Run every 2 ticks for smooth action bar progress
+
             task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                 if (!player.isOnline()) {
                     cancel();
                     return;
                 }
 
-                // Movement check
                 if (hasMoved()) {
-                    mm.send(player, cancelMsgPath);
+                    mm.send(player, cancelMsgPath, extraPlaceholders);
                     if (soundEnabled()) playCancelSound();
                     if (actionBarEnabled()) player.sendActionBar(Component.empty());
                     cancel();
                     return;
                 }
 
-                // Update action bar smoothly
                 if (actionBarEnabled()) {
                     sendProgressActionBar();
                 }
 
                 ticksInCurrentSecond += 2;
 
-                // Every 20 ticks (1 second)
                 if (ticksInCurrentSecond >= 20) {
                     ticksInCurrentSecond = 0;
 
@@ -239,7 +232,7 @@ public class TeleportUtil {
                         cancel();
                     }
                 }
-            }, 0L, 2L); // run every 2 ticks for smooth bar
+            }, 0L, 2L);
         }
 
         private boolean hasMoved() {
@@ -258,7 +251,15 @@ public class TeleportUtil {
         }
 
         private void sendProgressActionBar() {
-            // Calculate smooth progress (accounts for sub-second ticks)
+            String color = timeLeft <= 1 ? "<#55FF55>" : timeLeft <= 2 ? "<#FFFF55>" : "<#00C9FF>";
+            String style = config().getString("teleport.action-bar-style", "BAR").toUpperCase();
+
+            if (style.equals("TEXT")) {
+                String text = "<!italic>" + "<white>" + "Teleporting in " + color + timeLeft + "s...";
+                player.sendActionBar(miniMessage.deserialize(text));
+                return;
+            }
+
             double elapsed = (totalTime - timeLeft) + (ticksInCurrentSecond / 20.0);
             double progress = Math.min(elapsed / totalTime, 1.0);
             int filled = (int) (progress * BAR_LENGTH);
@@ -271,8 +272,6 @@ public class TeleportUtil {
             bar.append("<dark_gray>");
             bar.append(BAR_EMPTY.repeat(empty));
             bar.append("</dark_gray>");
-
-            String color = timeLeft <= 1 ? "<#55FF55>" : timeLeft <= 2 ? "<#FFFF55>" : "<#00C9FF>";
 
             String text = "<!italic><bold><dark_gray>« </dark_gray>" + bar + "<dark_gray> »   </dark_gray>"
                     + color + timeLeft + "s";

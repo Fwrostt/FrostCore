@@ -34,7 +34,7 @@ public class TpaToggleCmd implements CommandExecutor {
                 .has(TPA_DISABLED_KEY, PersistentDataType.BYTE);
 
         if (cmdName.equals("tpaon")) {
-            // Force-enable regardless of current state
+
             if (!currentlyDisabled) {
                 mm.sendRaw(player, "<yellow>Teleport requests are already <bold>ENABLED</bold>.");
                 return true;
@@ -43,7 +43,7 @@ public class TpaToggleCmd implements CommandExecutor {
             mm.sendRaw(player, "<green>Teleport requests are now <bold>ENABLED</bold>.");
 
         } else if (cmdName.equals("tpaoff")) {
-            // Force-disable regardless of current state
+
             if (currentlyDisabled) {
                 mm.sendRaw(player, "<yellow>Teleport requests are already <bold>DISABLED</bold>.");
                 return true;
@@ -52,7 +52,7 @@ public class TpaToggleCmd implements CommandExecutor {
             mm.sendRaw(player, "<red>Teleport requests are now <bold>DISABLED</bold>.");
 
         } else {
-            // /tpatoggle — flip current state
+
             if (currentlyDisabled) {
                 player.getPersistentDataContainer().remove(TPA_DISABLED_KEY);
                 mm.sendRaw(player, "<green>Teleport requests are now <bold>ENABLED</bold>.");
@@ -65,3 +65,4 @@ public class TpaToggleCmd implements CommandExecutor {
         return true;
     }
 }
+

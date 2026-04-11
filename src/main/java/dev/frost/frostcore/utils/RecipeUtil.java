@@ -54,8 +54,8 @@ public class RecipeUtil {
         }
     }
 
-
     public static void registerPremadeItem(String name, ItemStack item) {
         premadeItems.put(name, item);
     }
 }
+

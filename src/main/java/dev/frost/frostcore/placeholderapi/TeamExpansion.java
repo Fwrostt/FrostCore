@@ -15,7 +15,6 @@ import java.util.UUID;
 
 public class TeamExpansion extends PlaceholderExpansion {
 
-
     @Override
     public @NotNull String getAuthor() {
         return "frost";
@@ -42,13 +41,11 @@ public class TeamExpansion extends PlaceholderExpansion {
         UUID uuid = player.getUniqueId();
         TeamManager tm = Main.getTeamManager();
 
-        // Placeholders that don't require being in a team
         switch (params) {
             case "has_team":
                 return String.valueOf(tm.hasTeam(uuid));
         }
 
-        // Placeholders that require being in a team
         if (!tm.hasTeam(uuid)) return "";
 
         try {
@@ -117,3 +114,4 @@ public class TeamExpansion extends PlaceholderExpansion {
         return sb.toString();
     }
 }
+

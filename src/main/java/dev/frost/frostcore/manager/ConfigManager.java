@@ -95,3 +95,4 @@ public class ConfigManager {
     public FileConfiguration getConfig() { return config; }
 }
 
+

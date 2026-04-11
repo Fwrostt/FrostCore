@@ -49,7 +49,7 @@ public class TeamEchestManager {
      */
     public int getSlots() {
         int raw = Main.getConfigManager().getInt("teams.echest.slots", 27);
-        // Snap to nearest multiple of 9, clamped to 9–54
+
         int snapped = Math.max(9, Math.min(54, (raw / 9) * 9));
         if (snapped == 0) snapped = 9;
         return snapped;
@@ -117,7 +117,6 @@ public class TeamEchestManager {
         Inventory inv = openEchests.get(key);
         if (inv == null) return;
 
-        // Deep-copy snapshot to prevent race conditions during async write
         ItemStack[] snapshot = deepCopy(inv.getContents());
 
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
@@ -125,8 +124,7 @@ public class TeamEchestManager {
             db.saveEchest(key, base64);
         });
 
-        // If no other players are viewing this echest, remove from cache
-        if (inv.getViewers().size() <= 1) { // <= 1 because the closing player is still counted
+        if (inv.getViewers().size() <= 1) {
             openEchests.remove(key);
         }
     }
@@ -140,9 +138,8 @@ public class TeamEchestManager {
             Inventory inv = entry.getValue();
 
             String base64 = ItemStackSerializer.toBase64(inv.getContents());
-            db.saveEchest(teamName, base64); // synchronous during shutdown
+            db.saveEchest(teamName, base64);
 
-            // Close for all viewers and drop any items on cursor
             for (HumanEntity viewer : new ArrayList<>(inv.getViewers())) {
                 if (viewer instanceof Player p) {
                     dropCursorItem(p);
@@ -185,7 +182,6 @@ public class TeamEchestManager {
         dropCursorItem(player);
         player.closeInventory();
 
-        // Save & clean up cache if no viewers left
         Inventory inv = openEchests.get(key);
         if (inv != null) {
             ItemStack[] snapshot = deepCopy(inv.getContents());
@@ -214,8 +210,6 @@ public class TeamEchestManager {
         return openEchests.containsValue(inventory);
     }
 
-    // ==================== ANTI-DUPE HELPERS ====================
-
     /**
      * Deep-copy an ItemStack array to create a snapshot that is safe for async serialization.
      * This prevents race conditions where another viewer modifies items while the async
@@ -237,7 +231,7 @@ public class TeamEchestManager {
     private void dropCursorItem(Player player) {
         ItemStack cursor = player.getOpenInventory().getCursor();
         if (cursor != null && !cursor.getType().isAir()) {
-            // Try to add it back to the echest, otherwise drop at feet
+
             player.getOpenInventory().setCursor(null);
             var remaining = player.getInventory().addItem(cursor);
             for (ItemStack leftover : remaining.values()) {
@@ -246,3 +240,4 @@ public class TeamEchestManager {
         }
     }
 }
+

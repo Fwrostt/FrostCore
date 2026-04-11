@@ -18,9 +18,10 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        // Cancel all invites this player received
+
         inviteManager.cancelAllFor(uuid);
-        // Cancel all invites this player sent to others
+
         inviteManager.cancelAllSentBy(uuid);
     }
 }
+

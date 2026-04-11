@@ -159,3 +159,20 @@ teams:
   cannot-demote-last-owner: "{teams.prefix}<#FF5555>Cannot demote the last owner. <dark_gray>Promote someone first."
   echest-disabled: "{teams.prefix}<#FF5555>Team echest is disabled."
   tag-invalid-length: "{teams.prefix}<#FF5555>Tag must be <white>{min}-{max}</white> characters."
+
+# ━━━ PERSONAL HOMES ━━━
+homes:
+  prefix: "<gradient:#6BA3E3:#4979C7>HOMES</gradient> <#AAAAAA>» </#AAAAAA>"
+  set-success: "{homes.prefix}<#89ED97>Home <white>{home}</white> has been set."
+  delete-success: "{homes.prefix}<#F08181>Home <white>{home}</white> deleted."
+  rename-success: "{homes.prefix}<#89ED97>Home <white>{old}</white> renamed to <white>{new}</white>."
+  rename-failed: "{homes.prefix}<#F08181>Failed to rename home (new name may exist)."
+  not-found: "{homes.prefix}<#F08181>Home <white>{home}</white> not found."
+  max-reached: "{homes.prefix}<#F08181>You have reached your maximum of <white>{max}</white> homes."
+  cooldown: "{homes.prefix}<#F08181>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  wait: "{homes.prefix}<#8AADC4>Teleporting to <white>{home}</white> in <white>{time}s</white> <#8AADC4>- don't move!"
+  teleport: "{homes.prefix}<#89ED97>Teleported to <white>{home}</white>."
+  teleport-cancelled: "{homes.prefix}<#F08181>Teleport cancelled! <dark_gray>(you moved)"
+  no-homes: "{homes.prefix}<#6BA3E3>You have no personal homes set."
+  disabled: "{homes.prefix}<#F08181>Personal homes are currently disabled."
+

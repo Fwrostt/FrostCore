@@ -52,7 +52,6 @@ public class TeamAllyInviteHandler implements InviteHandler {
             notifyTeam(sTeam, "teams.ally-accepted", Map.of("team", targetTeam));
             notifyTeam(tTeam, "teams.ally-accepted", Map.of("team", senderTeam));
 
-            // Silently cancel any duplicate outstanding ally invites between these two teams
             inviteManager.cancelInvites(InviteType.TEAM_ALLY, inv ->
                     inv.getMeta("senderTeam", "").equals(senderTeam)
                             && inv.getMeta("targetTeam", "").equals(targetTeam));
@@ -99,8 +98,6 @@ public class TeamAllyInviteHandler implements InviteHandler {
         }
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
-
     private void notifyTeam(Team team, String path, Map<String, String> placeholders) {
         Set<UUID> all = new java.util.HashSet<>();
         all.addAll(team.getOwners());
@@ -114,3 +111,4 @@ public class TeamAllyInviteHandler implements InviteHandler {
         }
     }
 }
+

@@ -1,5 +1,5 @@
 name: FrostCore
-version: '1.1.4'
+version: '1.1.5'
 main: dev.frost.frostcore.Main
 api-version: '1.21'
 authors: [ Frost ]
@@ -42,6 +42,27 @@ commands:
     description: Open the interactive warp browser GUI
     usage: /warps
     permission: frostcore.warp
+  sethome:
+    description: Set a personal home
+    usage: /sethome [name]
+    permission: frostcore.sethome
+  home:
+    description: Teleport to a personal home
+    usage: /home [name]
+    permission: frostcore.home
+  delhome:
+    description: Delete a personal home
+    usage: /delhome <name>
+    permission: frostcore.delhome
+  renamehome:
+    description: Rename a personal home
+    usage: /renamehome <old> <new>
+    permission: frostcore.renamehome
+  homes:
+    description: Open the personal homes GUI
+    usage: /homes
+    permission: frostcore.homes
+
   spawn:
     description: Teleport to the server spawn
     usage: /spawn
@@ -93,6 +114,21 @@ permissions:
     default: true
   frostcore.warp:
     description: Allows using warps
+    default: true
+  frostcore.sethome:
+    description: Allows setting personal homes
+    default: true
+  frostcore.home:
+    description: Allows teleporting to personal homes
+    default: true
+  frostcore.delhome:
+    description: Allows deleting personal homes
+    default: true
+  frostcore.renamehome:
+    description: Allows renaming personal homes
+    default: true
+  frostcore.homes:
+    description: Allows using the homes GUI
     default: true
   frostcore.spawn:
     description: Allows using spawn

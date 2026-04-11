@@ -37,13 +37,9 @@ import java.util.List;
  */
 public class SwitcherGui extends Gui {
 
-    // ── Frames ────────────────────────────────────────────────────────────────
-
     /** Each frame is a GuiItem[] whose indices map to displaySlots. */
     private final List<GuiItem[]> frames = new ArrayList<>();
     private int currentFrame = 0;
-
-    // ── Layout ────────────────────────────────────────────────────────────────
 
     private int[] displaySlots;
     private int prevSlot;
@@ -59,13 +55,9 @@ public class SwitcherGui extends Gui {
     /** Static items placed on every populate (e.g. border). */
     private Runnable decoration;
 
-    // ── Auto-advance ──────────────────────────────────────────────────────────
-
     private int autoAdvanceTicks = -1;
     private BukkitTask autoTask;
     private Player viewingPlayer;
-
-    // ── Constructor ───────────────────────────────────────────────────────────
 
     private SwitcherGui(Component title, int rows) {
         super(title, rows);
@@ -73,8 +65,6 @@ public class SwitcherGui extends Gui {
         prevSlot  = Slot.bottomLeft(rows);
         nextSlot  = Slot.bottomRight(rows);
     }
-
-    // ── Populate ──────────────────────────────────────────────────────────────
 
     @Override
     public void populate() {
@@ -87,20 +77,16 @@ public class SwitcherGui extends Gui {
         normaliseFrame();
         GuiItem[] frame = frames.get(currentFrame);
 
-        // Render current frame into display slots
         for (int i = 0; i < displaySlots.length; i++) {
             GuiItem item = (i < frame.length && frame[i] != null) ? frame[i] : emptySlotItem;
             setItem(displaySlots[i], item);
         }
 
-        // Nav buttons
         if (frames.size() > 1) {
             setItem(prevSlot, resolvePrevButton());
             setItem(nextSlot, resolveNextButton());
         }
     }
-
-    // ── Frame management ──────────────────────────────────────────────────────
 
     /**
      * Add a frame of items. Frame length should match (or be ≤) the number of display slots.
@@ -135,8 +121,6 @@ public class SwitcherGui extends Gui {
     /** Get the currently shown frame index (0-based). */
     public int getCurrentFrame() { return currentFrame; }
 
-    // ── Navigation ────────────────────────────────────────────────────────────
-
     /**
      * Advance to the next frame (wraps around to 0 from the last frame).
      * Rebuilds the GUI in-place.
@@ -165,8 +149,6 @@ public class SwitcherGui extends Gui {
         currentFrame = Math.abs(frame % frames.size());
         refresh(player);
     }
-
-    // ── Auto-advance ──────────────────────────────────────────────────────────
 
     /**
      * Enable automatic frame advancement every {@code ticks} ticks.
@@ -202,8 +184,6 @@ public class SwitcherGui extends Gui {
         autoTask = null;
     }
 
-    // ── Static item ───────────────────────────────────────────────────────────
-
     /**
      * Set the item shown in display slots that have no frame item.
      * Defaults to a gray glass pane filler.
@@ -212,15 +192,11 @@ public class SwitcherGui extends Gui {
         this.emptySlotItem = item;
     }
 
-    // ── Close ─────────────────────────────────────────────────────────────────
-
     @Override
     void handleClose(org.bukkit.event.inventory.InventoryCloseEvent event) {
         stopAutoAdvance();
         super.handleClose(event);
     }
-
-    // ── Internal helpers ──────────────────────────────────────────────────────
 
     private void normaliseFrame() {
         currentFrame = Math.max(0, Math.min(currentFrame, frames.size() - 1));
@@ -242,8 +218,6 @@ public class SwitcherGui extends Gui {
     public interface FrameButtonProvider {
         GuiItem get(int currentFrame, int totalFrames);
     }
-
-    // ── Builder ───────────────────────────────────────────────────────────────
 
     /**
      * Start building a {@link SwitcherGui}.
@@ -349,7 +323,6 @@ public class SwitcherGui extends Gui {
 
             gui.frames.addAll(initialFrames);
 
-            // If auto-advance configured, start it after open via onOpen callback
             if (autoAdvanceTicks > 0) {
                 int ticks = autoAdvanceTicks;
                 GuiAction<Player> existing = openAction;
@@ -363,3 +336,4 @@ public class SwitcherGui extends Gui {
         }
     }
 }
+

@@ -11,3 +11,4 @@ public enum InviteType {
     TPA,
     TPA_HERE
 }
+

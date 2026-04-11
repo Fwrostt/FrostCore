@@ -51,21 +51,15 @@ public class TpaCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Check if target has TPA disabled via PersistentData
         if (target.getPersistentDataContainer().has(TpaToggleCmd.TPA_DISABLED_KEY, PersistentDataType.BYTE)) {
             mm.sendRaw(player, "<red>" + target.getName() + " has teleport requests disabled.");
             return true;
         }
 
-        // Prevent spamming the same player with duplicate requests
         if (inviteManager.hasInviteFrom(target.getUniqueId(), InviteType.TPA, player.getUniqueId())) {
             mm.send(player, "teleport.tpa-already-sent");
             return true;
         }
-
-        // NOTE: cooldown is intentionally NOT checked here.
-        // TeleportUtil.teleportWithCooldownAndDelay() is the single source-of-truth for
-        // cooldown enforcement — it checks at teleport execution time, not at request time.
 
         int expiry = config.getInt("tpa.expiry", 60);
 
@@ -94,3 +88,4 @@ public class TpaCmd implements CommandExecutor, TabCompleter {
         return Collections.emptyList();
     }
 }
+

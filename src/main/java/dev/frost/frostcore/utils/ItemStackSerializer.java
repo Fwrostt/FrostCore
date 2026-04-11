@@ -40,7 +40,7 @@ public final class ItemStackSerializer {
             oos.writeInt(items.length);
 
             for (ItemStack item : items) {
-                oos.writeObject(item); // null-safe — Bukkit handles null items
+                oos.writeObject(item);
             }
 
             oos.flush();
@@ -81,4 +81,5 @@ public final class ItemStackSerializer {
         }
     }
 }
+
 

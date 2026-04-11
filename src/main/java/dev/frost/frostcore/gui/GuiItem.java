@@ -14,8 +14,6 @@ public class GuiItem {
     private ItemStack item;
     private GuiAction<ClickContext> action;
 
-    // ── Constructors ─────────────────────────────────────────────────────────
-
     /** Display-only item — clicking does nothing. */
     public GuiItem(ItemStack item) {
         this.item = item;
@@ -27,8 +25,6 @@ public class GuiItem {
         this.item = item;
         this.action = action;
     }
-
-    // ── Accessors ────────────────────────────────────────────────────────────
 
     public ItemStack getItem() { return item; }
 
@@ -43,9 +39,8 @@ public class GuiItem {
 
     public boolean hasAction() { return action != null; }
 
-    // ── Internal ─────────────────────────────────────────────────────────────
-
     void executeAction(ClickContext ctx) {
         if (action != null) action.execute(ctx);
     }
 }
+

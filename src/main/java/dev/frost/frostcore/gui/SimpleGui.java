@@ -43,8 +43,6 @@ public class SimpleGui extends Gui {
         }
     }
 
-    // ── Expose placement methods publicly for external configurators ──────────
-
     @Override
     public void setItem(int slot, GuiItem item) { super.setItem(slot, item); }
 
@@ -56,8 +54,6 @@ public class SimpleGui extends Gui {
 
     @Override
     public void fillBorder(GuiItem item) { super.fillBorder(item); }
-
-    // ── Builder ───────────────────────────────────────────────────────────────
 
     /**
      * Start building a {@link SimpleGui}.
@@ -83,8 +79,6 @@ public class SimpleGui extends Gui {
             this.rows = Math.max(1, Math.min(6, rows));
         }
 
-        // ── Slot placement ────────────────────────────────────────────────────
-
         /** Place an item in the given flat slot. */
         public Builder item(int slot, GuiItem item) {
             configurators.add(gui -> gui.setItem(slot, item));
@@ -106,8 +100,6 @@ public class SimpleGui extends Gui {
             return this;
         }
 
-        // ── Fill helpers ──────────────────────────────────────────────────────
-
         /** Fill all empty slots with a filler item. */
         public Builder fill(GuiItem item) {
             configurators.add(gui -> gui.fill(item));
@@ -120,8 +112,6 @@ public class SimpleGui extends Gui {
             return this;
         }
 
-        // ── Lifecycle ─────────────────────────────────────────────────────────
-
         /** Callback fired when the GUI opens for a player. */
         public Builder onOpen(GuiAction<Player> action) {
             this.openAction = action;
@@ -133,8 +123,6 @@ public class SimpleGui extends Gui {
             this.closeAction = action;
             return this;
         }
-
-        // ── Config ────────────────────────────────────────────────────────────
 
         /**
          * Allow players to interact with (pick up / move) items in this GUI.
@@ -151,8 +139,6 @@ public class SimpleGui extends Gui {
             return this;
         }
 
-        // ── Build ─────────────────────────────────────────────────────────────
-
         /** Build the {@link SimpleGui} instance. Does NOT open it. */
         public SimpleGui build() {
             SimpleGui gui = new SimpleGui(title, rows);
@@ -164,3 +150,4 @@ public class SimpleGui extends Gui {
         }
     }
 }
+

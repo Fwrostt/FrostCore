@@ -40,24 +40,16 @@ public class WarpsGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
 
-    // ── Dependencies ──────────────────────────────────────────────────────────
-
     private final Player        viewer;
     private final WarpManager   warpManager;
     private final TeleportUtil  teleportUtil;
     private final ConfigManager config;
     private final MessageManager mm;
 
-    // ── Layout ────────────────────────────────────────────────────────────────
-
     /** Slots that contain warp items (derived from config). */
     private final int[] contentSlots;
 
-    // ── State ─────────────────────────────────────────────────────────────────
-
     private int currentPage = 0;
-
-    // ── Constructor ───────────────────────────────────────────────────────────
 
     public WarpsGui(Player viewer) {
         super(
@@ -80,16 +72,12 @@ public class WarpsGui extends Gui {
         this.contentSlots = Slot.rectangle(startRow, startCol, endRow, endCol);
     }
 
-    // ── Populate ──────────────────────────────────────────────────────────────
-
     @Override
     public void populate() {
         clear();
 
-        // ── Border ────────────────────────────────────────────────────────────
         forceFillBorder(GuiTemplate.blackFiller());
 
-        // ── Header title item (top row centre) ────────────────────────────────
         int pageSize   = contentSlots.length;
         List<String> allWarps = new ArrayList<>(warpManager.getWarpNames());
         Collections.sort(allWarps);
@@ -106,32 +94,28 @@ public class WarpsGui extends Gui {
                 )
                 .build());
 
-        // ── Warp items ────────────────────────────────────────────────────────
         int start = currentPage * pageSize;
-        for (int i = 0; i < pageSize; i++) {
-            int idx = start + i;
-            if (idx < total) {
-                String warpName = allWarps.get(idx);
-                setItem(contentSlots[i], buildWarpItem(warpName));
-            }
+        int itemsOnPage = Math.min(pageSize, total - start);
+        int[] indices = Slot.getCenteredIndices(pageSize, itemsOnPage);
+        
+        for (int i = 0; i < itemsOnPage; i++) {
+            int dataIdx = start + i;
+            String warpName = allWarps.get(dataIdx);
+            setItem(contentSlots[indices[i]], buildWarpItem(warpName));
         }
 
-        // ── Navigation row (last row) ─────────────────────────────────────────
         int navRow = getRows() - 1;
 
-        // Fill nav row interior (cols 1-7) with filler so they're not empty
         for (int c = 1; c <= 7; c++) {
             setItem(navRow, c, GuiTemplate.blackFiller());
         }
 
-        // Page indicator (centre of nav row)
         setItem(navRow, 4, Button.of(Material.PAPER)
                 .name("<!italic><gray>Page <white>" + (currentPage + 1)
                         + " <dark_gray>/ <gray>" + totalPages)
                 .lore("<!italic><dark_gray>" + total + " warp" + (total == 1 ? "" : "s") + " total")
                 .build());
 
-        // Previous button (only when not on page 0)
         if (currentPage > 0) {
             int cp = currentPage;
             setItem(Slot.bottomLeft(getRows()), Button.of(Material.SPECTRAL_ARROW)
@@ -145,7 +129,6 @@ public class WarpsGui extends Gui {
                     .build());
         }
 
-        // Next button (only when more pages remain)
         if (currentPage < totalPages - 1) {
             int cp = currentPage;
             setItem(Slot.bottomRight(getRows()), Button.of(Material.ARROW)
@@ -160,8 +143,6 @@ public class WarpsGui extends Gui {
         }
     }
 
-    // ── Warp item builder ─────────────────────────────────────────────────────
-
     private GuiItem buildWarpItem(String warpName) {
         WarpItemConfig cfg = warpManager.getWarpConfig(warpName);
         Location loc = warpManager.getWarp(warpName);
@@ -169,7 +150,6 @@ public class WarpsGui extends Gui {
         boolean hasPermission = !cfg.requiresPermission()
                 || viewer.hasPermission(cfg.getPermission());
 
-        // Build lore: use config lore + dynamic suffix
         List<String> lore = new ArrayList<>(cfg.getLore());
 
         if (cfg.requiresPermission()) {
@@ -194,14 +174,13 @@ public class WarpsGui extends Gui {
         if (cfg.isGlow()) btn.glow();
 
         if (!hasPermission) {
-            // Show item grayed out — click sends error message
+
             return btn.onClick(ctx ->
                     mm.sendRaw(ctx.getPlayer(),
                             "<red>✘ You don't have permission to use the <white>" + warpName + "</white> warp."))
                     .build();
         }
 
-        // Fully accessible warp
         return btn.onClick(ctx -> {
             ctx.close();
             teleportUtil.teleportWithCooldownAndDelay(
@@ -218,8 +197,6 @@ public class WarpsGui extends Gui {
         }).build();
     }
 
-    // ── Navigation helpers ────────────────────────────────────────────────────
-
     /** Jump directly to a page (0-based). Rebuilds the GUI in place. */
     public void setPage(int page) {
         List<String> allWarps = new ArrayList<>(warpManager.getWarpNames());
@@ -232,3 +209,4 @@ public class WarpsGui extends Gui {
     public int getCurrentPage()  { return currentPage; }
     public int[] getContentSlots() { return contentSlots; }
 }
+

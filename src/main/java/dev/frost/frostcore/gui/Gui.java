@@ -38,8 +38,6 @@ public abstract class Gui {
 
     protected static final MiniMessage MM = MiniMessage.miniMessage();
 
-    // ── Inventory state ───────────────────────────────────────────────────────
-
     protected final Inventory inventory;
     protected final int rows;
     protected final Component title;
@@ -47,25 +45,17 @@ public abstract class Gui {
     /** Slot → GuiItem mapping. Drives both rendering and click dispatch. */
     protected final Map<Integer, GuiItem> items = new LinkedHashMap<>();
 
-    // ── Config ────────────────────────────────────────────────────────────────
-
     /** Whether all inventory interactions are cancelled by default. Recommended: true (anti-dupe). */
     private boolean cancelAll = true;
 
-    // ── Lifecycle callbacks ───────────────────────────────────────────────────
-
     private GuiAction<Player> openAction;
     private GuiAction<Player> closeAction;
-
-    // ── Constructor ──────────────────────────────────────────────────────────
 
     protected Gui(Component title, int rows) {
         this.title = title;
         this.rows = Math.max(1, Math.min(6, rows));
         this.inventory = Bukkit.createInventory(null, this.rows * 9, title);
     }
-
-    // ── Abstract lifecycle ───────────────────────────────────────────────────
 
     /**
      * Populate the GUI with items.
@@ -74,8 +64,6 @@ public abstract class Gui {
      * Override this to define your GUI's layout.
      */
     public abstract void populate();
-
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     /**
      * Open this GUI for the given player.
@@ -105,8 +93,6 @@ public abstract class Gui {
         clear();
         populate();
     }
-
-    // ── Item placement ───────────────────────────────────────────────────────
 
     /**
      * Place a {@link GuiItem} in the given flat slot index.
@@ -161,6 +147,7 @@ public abstract class Gui {
      * with the given item. Skips slots that already contain an item.
      */
     protected void fillBorder(GuiItem item) {
+        if (!dev.frost.frostcore.Main.getConfigManager().getBoolean("gui.borders", true)) return;
         for (int slot : Slot.borderSlots(rows)) {
             if (!items.containsKey(slot)) {
                 setItem(slot, item);
@@ -172,6 +159,7 @@ public abstract class Gui {
      * Fill all border slots unconditionally (overwrites existing items).
      */
     protected void forceFillBorder(GuiItem item) {
+        if (!dev.frost.frostcore.Main.getConfigManager().getBoolean("gui.borders", true)) return;
         for (int slot : Slot.borderSlots(rows)) {
             setItem(slot, item);
         }
@@ -198,8 +186,6 @@ public abstract class Gui {
         inventory.clear();
     }
 
-    // ── Event dispatch (package-private, used by GuiManager) ─────────────────
-
     void handleClick(InventoryClickEvent event) {
         event.setCancelled(cancelAll);
 
@@ -213,8 +199,6 @@ public abstract class Gui {
     void handleClose(InventoryCloseEvent event) {
         if (closeAction != null) closeAction.execute((Player) event.getPlayer());
     }
-
-    // ── Configuration ─────────────────────────────────────────────────────────
 
     /**
      * Set whether all inventory click interactions inside this GUI are
@@ -234,8 +218,6 @@ public abstract class Gui {
      */
     public void setOnClose(GuiAction<Player> action) { this.closeAction = action; }
 
-    // ── Accessors ─────────────────────────────────────────────────────────────
-
     public Inventory getInventory() { return inventory; }
     public Component getTitle()     { return title; }
     public int getRows()            { return rows; }
@@ -245,3 +227,4 @@ public abstract class Gui {
     /** Get the {@link GuiItem} at a slot, or {@code null} if empty. */
     public GuiItem getItem(int slot) { return items.get(slot); }
 }
+

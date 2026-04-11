@@ -27,15 +27,14 @@ public class TpaHereInviteHandler implements InviteHandler {
 
     @Override
     public void onAccept(Invite invite) {
-        Player sender = Bukkit.getPlayer(invite.getSender()); // wants target to come here
-        Player target = Bukkit.getPlayer(invite.getTarget()); // the one teleporting
+        Player sender = Bukkit.getPlayer(invite.getSender());
+        Player target = Bukkit.getPlayer(invite.getTarget());
 
         if (sender == null || target == null) return;
 
         mm.send(sender, "teleport.tpa-accepted-sender", Map.of("player", target.getName()));
         mm.send(target, "teleport.tpa-accepted-target", Map.of("player", sender.getName()));
 
-        // target teleports TO sender's location
         teleportUtil.teleportWithCooldownAndDelay(
                 target, sender.getLocation(),
                 "tpa",
@@ -76,3 +75,4 @@ public class TpaHereInviteHandler implements InviteHandler {
         }
     }
 }
+

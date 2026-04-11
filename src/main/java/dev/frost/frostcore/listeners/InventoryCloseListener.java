@@ -40,7 +40,6 @@ public class InventoryCloseListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (!TeamEchestManager.isViewingEchest(player)) return;
 
-        // Verify the player is still in a team
         if (!teamManager.hasTeam(player.getUniqueId())) {
             event.setCancelled(true);
             player.closeInventory();
@@ -56,10 +55,10 @@ public class InventoryCloseListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (!TeamEchestManager.isViewingEchest(player)) return;
 
-        // Verify the player is still in a team
         if (!teamManager.hasTeam(player.getUniqueId())) {
             event.setCancelled(true);
             player.closeInventory();
         }
     }
 }
+

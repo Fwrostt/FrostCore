@@ -78,23 +78,21 @@ public class MessageManager {
 
             String key = message.substring(start + 1, end);
 
-            // Skip keys with colons (MiniMessage tags like <gradient:#hex:#hex>)
             if (key.contains(":")) {
                 searchFrom = end + 1;
                 continue;
             }
 
-            // Only resolve if the key actually exists in messages.yml
             String replacement = config.getString(key);
             if (replacement == null) {
-                // Not a nested message key — it's a runtime placeholder, skip it
+
                 searchFrom = end + 1;
                 continue;
             }
 
             message = message.substring(0, start) + replacement + message.substring(end + 1);
             depth++;
-            // Don't advance searchFrom — the replacement may contain more nested keys
+
         }
         return message;
     }
@@ -119,7 +117,6 @@ public class MessageManager {
         }
     }
 
-
     public void send(Player player, String path) {
         player.sendMessage(getComponent(path));
     }
@@ -132,7 +129,6 @@ public class MessageManager {
         player.sendMessage(parse(message));
     }
 
-
     public Component getComponent(String path) {
         return getComponent(path, null);
     }
@@ -144,7 +140,6 @@ public class MessageManager {
         return parse(msg);
     }
 
-
     public void broadcast(String path) {
         broadcast(path, null);
     }
@@ -153,7 +148,6 @@ public class MessageManager {
         Component component = getComponent(path, placeholders);
         plugin.getServer().broadcast(component);
     }
-
 
     public List<String> getRawList(String path) {
         List<String> list = config.getStringList(path);
@@ -211,3 +205,4 @@ public class MessageManager {
         ));
     }
 }
+

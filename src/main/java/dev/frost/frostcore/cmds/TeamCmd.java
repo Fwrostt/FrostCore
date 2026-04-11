@@ -54,7 +54,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Global teams system toggle
         if (!Main.getConfigManager().getBoolean("teams.enabled", true)) {
             mm.sendRaw(player, "<red>The teams system is currently disabled.</red>");
             return true;
@@ -98,14 +97,13 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
 
                 case "join" -> handleJoin(player, args);
 
-                case "accept" -> handleJoin(player, args); // alias
+                case "accept" -> handleJoin(player, args);
 
                 case "decline" -> handleDecline(player, args);
 
                 case "leave" -> {
                     Team team = manager.getTeam(player.getUniqueId());
 
-                    // Pre-validate: last owner cannot leave
                     if (team.isOwner(player.getUniqueId()) && team.getOwners().size() == 1) {
                         throw new dev.frost.frostcore.exceptions.TeamException(
                                 dev.frost.frostcore.teams.TeamError.CANNOT_LEAVE_AS_OWNER,
@@ -304,8 +302,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    // ==================== KICK ====================
-
     private void handleKick(Player player, String[] args) throws TeamException {
         if (args.length < 2) {
             sendHelp(player);
@@ -328,23 +324,21 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
             return;
         }
 
-        // Role hierarchy: owners can kick admins+members, admins can only kick members
         boolean targetIsOwner = team.isOwner(target.getUniqueId());
         boolean targetIsAdmin = team.isAdmin(target.getUniqueId());
         boolean kickerIsOwner = team.isOwner(player.getUniqueId());
 
         if (targetIsOwner) {
-            // Nobody can kick an owner
+
             mm.send(player, "teams.cannot-kick-higher");
             return;
         }
         if (targetIsAdmin && !kickerIsOwner) {
-            // Only owners can kick admins
+
             mm.send(player, "teams.cannot-kick-higher");
             return;
         }
 
-        // Force-close echest if target is viewing it (anti-dupe)
         Main.getEchestManager().forceCloseForPlayer(target);
 
         manager.removeMember(target.getUniqueId());
@@ -352,8 +346,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         mm.send(player, "teams.kick", Map.of("player", target.getName()));
         mm.send(target, "teams.kicked", Map.of("team", team.getName()));
     }
-
-    // ==================== PROMOTE / DEMOTE ====================
 
     private void handlePromote(Player player, String[] args) throws TeamException {
         if (args.length < 2) {
@@ -432,8 +424,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         }
     }
 
-    // ==================== INFO / LIST ====================
-
     private void handleInfo(Player player, String[] args) {
         try {
             Team team;
@@ -451,7 +441,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                     + "</bold></gradient> <dark_gray>[<white>" + team.getTag() + "<dark_gray>]");
             mm.sendRaw(player, "");
 
-            // Members section
             mm.sendRaw(player, "  <#FFD27F>⬥ Owners   <dark_gray>» <white>" + formatPlayerList(team.getOwners()));
             if (!team.getAdmins().isEmpty()) {
                 mm.sendRaw(player, "  <#FFD27F>⬥ Admins   <dark_gray>» <white>" + formatPlayerList(team.getAdmins()));
@@ -461,14 +450,12 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
             }
             mm.sendRaw(player, "");
 
-            // Stats
             String pvpState = team.isPvpToggle() ? "<green>ON" : "<red>OFF";
             String homeState = team.getHome() != null ? "<green>Set" : "<red>Not set";
             mm.sendRaw(player, "  <#FFD27F>Players <dark_gray>» <white>" + team.getTotalMembers()
                     + "    <#FFD27F>PvP <dark_gray>» " + pvpState
                     + "    <#FFD27F>Home <dark_gray>» " + homeState);
 
-            // Relations
             if (!team.getAllies().isEmpty()) {
                 mm.sendRaw(player, "  <#FFD27F>Allies  <dark_gray>» <#55FF55>" + String.join("<dark_gray>, <#55FF55>", team.getAllies()));
             }
@@ -476,7 +463,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                 mm.sendRaw(player, "  <#FFD27F>Enemies <dark_gray>» <#FF5555>" + String.join("<dark_gray>, <#FF5555>", team.getEnemies()));
             }
 
-            // Warps
             if (!team.getWarps().isEmpty()) {
                 mm.sendRaw(player, "  <#FFD27F>Warps   <dark_gray>» <white>" + String.join("<dark_gray>, <white>", team.getWarps().keySet())
                         + " <dark_gray>(" + team.getWarps().size() + ")");
@@ -498,7 +484,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
             return;
         }
 
-        // Open the paginated GUI — all browsing logic lives in TeamListGui
         dev.frost.frostcore.gui.impls.TeamListGui gui =
                 new dev.frost.frostcore.gui.impls.TeamListGui(player);
         gui.open(player);
@@ -517,8 +502,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                 .collect(Collectors.joining("<dark_gray>, "));
     }
 
-    // ==================== JOIN (accept with confirmation) ====================
-
     private void handleJoin(Player player, String[] args) {
         UUID targetUUID = player.getUniqueId();
         Invite invite   = null;
@@ -526,7 +509,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         if (args.length >= 2) {
             String input = args[1];
 
-            // Try matching online player name first
             Player from = Bukkit.getPlayerExact(input);
             if (from != null) {
                 List<Invite> byPlayer = inviteManager.getInvites(targetUUID, InviteType.TEAM_JOIN);
@@ -535,12 +517,11 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                         .findFirst().orElse(null);
             }
 
-            // Try matching by team name in meta
             if (invite == null) {
                 invite = findInviteByTeamName(targetUUID, InviteType.TEAM_JOIN, "team", input);
             }
         } else {
-            // No args: pick most recent team-join invite
+
             List<Invite> pending = inviteManager.getInvites(targetUUID, InviteType.TEAM_JOIN);
             if (!pending.isEmpty()) invite = pending.get(0);
         }
@@ -567,8 +548,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         });
     }
 
-    // ==================== INVITE HANDLERS ====================
-
     private void handleInvite(Player player, String[] args) throws TeamException {
         if (args.length < 2) {
             sendHelp(player);
@@ -594,7 +573,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
             return;
         }
 
-        // Check if there's already a pending invite from this team to this player
         List<Invite> existing = inviteManager.getInvites(target.getUniqueId(), InviteType.TEAM_JOIN);
         boolean alreadyInvited = existing.stream()
                 .anyMatch(inv -> inv.getMeta("team", "").equalsIgnoreCase(team.getName()));
@@ -613,10 +591,8 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                 expiry
         );
 
-        // Notify sender
         mm.send(player, "teams.invite", Map.of("player", target.getName(), "team", team.getName()));
 
-        // Notify target with clickable accept/decline
         mm.send(target, "teams.invite-received", Map.of("player", player.getName(), "team", team.getName()));
         sendClickableInviteActions(target, player.getName());
     }
@@ -627,14 +603,12 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         if (args.length >= 2) {
             String input = args[1];
 
-            // 1. Try matching an online player name first
             Player fromPlayer = Bukkit.getPlayerExact(input);
             if (fromPlayer != null) {
                 if (inviteManager.acceptInvite(targetUUID, InviteType.TEAM_JOIN, fromPlayer.getUniqueId())) return;
                 if (inviteManager.acceptInvite(targetUUID, InviteType.TEAM_ALLY, fromPlayer.getUniqueId())) return;
             }
 
-            // 2. Try matching a team name in pending invites
             Invite teamJoinMatch = findInviteByTeamName(targetUUID, InviteType.TEAM_JOIN, "team", input);
             if (teamJoinMatch != null) {
                 if (inviteManager.acceptInvite(targetUUID, InviteType.TEAM_JOIN, teamJoinMatch.getSender())) return;
@@ -649,7 +623,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
             return;
         }
 
-        // No args: accept the most recent invite of any type
         if (inviteManager.acceptInvite(targetUUID, InviteType.TEAM_JOIN, null)) return;
         if (inviteManager.acceptInvite(targetUUID, InviteType.TEAM_ALLY, null)) return;
 
@@ -697,8 +670,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         return null;
     }
 
-    // ==================== ALLY ====================
-
     private void handleAlly(Player player, String[] args) throws TeamException {
         if (args.length < 2) {
             sendHelp(player);
@@ -710,7 +681,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
 
         String targetTeamName = args[1].toLowerCase();
 
-        // Validate the target team exists
         Team targetTeam = manager.getTeam(targetTeamName);
 
         if (team.getName().equalsIgnoreCase(targetTeamName)) {
@@ -732,7 +702,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
 
         int expiry = Main.getConfigManager().getInt("teams.invites.team-ally-expiry", 120);
 
-        // Send invite to all online owners & admins of target team
         boolean sentToAny = false;
         Set<UUID> recipients = new HashSet<>();
         recipients.addAll(targetTeam.getOwners());
@@ -763,8 +732,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         mm.send(player, "teams.ally-request-sent", Map.of("team", targetTeam.getName()));
     }
 
-    // ==================== CLICKABLE MESSAGES ====================
-
     private void sendClickableInviteActions(Player target, String senderName) {
         Component accept = miniMessage.deserialize("<green><bold>[ACCEPT]</bold></green>")
                 .clickEvent(ClickEvent.runCommand("/team accept " + senderName))
@@ -788,8 +755,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
 
         target.sendMessage(Component.text("   ").append(accept).append(Component.text("  ")).append(decline));
     }
-
-    // ==================== TELEPORT HANDLERS ====================
 
     private void handleHome(Player player) {
         try {
@@ -849,8 +814,6 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
             mm.send(player, getMessagePathForError(e.getError()));
         }
     }
-
-    // ==================== HELPER METHODS ====================
 
     private String getMessagePathForError(TeamError error) {
         return switch (error) {
@@ -952,7 +915,7 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                                 .map(Bukkit::getPlayer)
                                 .filter(Objects::nonNull)
                                 .map(Player::getName)
-                                .filter(name -> !name.equals(p.getName())) // don't suggest self
+                                .filter(name -> !name.equals(p.getName()))
                                 .toList();
                     } catch (Exception e) {
                         return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
@@ -1019,3 +982,4 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         return Collections.emptyList();
     }
 }
+

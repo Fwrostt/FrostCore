@@ -28,8 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class GuiManager implements Listener {
 
-    // ── Singleton ─────────────────────────────────────────────────────────────
-
     private static GuiManager instance;
     private static JavaPlugin plugin;
 
@@ -41,13 +39,11 @@ public final class GuiManager implements Listener {
      * @param plugin Your plugin instance.
      */
     public static void init(JavaPlugin javaPlugin) {
-        if (instance != null) return;   // idempotent
+        if (instance != null) return;
         plugin   = javaPlugin;
         instance = new GuiManager();
         javaPlugin.getServer().getPluginManager().registerEvents(instance, javaPlugin);
     }
-
-    // ── Open-GUI registry ─────────────────────────────────────────────────────
 
     /** Thread-safe map: player UUID → their open Gui. */
     private final ConcurrentHashMap<UUID, Gui> openGuis = new ConcurrentHashMap<>();
@@ -76,8 +72,6 @@ public final class GuiManager implements Listener {
         return instance != null && instance.openGuis.containsKey(player.getUniqueId());
     }
 
-    // ── Scheduling helper ─────────────────────────────────────────────────────
-
     /**
      * Schedule a task to run on the main thread on the next tick.
      * Used by {@link ClickContext#openGui(Gui)} to safely swap GUIs from
@@ -96,8 +90,6 @@ public final class GuiManager implements Listener {
         plugin.getServer().getScheduler().runTaskLater(plugin, task, delayTicks);
     }
 
-    // ── Event handlers ────────────────────────────────────────────────────────
-
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
@@ -105,17 +97,14 @@ public final class GuiManager implements Listener {
         Gui gui = openGuis.get(player.getUniqueId());
         if (gui == null) return;
 
-        // Only intercept clicks inside the GUI's top inventory
         if (event.getClickedInventory() == null) return;
 
         if (event.getClickedInventory().equals(gui.getInventory())) {
-            // Direct click inside the GUI — dispatch to the Gui
+
             gui.handleClick(event);
             return;
         }
 
-        // Click was in the player's own inventory while a GUI is open.
-        // Block shift-clicks that would move items INTO the GUI (anti-dupe).
         if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
             event.setCancelled(true);
         }
@@ -133,7 +122,7 @@ public final class GuiManager implements Listener {
         if (gui == null) return;
 
         int guiSize = gui.getInventory().getSize();
-        // rawSlots 0..guiSize-1 are inside the top (GUI) inventory
+
         for (int rawSlot : event.getRawSlots()) {
             if (rawSlot < guiSize) {
                 event.setCancelled(true);
@@ -156,15 +145,11 @@ public final class GuiManager implements Listener {
         Gui gui = openGuis.get(player.getUniqueId());
         if (gui == null) return;
 
-        // Only fire close logic if THIS inventory is what's tracked
-        // (prevents firing when the player swaps to a different FrostCore GUI)
         if (!gui.getInventory().equals(event.getInventory())) return;
 
         openGuis.remove(player.getUniqueId());
         gui.handleClose(event);
     }
-
-    // ── Internal ─────────────────────────────────────────────────────────────
 
     private static void requireInit() {
         if (instance == null) {
@@ -172,3 +157,4 @@ public final class GuiManager implements Listener {
         }
     }
 }
+

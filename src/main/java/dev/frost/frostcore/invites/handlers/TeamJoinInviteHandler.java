@@ -80,8 +80,6 @@ public class TeamJoinInviteHandler implements InviteHandler {
         }
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
-
     private void notifyTeam(Team team, String path, Map<String, String> placeholders) {
         Set<UUID> all = new java.util.HashSet<>();
         all.addAll(team.getOwners());
@@ -95,3 +93,4 @@ public class TeamJoinInviteHandler implements InviteHandler {
         }
     }
 }
+

@@ -29,8 +29,6 @@ public final class GuiTemplate {
 
     private GuiTemplate() {}
 
-    // ── Filler items ──────────────────────────────────────────────────────────
-
     /** Gray stained glass pane with an empty name — the standard filler. */
     public static GuiItem filler() {
         return Button.of(Material.GRAY_STAINED_GLASS_PANE)
@@ -51,8 +49,6 @@ public final class GuiTemplate {
                 .name("<gray> ")
                 .build();
     }
-
-    // ── Navigation buttons ────────────────────────────────────────────────────
 
     /**
      * "Previous page" button for {@link PagedGui}.
@@ -144,8 +140,6 @@ public final class GuiTemplate {
                 .build();
     }
 
-    // ── Confirm dialog ────────────────────────────────────────────────────────
-
     /**
      * Build a 3-row confirm/cancel dialog.
      *
@@ -186,13 +180,11 @@ public final class GuiTemplate {
                 .border(filler())
                 .item(1, 2, confirmBtn)
                 .item(1, 3, confirmBtn)
-                .item(1, 4, filler(Material.WHITE_STAINED_GLASS_PANE))   // divider
+                .item(1, 4, filler(Material.WHITE_STAINED_GLASS_PANE))
                 .item(1, 5, cancelBtn)
                 .item(1, 6, cancelBtn)
                 .build();
     }
-
-    // ── Utility ───────────────────────────────────────────────────────────────
 
     /**
      * Create an informational display item with no click action.
@@ -225,3 +217,4 @@ public final class GuiTemplate {
                 .build();
     }
 }
+

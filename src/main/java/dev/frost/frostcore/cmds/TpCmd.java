@@ -37,7 +37,7 @@ public class TpCmd implements CommandExecutor, TabCompleter {
 
         if (cmdName.equals("tp")) {
             if (args.length == 1) {
-                // /tp <player>
+
                 Player target = Bukkit.getPlayerExact(args[0]);
                 if (target == null) {
                     mm.send(player, "teleport.player-not-found");
@@ -48,7 +48,7 @@ public class TpCmd implements CommandExecutor, TabCompleter {
                 return true;
 
             } else if (args.length == 3) {
-                // /tp <x> <y> <z>
+
                 try {
                     double x = parseCoord(args[0], player.getLocation().getX());
                     double y = parseCoord(args[1], player.getLocation().getY());
@@ -70,7 +70,7 @@ public class TpCmd implements CommandExecutor, TabCompleter {
                 return true;
             }
         } else if (cmdName.equals("tp2p")) {
-            // /tp2p <player1> <player2>
+
             if (args.length < 2) {
                 mm.sendRaw(player, "<#B0C4FF>Usage: <white>/tp2p <player1> <player2>");
                 return true;
@@ -87,7 +87,7 @@ public class TpCmd implements CommandExecutor, TabCompleter {
             return true;
 
         } else if (cmdName.equals("tphere")) {
-            // /tphere <player>
+
             if (args.length < 1) {
                 mm.sendRaw(player, "<#B0C4FF>Usage: <white>/tphere <player>");
                 return true;
@@ -135,3 +135,4 @@ public class TpCmd implements CommandExecutor, TabCompleter {
         return Collections.emptyList();
     }
 }
+

@@ -27,8 +27,8 @@ public class TpaInviteHandler implements InviteHandler {
 
     @Override
     public void onAccept(Invite invite) {
-        Player sender = Bukkit.getPlayer(invite.getSender()); // wants to teleport
-        Player target = Bukkit.getPlayer(invite.getTarget()); // accepting (destination)
+        Player sender = Bukkit.getPlayer(invite.getSender());
+        Player target = Bukkit.getPlayer(invite.getTarget());
 
         if (sender == null || target == null) return;
 
@@ -75,3 +75,4 @@ public class TpaInviteHandler implements InviteHandler {
         }
     }
 }
+

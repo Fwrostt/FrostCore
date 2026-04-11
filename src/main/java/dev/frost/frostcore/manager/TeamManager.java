@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TeamManager {
 
-    // ConcurrentHashMap — safe for reads from async DB callbacks
     private final Map<String, Team> teams = new ConcurrentHashMap<>();
     private final Map<UUID, Team> playerTeams = new ConcurrentHashMap<>();
 
@@ -55,8 +54,6 @@ public class TeamManager {
         this.db = db;
     }
 
-    // ==================== DATA LOADING ====================
-
     /**
      * Load all teams from the database into memory.
      * Called synchronously during onEnable.
@@ -73,7 +70,6 @@ public class TeamManager {
         for (Team team : loaded) {
             teams.put(team.getName().toLowerCase(), team);
 
-            // Populate playerTeams index
             for (UUID uuid : team.getOwners())  playerTeams.put(uuid, team);
             for (UUID uuid : team.getAdmins())  playerTeams.put(uuid, team);
             for (UUID uuid : team.getMembers()) playerTeams.put(uuid, team);
@@ -90,8 +86,6 @@ public class TeamManager {
         if (db == null) return;
         db.saveAllTeams(teams.values());
     }
-
-    // ==================== QUERIES ====================
 
     public Team getTeam(String name) throws TeamException {
         Team team = teams.get(name.toLowerCase());
@@ -128,8 +122,6 @@ public class TeamManager {
         return Collections.unmodifiableCollection(teams.values());
     }
 
-    // ==================== MUTATIONS ====================
-
     public Team createTeam(String name, String tag, UUID owner) throws TeamException {
         name = name.toLowerCase();
 
@@ -155,7 +147,6 @@ public class TeamManager {
             }
         }
 
-        // Validate tag
         validateTag(tag);
 
         Team team = new Team(name, tag, owner, defaultPvp());
@@ -174,12 +165,10 @@ public class TeamManager {
             throw new TeamException(TeamError.TEAM_NOT_FOUND, "Team not found");
         }
 
-        // Remove player-to-team mappings
         team.getOwners().forEach(playerTeams::remove);
         team.getAdmins().forEach(playerTeams::remove);
         team.getMembers().forEach(playerTeams::remove);
 
-        // Clean up ally/enemy references in OTHER teams
         for (String allyName : team.getAllies()) {
             Team ally = teams.get(allyName);
             if (ally != null) {
@@ -200,7 +189,6 @@ public class TeamManager {
             db.deleteEchest(name.toLowerCase());
         }
 
-        // Invalidate echest cache
         if (Main.getEchestManager() != null) {
             Main.getEchestManager().invalidate(name);
         }
@@ -228,7 +216,6 @@ public class TeamManager {
     public void removeMember(UUID uuid) throws TeamException {
         Team team = getTeam(uuid);
 
-        // Prevent the last owner from leaving without disbanding
         if (team.isOwner(uuid) && team.getOwners().size() <= 1) {
             throw new TeamException(TeamError.CANNOT_LEAVE_AS_OWNER,
                     "You are the last owner. Use /team disband or /team promote someone first.");
@@ -276,9 +263,8 @@ public class TeamManager {
             throw new TeamException(TeamError.CANNOT_DEMOTE_LAST_OWNER, "Cannot demote the last owner");
         }
 
-        // Use the model method for consistent encapsulation
-        team.demoteToMember(uuid);  // moves owner → member
-        // Now promote back to admin via model
+        team.demoteToMember(uuid);
+
         team.getMembers().remove(uuid);
         team.getAdmins().add(uuid);
 
@@ -307,8 +293,6 @@ public class TeamManager {
 
         if (db != null) db.saveMembersAsync(team);
     }
-
-    // ==================== HOME / WARP ====================
 
     public void setHome(Team team, Location loc) throws TeamException {
         if (!config.getBoolean("teams.home.enabled")) {
@@ -360,8 +344,6 @@ public class TeamManager {
         if (db != null) db.saveWarpsAsync(team);
     }
 
-    // ==================== RELATIONS ====================
-
     public void addAlly(Team team, String target) throws TeamException {
         target = target.toLowerCase();
 
@@ -399,7 +381,6 @@ public class TeamManager {
         team.removeAlly(target);
         if (db != null) db.saveRelationsAsync(team);
 
-        // Remove from the other team too (mutual)
         Team otherTeam = teams.get(target);
         if (otherTeam != null) {
             otherTeam.removeAlly(team.getName());
@@ -410,7 +391,6 @@ public class TeamManager {
     public void addEnemy(Team team, String target) throws TeamException {
         target = target.toLowerCase();
 
-        // Validate the target team exists
         if (!teams.containsKey(target)) {
             throw new TeamException(TeamError.TEAM_NOT_FOUND, "Target team not found");
         }
@@ -451,8 +431,6 @@ public class TeamManager {
         if (db != null) db.saveRelationsAsync(team);
     }
 
-    // ==================== SAVE HELPERS ====================
-
     public void savePvpToggle(Team team) {
         if (db != null) db.saveTeamBaseAsync(team);
     }
@@ -468,8 +446,6 @@ public class TeamManager {
     public void saveChatToggle(Team team) {
         if (db != null) db.saveMembersAsync(team);
     }
-
-    // ==================== TAG VALIDATION ====================
 
     /**
      * Validates a team tag for length and disallowed characters.
@@ -487,7 +463,7 @@ public class TeamManager {
         if (tag.length() > maxTag()) {
             throw new TeamException(TeamError.TEAM_NAME_TOO_LONG, "Tag is too long (max " + maxTag() + ")");
         }
-        // Reject MiniMessage injection and structural characters
+
         if (tag.contains("<") || tag.contains(">") || tag.contains("{") || tag.contains("}")) {
             throw new TeamException(TeamError.TEAM_NAME_BANNED, "Tag contains disallowed characters");
         }
@@ -495,8 +471,6 @@ public class TeamManager {
             throw new TeamException(TeamError.TEAM_NAME_BANNED, "Tag cannot contain spaces");
         }
     }
-
-    // ==================== RENAME ====================
 
     /**
      * Rename a team. Updates in-memory state and all DB tables atomically.
@@ -509,7 +483,6 @@ public class TeamManager {
         String newNameLower = newName.toLowerCase();
         String oldNameLower = team.getName().toLowerCase();
 
-        // Validate new name
         if (teams.containsKey(newNameLower)) {
             throw new TeamException(TeamError.TEAM_ALREADY_EXISTS, "A team with that name already exists");
         }
@@ -525,7 +498,6 @@ public class TeamManager {
             }
         }
 
-        // Update DB atomically asynchronously — optimistic memory update
         if (db != null) {
             Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
                 boolean success = db.renameTeam(oldNameLower, newNameLower);
@@ -535,12 +507,10 @@ public class TeamManager {
             });
         }
 
-        // Update in-memory map
         teams.remove(oldNameLower);
         team.setName(newNameLower);
         teams.put(newNameLower, team);
 
-        // Update ally/enemy references in other teams
         for (Team other : teams.values()) {
             if (other == team) continue;
             if (other.isAlly(oldNameLower)) {
@@ -553,7 +523,6 @@ public class TeamManager {
             }
         }
 
-        // Invalidate echest cache (old name key)
         if (Main.getEchestManager() != null) {
             Main.getEchestManager().invalidate(oldNameLower);
         }
@@ -564,3 +533,4 @@ public class TeamManager {
         playerTeams.clear();
     }
 }
+
