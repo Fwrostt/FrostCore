@@ -1,5 +1,7 @@
 package dev.frost.frostcore.manager;
 
+import dev.frost.frostcore.utils.FrostLogger;
+
 import dev.frost.frostcore.Main;
 import dev.frost.frostcore.database.DatabaseManager;
 import dev.frost.frostcore.exceptions.TeamException;
@@ -56,7 +58,7 @@ public class TeamManager {
      */
     public void loadAll() {
         if (db == null) {
-            Main.getInstance().getLogger().warning("DatabaseManager is null — cannot load teams!");
+            FrostLogger.warn("DatabaseManager is null — cannot load teams!");
             return;
         }
 
@@ -72,7 +74,7 @@ public class TeamManager {
             for (UUID uuid : team.getMembers()) playerTeams.put(uuid, team);
         }
 
-        Main.getInstance().getLogger().info("Loaded " + teams.size() + " teams into memory.");
+        FrostLogger.info("Loaded " + teams.size() + " teams into memory.");
     }
 
     /**

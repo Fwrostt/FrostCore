@@ -1,5 +1,59 @@
 # FrostCore Messages
 
+teleport:
+  prefix: "<gradient:#55CDFC:#7B68EE>TELEPORT</gradient> <#AAAAAA>» </#AAAAAA>"
+
+  # ━━━ TPA ━━━
+  tpa-sent: "{teleport.prefix}<#B0C4FF>Request sent to <white>{player}</white>."
+  tpa-received-header: "{teleport.prefix}<white>{player}</white> <#B0C4FF>wants to teleport to you."
+  tpahere-received-header: "{teleport.prefix}<white>{player}</white> <#B0C4FF>wants you to teleport to them."
+  tpa-expired-sender: "{teleport.prefix}<dark_gray>Your request to <white>{player}</white> expired."
+  tpa-expired-target: "{teleport.prefix}<dark_gray>Teleport request from <white>{player}</white> expired."
+  tpa-accepted-sender: "{teleport.prefix}<#55FF55><white>{player}</white> accepted your request!"
+  tpa-accepted-target: "{teleport.prefix}<#55FF55>You accepted <white>{player}</white>'s request."
+  tpa-declined-sender: "{teleport.prefix}<#FF5555><white>{player}</white> declined your request."
+  tpa-declined-target: "{teleport.prefix}<#B0C4FF>Request declined."
+  tpa-no-pending: "{teleport.prefix}<#FF5555>No pending teleport requests."
+  tpa-self: "{teleport.prefix}<#FF5555>You can't send a request to yourself."
+  tpa-already-sent: "{teleport.prefix}<#FF5555>You already have a pending request to that player."
+  tpa-disabled: "{teleport.prefix}<#FF5555>TPA is currently disabled."
+  tpa-cooldown: "{teleport.prefix}<#FF5555>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  tpa-wait: "{teleport.prefix}<#B0C4FF>Teleporting in <white>{time}s</white> <#B0C4FF>- don't move!"
+  tpa-teleport: "{teleport.prefix}<#55FF55>Teleported!"
+  tpa-teleport-cancelled: "{teleport.prefix}<#FF5555>Teleport cancelled! <dark_gray>(you moved)"
+
+  # ━━━ WARPS ━━━
+  warp-teleport: "{teleport.prefix}<#55FF55>Teleported to <white>{warp}</white>."
+  warp-not-found: "{teleport.prefix}<#FF5555>Warp <white>{warp}</white> not found."
+  warp-cooldown: "{teleport.prefix}<#FF5555>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  warp-wait: "{teleport.prefix}<#B0C4FF>Warping in <white>{time}s</white> <#B0C4FF>- don't move!"
+  warp-teleport-cancelled: "{teleport.prefix}<#FF5555>Warp cancelled! <dark_gray>(you moved)"
+  warp-set: "{teleport.prefix}<#55FF55>Warp <white>{warp}</white> has been set."
+  warp-deleted: "{teleport.prefix}<#FF5555>Warp <white>{warp}</white> deleted."
+  warp-already-exists: "{teleport.prefix}<#FF5555>Warp <white>{warp}</white> already exists. Use again to overwrite."
+  warp-disabled: "{teleport.prefix}<#FF5555>Warps are currently disabled."
+  no-warps: "{teleport.prefix}<#B0C4FF>There are no warps set."
+
+  # ━━━ SPAWN ━━━
+  spawn-teleport: "{teleport.prefix}<#55FF55>Teleported to spawn."
+  spawn-cooldown: "{teleport.prefix}<#FF5555>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  spawn-wait: "{teleport.prefix}<#B0C4FF>Teleporting to spawn in <white>{time}s</white> <#B0C4FF>- don't move!"
+  spawn-teleport-cancelled: "{teleport.prefix}<#FF5555>Teleport cancelled! <dark_gray>(you moved)"
+  spawn-set: "{teleport.prefix}<#55FF55>Spawn point has been set."
+  spawn-not-set: "{teleport.prefix}<#FF5555>Spawn is not set yet."
+  spawn-disabled: "{teleport.prefix}<#FF5555>Spawn is currently disabled."
+
+  # ━━━ ADMIN TP ━━━
+  tp-player: "{teleport.prefix}<#B0C4FF>Teleported to <white>{player}</white>."
+  tp-coords: "{teleport.prefix}<#B0C4FF>Teleported to <white>{x}, {y}, {z}</white>."
+  tp-here: "{teleport.prefix}<#B0C4FF>Teleported <white>{player}</white> to you."
+  tp-here-target: "{teleport.prefix}<#B0C4FF>You were teleported to <white>{player}</white>."
+  tp-to-player: "{teleport.prefix}<#B0C4FF>Teleported to <white>{player}</white>."
+  tp-offline: "{teleport.prefix}<#B0C4FF>Teleported to <white>{player}</white>'s last known location."
+  tp-offline-no-data: "{teleport.prefix}<#FF5555>No location data found for <white>{player}</white>."
+  player-not-found: "{teleport.prefix}<#FF5555>Player not found."
+
+
 teams:
   prefix: "<gradient:#C8732E:#D7942B>TEAMS</gradient> <#AAAAAA>» </#AAAAAA>"
 

@@ -20,9 +20,11 @@ From fundamental utilities like teleportation and homes to an extensive and feat
 
 ## ✨ Key Features
 
-### 🏕️ Essential Server Utilities (In-Progress)
-- **Universal Teleportation:** Robust handling of player teleports including `/tpa`, `/home`, and server warps. Includes fully customizable action bars, titles, sounds, and particles during countdowns and arrivals.
-- **Homes & Warps:** Allow players to set personal homes or visit server-wide points of interest smoothly.
+### 🏕️ Essential Server Utilities
+- **Universal Teleportation:** Robust handling of player teleports including `/tpa`, `/tpahere`, `/tpaccept`, and `/tpdecline`. Features highly interactive, clickable chat interfaces for teleport requests.
+- **Homes, Warps & Spawn:** Set global `/spawn` and server warps (`/warp`, `/setwarp`, `/delwarp`). Supports beautifully formatted paginated warp grids.
+- **Admin Teleports:** Fully equipped with overrides including `/tp`, `/tp2p`, `/tphere`, and `/otp` (for teleporting to offline players' last known coordinates).
+- **Aesthetics & UI:** Teleportations process through configurable warmup delays and cooldowns, paired with perfectly smooth action-bar progress indicators, sound chimes, titles, and localized messages. Configurable `admin-bypass` allows for accurate testing.
 
 ### 🛡️ Comprehensive Team System
 FrostCore includes a fully-fledged chunk of features solely dedicated to clans, parties, or team systems!

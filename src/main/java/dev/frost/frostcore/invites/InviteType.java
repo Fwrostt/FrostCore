@@ -6,9 +6,8 @@ package dev.frost.frostcore.invites;
  */
 public enum InviteType {
 
-    /** Invite a player to join your team. */
     TEAM_JOIN,
-
-    /** Request an alliance between two teams. */
-    TEAM_ALLY
+    TEAM_ALLY,
+    TPA,
+    TPA_HERE
 }

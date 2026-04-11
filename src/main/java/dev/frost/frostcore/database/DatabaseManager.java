@@ -13,6 +13,7 @@ import java.io.File;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
+import dev.frost.frostcore.utils.FrostLogger;
 
 /**
  * Manages the HikariCP connection pool and all database CRUD operations.
@@ -38,13 +39,21 @@ public class DatabaseManager {
      * Call this during onEnable, before loading data.
      */
     public void init() {
+        // Attempt to suppress HikariCP startup logs in Paper/Log4j2
+        try {
+            Class<?> configuratorClass = Class.forName("org.apache.logging.log4j.core.config.Configurator");
+            Class<?> levelClass = Class.forName("org.apache.logging.log4j.Level");
+            Object warnLevel = levelClass.getDeclaredField("WARN").get(null);
+            configuratorClass.getMethod("setLevel", String.class, levelClass).invoke(null, "com.zaxxer.hikari", warnLevel);
+        } catch (Exception ignored) {}
+
         ConfigManager config = Main.getConfigManager();
         String typeStr = config.getString("database.type", "SQLITE").toUpperCase();
 
         try {
             type = DatabaseType.valueOf(typeStr);
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("Unknown database type '" + typeStr + "', falling back to SQLITE.");
+            FrostLogger.warn("Unknown database type '" + typeStr + "', falling back to SQLITE.");
             type = DatabaseType.SQLITE;
         }
 
@@ -65,7 +74,7 @@ public class DatabaseManager {
             hikariConfig.setMaximumPoolSize(poolSize);
             hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
 
-            plugin.getLogger().info("Using MySQL database at " + host + ":" + port + "/" + database);
+            FrostLogger.info("Using MySQL database at " + host + ":" + port + "/" + database);
         } else {
             File dbFile = new File(plugin.getDataFolder(), "database.db");
             hikariConfig.setJdbcUrl("jdbc:sqlite:" + dbFile.getAbsolutePath());
@@ -76,7 +85,7 @@ public class DatabaseManager {
             hikariConfig.addDataSourceProperty("journal_mode", "WAL");
             hikariConfig.addDataSourceProperty("synchronous", "NORMAL");
 
-            plugin.getLogger().info("Using SQLite database at " + dbFile.getAbsolutePath());
+            FrostLogger.info("Using SQLite database at " + dbFile.getAbsolutePath());
         }
 
         hikariConfig.setPoolName("FrostCore-DB");
@@ -95,7 +104,7 @@ public class DatabaseManager {
     public void shutdown() {
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
-            plugin.getLogger().info("Database connection pool closed.");
+            FrostLogger.info("Database connection pool closed.");
         }
     }
 
@@ -168,9 +177,33 @@ public class DatabaseManager {
                 )
             """);
 
-            plugin.getLogger().info("Database tables verified.");
+            stmt.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS server_warps (
+                    name        VARCHAR(64) PRIMARY KEY,
+                    world       VARCHAR(128) NOT NULL,
+                    x           DOUBLE NOT NULL,
+                    y           DOUBLE NOT NULL,
+                    z           DOUBLE NOT NULL,
+                    yaw         FLOAT NOT NULL,
+                    pitch       FLOAT NOT NULL
+                )
+            """);
+
+            stmt.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS server_spawn (
+                    id          INT PRIMARY KEY DEFAULT 1,
+                    world       VARCHAR(128) NOT NULL,
+                    x           DOUBLE NOT NULL,
+                    y           DOUBLE NOT NULL,
+                    z           DOUBLE NOT NULL,
+                    yaw         FLOAT NOT NULL,
+                    pitch       FLOAT NOT NULL
+                )
+            """);
+
+            FrostLogger.info("Database tables verified.");
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to create database tables!", e);
+            FrostLogger.error("Failed to create database tables!", e);
         }
     }
 
@@ -215,7 +248,7 @@ public class DatabaseManager {
                 teamMap.put(name, team);
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to load teams!", e);
+            FrostLogger.error("Failed to load teams!", e);
         }
 
         // 2. Load members
@@ -243,7 +276,7 @@ public class DatabaseManager {
                 }
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to load team members!", e);
+            FrostLogger.error("Failed to load team members!", e);
         }
 
         // 3. Load warps
@@ -267,7 +300,7 @@ public class DatabaseManager {
                 team.getWarps().put(warpName, loc);
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to load team warps!", e);
+            FrostLogger.error("Failed to load team warps!", e);
         }
 
         // 4. Load relations
@@ -290,10 +323,10 @@ public class DatabaseManager {
                 }
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to load team relations!", e);
+            FrostLogger.error("Failed to load team relations!", e);
         }
 
-        plugin.getLogger().info("Loaded " + teamMap.size() + " teams from database.");
+        FrostLogger.info("Loaded " + teamMap.size() + " teams from database.");
         return new ArrayList<>(teamMap.values());
     }
 
@@ -362,7 +395,7 @@ public class DatabaseManager {
 
             ps.executeUpdate();
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to save team base: " + team.getName(), e);
+            FrostLogger.error("Failed to save team base: " + team.getName(), e);
         }
     }
 
@@ -407,7 +440,7 @@ public class DatabaseManager {
                 ps.executeBatch();
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to save members for team: " + team.getName(), e);
+            FrostLogger.error("Failed to save members for team: " + team.getName(), e);
         }
     }
 
@@ -444,7 +477,7 @@ public class DatabaseManager {
                 ps.executeBatch();
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to save warps for team: " + team.getName(), e);
+            FrostLogger.error("Failed to save warps for team: " + team.getName(), e);
         }
     }
 
@@ -479,7 +512,7 @@ public class DatabaseManager {
                 ps.executeBatch();
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to save relations for team: " + team.getName(), e);
+            FrostLogger.error("Failed to save relations for team: " + team.getName(), e);
         }
     }
 
@@ -506,7 +539,7 @@ public class DatabaseManager {
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to delete team: " + teamName, e);
+            FrostLogger.error("Failed to delete team: " + teamName, e);
         }
     }
 
@@ -523,7 +556,7 @@ public class DatabaseManager {
         for (Team team : teams) {
             saveTeam(team);
         }
-        plugin.getLogger().info("Saved " + teams.size() + " teams to database.");
+        FrostLogger.info("Saved " + teams.size() + " teams to database.");
     }
 
     // ==================== ECHEST ====================
@@ -542,7 +575,7 @@ public class DatabaseManager {
                 return rs.getString("contents");
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to load echest for team: " + teamName, e);
+            FrostLogger.error("Failed to load echest for team: " + teamName, e);
         }
         return null;
     }
@@ -563,7 +596,7 @@ public class DatabaseManager {
             ps.setString(2, base64);
             ps.executeUpdate();
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to save echest for team: " + teamName, e);
+            FrostLogger.error("Failed to save echest for team: " + teamName, e);
         }
     }
 
@@ -577,7 +610,7 @@ public class DatabaseManager {
             ps.setString(1, teamName.toLowerCase());
             ps.executeUpdate();
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to delete echest for team: " + teamName, e);
+            FrostLogger.error("Failed to delete echest for team: " + teamName, e);
         }
     }
 
@@ -649,14 +682,117 @@ public class DatabaseManager {
                 return true;
             } catch (SQLException e) {
                 conn.rollback();
-                plugin.getLogger().log(Level.SEVERE, "Failed to rename team (rolled back): " + oldName + " -> " + newName, e);
+                FrostLogger.error("Failed to rename team (rolled back): " + oldName + " -> " + newName, e);
                 return false;
             } finally {
                 conn.setAutoCommit(true);
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to get connection for rename: " + oldName, e);
+            FrostLogger.error("Failed to get connection for rename: " + oldName, e);
             return false;
         }
     }
+
+    // ==================== SERVER WARPS ====================
+
+    public Map<String, Location> loadServerWarps() {
+        Map<String, Location> warps = new LinkedHashMap<>();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM server_warps");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String name = rs.getString("name");
+                World world = Bukkit.getWorld(rs.getString("world"));
+                if (world == null) continue;
+                Location loc = new Location(world,
+                        rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"),
+                        rs.getFloat("yaw"), rs.getFloat("pitch"));
+                warps.put(name, loc);
+            }
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to load server warps!", e);
+        }
+        FrostLogger.info("Loaded " + warps.size() + " server warps.");
+        return warps;
+    }
+
+    public void saveServerWarp(String name, Location loc) {
+        String sql = type == DatabaseType.MYSQL
+                ? "INSERT INTO server_warps (name, world, x, y, z, yaw, pitch) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE world=VALUES(world), x=VALUES(x), y=VALUES(y), z=VALUES(z), yaw=VALUES(yaw), pitch=VALUES(pitch)"
+                : "INSERT OR REPLACE INTO server_warps (name, world, x, y, z, yaw, pitch) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name.toLowerCase());
+            ps.setString(2, loc.getWorld().getName());
+            ps.setDouble(3, loc.getX());
+            ps.setDouble(4, loc.getY());
+            ps.setDouble(5, loc.getZ());
+            ps.setFloat(6, loc.getYaw());
+            ps.setFloat(7, loc.getPitch());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to save server warp: " + name, e);
+        }
+    }
+
+    public void saveServerWarpAsync(String name, Location loc) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveServerWarp(name, loc));
+    }
+
+    public void deleteServerWarp(String name) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("DELETE FROM server_warps WHERE name = ?")) {
+            ps.setString(1, name.toLowerCase());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to delete server warp: " + name, e);
+        }
+    }
+
+    public void deleteServerWarpAsync(String name) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> deleteServerWarp(name));
+    }
+
+    // ==================== SERVER SPAWN ====================
+
+    public Location loadSpawn() {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM server_spawn WHERE id = 1");
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                World world = Bukkit.getWorld(rs.getString("world"));
+                if (world != null) {
+                    return new Location(world,
+                            rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"),
+                            rs.getFloat("yaw"), rs.getFloat("pitch"));
+                }
+            }
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to load spawn!", e);
+        }
+        return null;
+    }
+
+    public void saveSpawn(Location loc) {
+        String sql = type == DatabaseType.MYSQL
+                ? "INSERT INTO server_spawn (id, world, x, y, z, yaw, pitch) VALUES (1, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE world=VALUES(world), x=VALUES(x), y=VALUES(y), z=VALUES(z), yaw=VALUES(yaw), pitch=VALUES(pitch)"
+                : "INSERT OR REPLACE INTO server_spawn (id, world, x, y, z, yaw, pitch) VALUES (1, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, loc.getWorld().getName());
+            ps.setDouble(2, loc.getX());
+            ps.setDouble(3, loc.getY());
+            ps.setDouble(4, loc.getZ());
+            ps.setFloat(5, loc.getYaw());
+            ps.setFloat(6, loc.getPitch());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to save spawn!", e);
+        }
+    }
+
+    public void saveSpawnAsync(Location loc) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveSpawn(loc));
+    }
 }
+

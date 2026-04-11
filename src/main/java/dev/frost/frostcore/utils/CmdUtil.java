@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
+import dev.frost.frostcore.utils.FrostLogger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class CmdUtil {
         PluginCommand command = plugin.getCommand(commandName);
 
         if (command == null) {
-            plugin.getLogger().severe("Command '" + commandName + "' not found in plugin.yml! Registration failed.");
+            FrostLogger.error("Command '" + commandName + "' not found in plugin.yml! Registration failed.");
             return;
         }
 
@@ -35,7 +36,7 @@ public class CmdUtil {
         }
 
         commands.put(commandName.toLowerCase(), executor);
-        plugin.getLogger().info("Successfully registered command: /" + commandName);
+        FrostLogger.info("Successfully registered command: /" + commandName);
     }
 
     public void registerCommand(String commandName, CommandExecutor executor) {

@@ -1,5 +1,7 @@
 package dev.frost.frostcore.utils;
 
+import dev.frost.frostcore.utils.FrostLogger;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -44,7 +46,7 @@ public final class ItemStackSerializer {
             oos.flush();
             return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (Exception e) {
-            e.printStackTrace();
+            FrostLogger.error("An error occurred", e);
             return null;
         }
     }
@@ -74,8 +76,9 @@ public final class ItemStackSerializer {
                 return items;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            FrostLogger.error("An error occurred", e);
             return null;
         }
     }
 }
+
