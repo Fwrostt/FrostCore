@@ -13,6 +13,14 @@ database:
     password: ""
     pool-size: 10
 
+# Universal Teleport Settings
+# These apply to ALL teleports in the plugin (homes, warps, tpa, etc.)
+teleport:
+  action-bar: true    # Show progress bar action bar during teleport countdown
+  title: true         # Show "Teleported!" subtitle on arrival
+  sounds: true        # Play countdown + arrival sounds
+  particles: true     # Show portal particles on arrival
+
 teams:
   enabled: true  # Enables or disables the entire teams system (blocks all /team commands)
 
@@ -23,7 +31,7 @@ teams:
 
   # Core Features
   pvp-toggle: true      # Default PvP state when a new team is created (true = PvP enabled)
-  team-chat: true       # Enables private team chat channel (/team chat on/off)
+  team-chat: true       # Enables private team chat channel (/team chat)
   friendly-fire: false  # If false, teammates cannot damage each other when PvP is disabled
 
   # Team Name Settings

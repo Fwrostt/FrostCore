@@ -57,6 +57,15 @@ public class Team implements ConfigurationSerializable {
         return owners.size() + admins.size() + members.size();
     }
 
+    /**
+     * Returns the team name with the first letter capitalized for display.
+     * The raw name (getName()) is always lowercase for lookups.
+     */
+    public String getDisplayName() {
+        if (name == null || name.isEmpty()) return name;
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
+    }
+
     public boolean isMember(UUID uuid) {
         return owners.contains(uuid) || admins.contains(uuid) || members.contains(uuid);
     }

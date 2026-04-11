@@ -53,24 +53,46 @@ public class MessageManager {
 
     public String getRaw(String path) {
         String msg = config.getString(path);
-        return msg != null ? msg : "§cMissing message: " + path;
+        return msg != null ? msg : "<red>Missing message: " + path + "</red>";
     }
 
+    /**
+     * Resolve nested message references like {teams.prefix} by looking them up in messages.yml.
+     * ONLY resolves keys that exist in the config. Unknown keys like {player}, {team}, etc.
+     * are left untouched for applyPlaceholders() to handle later.
+     */
     private String resolveNested(String message) {
         if (message == null || !message.contains("{")) return message;
 
         int depth = 0;
-        while (message.contains("{") && depth < 10) {
-            int start = message.indexOf("{");
+        int searchFrom = 0;
+
+        while (searchFrom < message.length() && depth < 10) {
+            int start = message.indexOf("{", searchFrom);
+            if (start == -1) break;
+
             int end = message.indexOf("}", start);
             if (end == -1) break;
 
             String key = message.substring(start + 1, end);
-            if (key.contains(":")) break;
 
-            String replacement = config.getString(key, "§c{" + key + "}");
+            // Skip keys with colons (MiniMessage tags like <gradient:#hex:#hex>)
+            if (key.contains(":")) {
+                searchFrom = end + 1;
+                continue;
+            }
+
+            // Only resolve if the key actually exists in messages.yml
+            String replacement = config.getString(key);
+            if (replacement == null) {
+                // Not a nested message key — it's a runtime placeholder, skip it
+                searchFrom = end + 1;
+                continue;
+            }
+
             message = message.substring(0, start) + replacement + message.substring(end + 1);
             depth++;
+            // Don't advance searchFrom — the replacement may contain more nested keys
         }
         return message;
     }
@@ -91,7 +113,7 @@ public class MessageManager {
             return miniMessage.deserialize(text);
         } catch (Exception e) {
             plugin.getLogger().warning("MiniMessage parse failed for: " + text);
-            return Component.text(text.replace('&', '§'));
+            return Component.text(text);
         }
     }
 

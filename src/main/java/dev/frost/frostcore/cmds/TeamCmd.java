@@ -72,7 +72,7 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                     String tag = args[2];
                     Team team = manager.createTeam(name, tag, player.getUniqueId());
 
-                    Map<String, String> ph = Map.of("team", team.getName());
+                    Map<String, String> ph = Map.of("team", team.getDisplayName());
                     mm.send(player, "teams.create", ph);
                 }
 
@@ -80,11 +80,10 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                     Team team = manager.getTeam(player.getUniqueId());
                     requireOwner(player, team);
 
-                    String teamName = team.getName();
-                    manager.disbandTeam(teamName);
+                    String teamName = team.getDisplayName();
+                    manager.disbandTeam(team.getName());
 
-                    Map<String, String> ph = Map.of("team", teamName);
-                    mm.broadcast("teams.disband", ph);
+                    mm.broadcast("teams.disband", Map.of("team", teamName));
                 }
 
                 case "invite" -> handleInvite(player, args);
@@ -103,7 +102,8 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                     String teamName = team.getName();
                     manager.removeMember(player.getUniqueId());
 
-                    mm.send(player, "teams.leave", Map.of("team", teamName));
+                    String displayName = teamName.substring(0, 1).toUpperCase() + teamName.substring(1);
+                    mm.send(player, "teams.leave", Map.of("team", displayName));
                 }
 
                 case "kick" -> handleKick(player, args);
@@ -428,47 +428,46 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                 team = manager.getTeam(player.getUniqueId());
             }
 
+            String divider = "<gradient:#FFD700:#FFA500><strikethrough>                                          </strikethrough></gradient>";
+
             mm.sendRaw(player, "");
-            mm.sendRaw(player, "<gradient:#FFD700:#FFA500><bold>━━━ " + team.getName()
-                    + " <dark_gray>[<white>" + team.getTag() + "<dark_gray>] <gradient:#FFD700:#FFA500>━━━</bold></gradient>");
+            mm.sendRaw(player, divider);
+            mm.sendRaw(player, "  <gradient:#FFD700:#FFA500><bold>" + team.getDisplayName()
+                    + "</bold></gradient> <dark_gray>[<white>" + team.getTag() + "<dark_gray>]");
+            mm.sendRaw(player, "");
 
-            // Owners
-            String owners = formatPlayerList(team.getOwners());
-            mm.sendRaw(player, "<#FFD27F>Owners: <white>" + owners);
-
-            // Admins
+            // Members section
+            mm.sendRaw(player, "  <#FFD27F>⬥ Owners   <dark_gray>» <white>" + formatPlayerList(team.getOwners()));
             if (!team.getAdmins().isEmpty()) {
-                String admins = formatPlayerList(team.getAdmins());
-                mm.sendRaw(player, "<#FFD27F>Admins: <white>" + admins);
+                mm.sendRaw(player, "  <#FFD27F>⬥ Admins   <dark_gray>» <white>" + formatPlayerList(team.getAdmins()));
             }
-
-            // Members
             if (!team.getMembers().isEmpty()) {
-                String members = formatPlayerList(team.getMembers());
-                mm.sendRaw(player, "<#FFD27F>Members: <white>" + members);
+                mm.sendRaw(player, "  <#FFD27F>⬥ Members  <dark_gray>» <white>" + formatPlayerList(team.getMembers()));
             }
+            mm.sendRaw(player, "");
 
-            mm.sendRaw(player, "<#FFD27F>Total: <white>" + team.getTotalMembers() + " players");
+            // Stats
+            String pvpState = team.isPvpToggle() ? "<green>ON" : "<red>OFF";
+            String homeState = team.getHome() != null ? "<green>Set" : "<red>Not set";
+            mm.sendRaw(player, "  <#FFD27F>Players <dark_gray>» <white>" + team.getTotalMembers()
+                    + "    <#FFD27F>PvP <dark_gray>» " + pvpState
+                    + "    <#FFD27F>Home <dark_gray>» " + homeState);
 
             // Relations
             if (!team.getAllies().isEmpty()) {
-                mm.sendRaw(player, "<#FFD27F>Allies: <#55FF55>" + String.join("<dark_gray>, <#55FF55>", team.getAllies()));
+                mm.sendRaw(player, "  <#FFD27F>Allies  <dark_gray>» <#55FF55>" + String.join("<dark_gray>, <#55FF55>", team.getAllies()));
             }
             if (!team.getEnemies().isEmpty()) {
-                mm.sendRaw(player, "<#FFD27F>Enemies: <#FF5555>" + String.join("<dark_gray>, <#FF5555>", team.getEnemies()));
+                mm.sendRaw(player, "  <#FFD27F>Enemies <dark_gray>» <#FF5555>" + String.join("<dark_gray>, <#FF5555>", team.getEnemies()));
             }
-
-            // Status
-            String pvpState = team.isPvpToggle() ? "<green>enabled" : "<red>disabled";
-            mm.sendRaw(player, "<#FFD27F>PvP: " + pvpState);
-            mm.sendRaw(player, "<#FFD27F>Home: " + (team.getHome() != null ? "<green>set" : "<red>not set"));
 
             // Warps
             if (!team.getWarps().isEmpty()) {
-                String warpList = String.join("<dark_gray>, <white>", team.getWarps().keySet());
-                mm.sendRaw(player, "<#FFD27F>Warps: <white>" + warpList + " <dark_gray>(" + team.getWarps().size() + ")");
+                mm.sendRaw(player, "  <#FFD27F>Warps   <dark_gray>» <white>" + String.join("<dark_gray>, <white>", team.getWarps().keySet())
+                        + " <dark_gray>(" + team.getWarps().size() + ")");
             }
 
+            mm.sendRaw(player, divider);
             mm.sendRaw(player, "");
 
         } catch (TeamException e) {
@@ -501,41 +500,46 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         int startIndex = (page - 1) * teamsPerPage;
         int endIndex = Math.min(startIndex + teamsPerPage, allTeams.size());
 
+        String div = "<gradient:#FFD700:#FFA500><strikethrough>                                          </strikethrough></gradient>";
+
         mm.sendRaw(player, "");
-        mm.sendRaw(player, "<gradient:#FFD700:#FFA500><bold>━━━ Team List ━━━</bold></gradient>"
-                + " <dark_gray>(" + page + "/" + totalPages + ")");
+        mm.sendRaw(player, div);
+        mm.sendRaw(player, "  <gradient:#FFD700:#FFA500><bold>Teams</bold></gradient> <dark_gray>(" + page + "/" + totalPages + ")");
+        mm.sendRaw(player, "");
 
         for (int i = startIndex; i < endIndex; i++) {
             Team team = allTeams.get(i);
-            String line = "<#FFD27F>" + team.getName()
+            String line = "  <#FFD27F>" + team.getDisplayName()
                     + " <dark_gray>[<white>" + team.getTag() + "<dark_gray>]"
                     + " <dark_gray>- <white>" + team.getTotalMembers() + " members";
             mm.sendRaw(player, line);
         }
 
+        mm.sendRaw(player, "");
+
         // Build clickable navigation bar
-        Component nav = Component.empty();
+        Component nav = miniMessage.deserialize("  ");
 
         if (page > 1) {
-            nav = nav.append(miniMessage.deserialize("<#FFD27F><bold>[← PREV]</bold></#FFD27F>")
+            nav = nav.append(miniMessage.deserialize("<#FFD27F><bold>[← PREV]</bold>")
                     .clickEvent(ClickEvent.runCommand("/team list " + (page - 1)))
-                    .hoverEvent(HoverEvent.showText(miniMessage.deserialize("<#FFD27F>Go to page " + (page - 1) + "</"))));
+                    .hoverEvent(HoverEvent.showText(miniMessage.deserialize("<#FFD27F>Page " + (page - 1)))));
         } else {
-            nav = nav.append(miniMessage.deserialize("<dark_gray><bold>[← PREV]</bold></dark_gray>"));
+            nav = nav.append(miniMessage.deserialize("<dark_gray>[← PREV]"));
         }
 
         nav = nav.append(miniMessage.deserialize(" <dark_gray>" + page + "/" + totalPages + " "));
 
         if (page < totalPages) {
-            nav = nav.append(miniMessage.deserialize("<#FFD27F><bold>[NEXT →]</bold></#FFD27F>")
+            nav = nav.append(miniMessage.deserialize("<#FFD27F><bold>[NEXT →]</bold>")
                     .clickEvent(ClickEvent.runCommand("/team list " + (page + 1)))
-                    .hoverEvent(HoverEvent.showText(miniMessage.deserialize("<#FFD27F>Go to page " + (page + 1) + "</"))));
+                    .hoverEvent(HoverEvent.showText(miniMessage.deserialize("<#FFD27F>Page " + (page + 1)))));
         } else {
-            nav = nav.append(miniMessage.deserialize("<dark_gray><bold>[NEXT →]</bold></dark_gray>"));
+            nav = nav.append(miniMessage.deserialize("<dark_gray>[NEXT →]"));
         }
 
         player.sendMessage(nav);
-        mm.sendRaw(player, "<dark_gray>Total: <white>" + allTeams.size() + " teams");
+        mm.sendRaw(player, div);
         mm.sendRaw(player, "");
     }
 
@@ -827,7 +831,8 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                     Main.getConfigManager().getInt("teams.warps.delay"),
                     "teams.warp-wait",
                     "teams.warp-teleport",
-                    "teams.warp-teleport-cancelled"
+                    "teams.warp-teleport-cancelled",
+                    Map.of("warp", warpName)
             );
         } catch (TeamException e) {
             mm.send(player, getMessagePathForError(e.getError()));
@@ -886,24 +891,24 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
     }
 
     private void sendHelp(Player player) {
-        mm.sendRaw(player, "<gradient:#FFD700:#FFA500><bold>Team Commands:</bold></gradient>");
-        mm.sendRaw(player, "<#FFD27F>/team create <name> <tag>");
-        mm.sendRaw(player, "<#FFD27F>/team info <dark_gray>[team]");
-        mm.sendRaw(player, "<#FFD27F>/team list");
-        mm.sendRaw(player, "<#FFD27F>/team invite <player>");
-        mm.sendRaw(player, "<#FFD27F>/team accept <dark_gray>[team/player]");
-        mm.sendRaw(player, "<#FFD27F>/team decline <dark_gray>[team/player]");
-        mm.sendRaw(player, "<#FFD27F>/team promote <player> <dark_gray>| <#FFD27F>demote <player>");
-        mm.sendRaw(player, "<#FFD27F>/team kick <player>");
-        mm.sendRaw(player, "<#FFD27F>/team leave <dark_gray>| <#FFD27F>disband");
-        mm.sendRaw(player, "<#FFD27F>/team home <dark_gray>| <#FFD27F>sethome <dark_gray>| <#FFD27F>delhome");
-        mm.sendRaw(player, "<#FFD27F>/team warp <dark_gray>| <#FFD27F>setwarp <dark_gray>| <#FFD27F>delwarp <name>");
-        mm.sendRaw(player, "<#FFD27F>/team ally <team> <dark_gray>| <#FFD27F>unally <team>");
-        mm.sendRaw(player, "<#FFD27F>/team enemy <team> <dark_gray>| <#FFD27F>unenemy <team>");
-        mm.sendRaw(player, "<#FFD27F>/team pvp <dark_gray>| <#FFD27F>settag <tag>");
-        mm.sendRaw(player, "<#FFD27F>/team rename <name>");
-        mm.sendRaw(player, "<#FFD27F>/team chat <dark_gray>(toggle)");
-        mm.sendRaw(player, "<#FFD27F>/team echest");
+        String div = "<gradient:#FFD700:#FFA500><strikethrough>                                                            </strikethrough></gradient>";
+        mm.sendRaw(player, "");
+        mm.sendRaw(player, div);
+        mm.sendRaw(player, "  <gradient:#FFD700:#FFA500><bold>Team Commands</bold></gradient>");
+        mm.sendRaw(player, "");
+        mm.sendRaw(player, "  <#FFD27F>/team create <dark_gray><name> <tag>   <#FFD27F>/team disband");
+        mm.sendRaw(player, "  <#FFD27F>/team info <dark_gray>[team]          <#FFD27F>/team list <dark_gray>[page]");
+        mm.sendRaw(player, "  <#FFD27F>/team invite <dark_gray><player>      <#FFD27F>/team kick <dark_gray><player>");
+        mm.sendRaw(player, "  <#FFD27F>/team accept <dark_gray>/ <#FFD27F>decline");
+        mm.sendRaw(player, "  <#FFD27F>/team promote <dark_gray><player>     <#FFD27F>/team demote <dark_gray><player>");
+        mm.sendRaw(player, "  <#FFD27F>/team home <dark_gray>/ <#FFD27F>sethome <dark_gray>/ <#FFD27F>delhome");
+        mm.sendRaw(player, "  <#FFD27F>/team warp <dark_gray>/ <#FFD27F>setwarp <dark_gray>/ <#FFD27F>delwarp <dark_gray><name>");
+        mm.sendRaw(player, "  <#FFD27F>/team ally <dark_gray><team>          <#FFD27F>/team unally <dark_gray><team>");
+        mm.sendRaw(player, "  <#FFD27F>/team enemy <dark_gray><team>         <#FFD27F>/team unenemy <dark_gray><team>");
+        mm.sendRaw(player, "  <#FFD27F>/team rename <dark_gray><name>        <#FFD27F>/team settag <dark_gray><tag>");
+        mm.sendRaw(player, "  <#FFD27F>/team pvp <dark_gray>/ <#FFD27F>chat <dark_gray>/ <#FFD27F>echest <dark_gray>/ <#FFD27F>leave");
+        mm.sendRaw(player, div);
+        mm.sendRaw(player, "");
     }
 
     @Override
