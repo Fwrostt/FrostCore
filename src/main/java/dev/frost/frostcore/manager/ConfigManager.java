@@ -1,5 +1,7 @@
 package dev.frost.frostcore.manager;
 
+import dev.frost.frostcore.utils.FrostLogger;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -54,7 +56,7 @@ public class ConfigManager {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save config to " + configFile, e);
+            FrostLogger.error("Could not save config to " + configFile, e);
         }
     }
 
@@ -79,3 +81,4 @@ public class ConfigManager {
     public boolean contains(String path) { return config.contains(path); }
     public FileConfiguration getConfig() { return config; }
 }
+

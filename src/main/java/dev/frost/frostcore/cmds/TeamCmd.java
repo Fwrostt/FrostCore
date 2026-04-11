@@ -1,5 +1,7 @@
 package dev.frost.frostcore.cmds;
 
+import dev.frost.frostcore.utils.FrostLogger;
+
 import dev.frost.frostcore.Main;
 import dev.frost.frostcore.exceptions.TeamException;
 import dev.frost.frostcore.invites.Invite;
@@ -279,7 +281,7 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
             mm.send(player, path);
         } catch (Exception e) {
             mm.sendRaw(player, "<red>An unexpected error occurred.</red>");
-            e.printStackTrace();
+            FrostLogger.error("An error occurred", e);
         }
 
         return true;
@@ -359,13 +361,11 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
 
         switch (currentRole) {
             case "MEMBER" -> {
-                // Member → Admin (admin or owner can do this)
                 manager.promoteToAdmin(team, target.getUniqueId());
                 mm.send(player, "teams.promoted", Map.of("player", target.getName(), "role", "Admin"));
                 mm.send(target, "teams.promoted-target", Map.of("role", "Admin"));
             }
             case "ADMIN" -> {
-                // Admin → Owner (only owner can do this)
                 requireOwner(player, team);
                 manager.promoteToOwner(team, target.getUniqueId());
                 mm.send(player, "teams.promoted", Map.of("player", target.getName(), "role", "Owner"));
@@ -384,7 +384,7 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         }
 
         Team team = manager.getTeam(player.getUniqueId());
-        requireOwner(player, team); // Only owners can demote
+        requireOwner(player, team);
 
         Player target = Bukkit.getPlayerExact(args[1]);
         if (target == null) {
@@ -400,13 +400,11 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
 
         switch (currentRole) {
             case "OWNER" -> {
-                // Owner → Admin (can't demote self if last owner)
                 manager.demoteOwnerToAdmin(team, target.getUniqueId());
                 mm.send(player, "teams.demoted", Map.of("player", target.getName(), "role", "Admin"));
                 mm.send(target, "teams.demoted-target", Map.of("role", "Admin"));
             }
             case "ADMIN" -> {
-                // Admin → Member
                 manager.demoteAdminToMember(team, target.getUniqueId());
                 mm.send(player, "teams.demoted", Map.of("player", target.getName(), "role", "Member"));
                 mm.send(target, "teams.demoted-target", Map.of("role", "Member"));

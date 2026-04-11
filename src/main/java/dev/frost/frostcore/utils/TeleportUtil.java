@@ -24,9 +24,9 @@ public class TeleportUtil {
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     // ━━━ Progress bar characters ━━━
-    private static final String BAR_FILLED = "▰";
-    private static final String BAR_EMPTY  = "▱";
-    private static final int BAR_LENGTH = 20;
+    private static final String BAR_FILLED = "●";
+    private static final String BAR_EMPTY  = "○";
+    private static final int BAR_LENGTH = 10;
 
     public TeleportUtil(Main plugin) {
         this.plugin = plugin;
@@ -76,17 +76,18 @@ public class TeleportUtil {
                                                 String successMsgPath,
                                                 String cancelMsgPath,
                                                 Map<String, String> extraPlaceholders) {
-        boolean bypass = hasBypass(player);
-        if (!bypass && CooldownManager.isOnCooldown(player, cooldownId)) {
+        boolean bypassCooldown = hasCooldownBypass(player);
+        boolean bypassDelay = hasDelayBypass(player);
+        if (!bypassCooldown && CooldownManager.isOnCooldown(player, cooldownId)) {
             int remaining = CooldownManager.getRemainingTime(player, cooldownId);
             Map<String, String> ph = Map.of("time", String.valueOf(remaining));
             mm.send(player, cooldownMsgPath, ph);
             return false;
         }
 
-        if (delaySeconds <= 0 || bypass) {
+        if (delaySeconds <= 0 || bypassDelay) {
             doTeleport(player, target, successMsgPath, extraPlaceholders);
-            if (!bypass) {
+            if (!bypassCooldown) {
                 int cooldownSeconds = config().getInt(cooldownPath, 0);
                 if (cooldownSeconds > 0) {
                     CooldownManager.setCooldown(player, cooldownId, cooldownSeconds);
@@ -96,7 +97,7 @@ public class TeleportUtil {
         }
 
         startDelayedTeleport(player, target, delaySeconds, cooldownId, cooldownPath,
-                waitMsgPath, successMsgPath, cancelMsgPath, extraPlaceholders);
+                waitMsgPath, successMsgPath, cancelMsgPath, extraPlaceholders, bypassCooldown);
 
         return true;
     }
@@ -132,20 +133,18 @@ public class TeleportUtil {
                                       String cooldownId, String cooldownPath,
                                       String waitMsgPath, String successMsgPath,
                                       String cancelMsgPath,
-                                      Map<String, String> extraPlaceholders) {
+                                      Map<String, String> extraPlaceholders, boolean bypassCooldown) {
 
         Map<String, String> ph = Map.of("time", String.valueOf(delaySeconds));
         mm.send(player, waitMsgPath, ph);
 
         new CountdownTask(player, target, player.getLocation().clone(), delaySeconds,
-                cooldownId, cooldownPath, successMsgPath, cancelMsgPath, extraPlaceholders)
+                cooldownId, cooldownPath, successMsgPath, cancelMsgPath, extraPlaceholders, bypassCooldown)
                 .start();
     }
 
     private void playTeleportSuccessSound(Player player) {
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-        Bukkit.getScheduler().runTaskLater(plugin, () ->
-                player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.3f, 1.4f), 4L);
+        player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.0f);
     }
 
     private void playTeleportParticles(Player player) {
@@ -167,6 +166,7 @@ public class TeleportUtil {
         private final String successMsgPath;
         private final String cancelMsgPath;
         private final Map<String, String> extraPlaceholders;
+        private final boolean bypassCooldown;
         private final int totalTime;
         private int timeLeft;
         private BukkitTask task;
@@ -175,7 +175,7 @@ public class TeleportUtil {
         public CountdownTask(Player player, Location target, Location startLoc, int delaySeconds,
                              String cooldownId, String cooldownPath,
                              String successMsgPath, String cancelMsgPath,
-                             Map<String, String> extraPlaceholders) {
+                             Map<String, String> extraPlaceholders, boolean bypassCooldown) {
             this.player = player;
             this.target = target;
             this.startLoc = startLoc;
@@ -184,6 +184,7 @@ public class TeleportUtil {
             this.successMsgPath = successMsgPath;
             this.cancelMsgPath = cancelMsgPath;
             this.extraPlaceholders = extraPlaceholders;
+            this.bypassCooldown = bypassCooldown;
             this.totalTime = delaySeconds;
             this.timeLeft = delaySeconds;
             this.ticksInCurrentSecond = 0;
@@ -238,6 +239,7 @@ public class TeleportUtil {
         }
 
         private void applyCooldown() {
+            if (bypassCooldown) return;
             int cooldownSeconds = config().getInt(cooldownPath, 0);
             if (cooldownSeconds > 0) {
                 CooldownManager.setCooldown(player, cooldownId, cooldownSeconds);
@@ -252,17 +254,17 @@ public class TeleportUtil {
             int empty = BAR_LENGTH - filled;
 
             StringBuilder bar = new StringBuilder();
-            bar.append("<gradient:#FFD700:#FFA500>");
+            bar.append("<#00C9FF>");
             bar.append(BAR_FILLED.repeat(filled));
-            bar.append("</gradient>");
+            bar.append("</#00C9FF>");
             bar.append("<dark_gray>");
             bar.append(BAR_EMPTY.repeat(empty));
             bar.append("</dark_gray>");
 
-            String color = timeLeft <= 2 ? "<#55FF55>" : timeLeft <= 3 ? "<#FFFF55>" : "<#FFD700>";
+            String color = timeLeft <= 1 ? "<#55FF55>" : timeLeft <= 2 ? "<#FFFF55>" : "<#00C9FF>";
 
-            String text = "<dark_gray>│ " + bar + " <dark_gray>│ "
-                    + color + timeLeft + "s</dark_gray>";
+            String text = "<!italic><bold><dark_gray>« </dark_gray>" + bar + "<dark_gray> »   </dark_gray>"
+                    + color + timeLeft + "s";
 
             player.sendActionBar(miniMessage.deserialize(text));
         }
@@ -288,9 +290,31 @@ public class TeleportUtil {
         }
     }
 
-    private boolean hasBypass(Player player) {
-        return player.isOp() ||
-                player.hasPermission("frostcore.bypass.cooldown") ||
-                player.hasPermission("frostcore.admin");
+    public void teleportInstant(Player player, Location target) {
+        player.teleport(target);
+
+        if (soundEnabled()) {
+            playTeleportSuccessSound(player);
+        }
+        if (particlesEnabled()) {
+            playTeleportParticles(player);
+        }
+        if (titleEnabled()) {
+            player.showTitle(Title.title(
+                    Component.empty(),
+                    miniMessage.deserialize("<gradient:#FFD700:#FFA500>Teleported!</gradient>"),
+                    Title.Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ofMillis(400))
+            ));
+        }
+    }
+
+    private boolean hasCooldownBypass(Player player) {
+        return player.hasPermission("frostcore.bypass.cooldown") ||
+               (config().getBoolean("teleport.admin-bypass", false) && player.hasPermission("frostcore.admin"));
+    }
+
+    private boolean hasDelayBypass(Player player) {
+        return player.hasPermission("frostcore.bypass.delay") ||
+               (config().getBoolean("teleport.admin-bypass", false) && player.hasPermission("frostcore.admin"));
     }
 }

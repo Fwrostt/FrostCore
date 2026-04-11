@@ -1,11 +1,10 @@
 plugins {
     id 'java'
-    id 'com.gradleup.shadow' version '8.3.5'
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = 'dev.frost'
-version = '1.0.2'
+version = '1.1.0'
 
 repositories {
     mavenCentral()
@@ -24,10 +23,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
     compileOnly 'me.clip:placeholderapi:2.11.6'
-    implementation 'com.zaxxer:HikariCP:5.1.0'
-    implementation 'mysql:mysql-connector-java:8.0.33'
-    implementation 'org.xerial:sqlite-jdbc:3.47.1.0'
-    implementation 'com.google.code.gson:gson:2.11.0'
+    compileOnly 'com.zaxxer:HikariCP:5.1.0'
+    compileOnly 'mysql:mysql-connector-java:8.0.33'
+    compileOnly 'org.xerial:sqlite-jdbc:3.47.1.0'
+    compileOnly 'com.google.code.gson:gson:2.11.0'
 }
 
 tasks {
@@ -36,27 +35,7 @@ tasks {
     }
 }
 
-jar {
-    archiveClassifier.set('plain')
-}
 
-shadowJar {
-    archiveClassifier.set('')
-    mergeServiceFiles()
-    relocate 'com.zaxxer.hikari', 'dev.frost.frostcore.lib.hikari'
-    relocate 'com.mysql.cj', 'dev.frost.frostcore.lib.mysql'
-    relocate 'com.google.gson', 'dev.frost.frostcore.lib.gson'
-    // NOTE: Do NOT relocate org.sqlite — it uses JNI native libraries that break under relocation
-}
-
-tasks.named('assemble') {
-    dependsOn tasks.shadowJar
-}
-
-tasks.named('runServer') {
-    dependsOn tasks.shadowJar
-    pluginJars.from(tasks.shadowJar)
-}
 
 def targetJavaVersion = 21
 java {

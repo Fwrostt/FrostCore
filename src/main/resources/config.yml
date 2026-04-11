@@ -1,4 +1,4 @@
-# FrostCore 1.0.1
+# FrostCore 
 
 # Database Configuration
 # Supported types: SQLITE, MYSQL
@@ -13,6 +13,10 @@ database:
     password: ""
     pool-size: 10
 
+# Logging & Auditing Settings
+logging:
+  audit-enabled: true    # If true, logs important actions to plugins/FrostCore/logs/audit.log
+
 # Universal Teleport Settings
 # These apply to ALL teleports in the plugin (homes, warps, tpa, etc.)
 teleport:
@@ -20,6 +24,28 @@ teleport:
   title: true         # Show "Teleported!" subtitle on arrival
   sounds: true        # Play countdown + arrival sounds
   particles: true     # Show portal particles on arrival
+  admin-bypass: false # If false, admins/OPs will experience delay and cooldown like normal players
+
+# TPA Settings
+tpa:
+  enabled: true
+  cooldown: 30        # Seconds before /tpa can be used again
+  delay: 3            # Warmup delay before teleporting (cancelled if player moves)
+  expiry: 60          # Seconds before a tpa request expires
+
+# Server Warps (admin-created, accessible to all players)
+warps:
+  enabled: true
+  cooldown: 10        # Cooldown between warp uses
+  delay: 3            # Warmup delay before teleporting
+
+# Spawn Settings
+spawn:
+  enabled: true
+  cooldown: 10
+  delay: 3
+  teleport-on-join: false    # Teleport players to spawn on first join
+  teleport-on-respawn: true  # Teleport players to spawn on death
 
 teams:
   enabled: true  # Enables or disables the entire teams system (blocks all /team commands)
@@ -37,7 +63,30 @@ teams:
   # Team Name Settings
   team-name-max-length: 16  # Maximum length of team name
   team-name-min-length: 3   # Minimum length required for team name
-  team-name-banned: ["fuck", "nigger", "pussy", "bitch", "nigga", "faggot", "retard"]
+  team-name-banned: 
+    - "fuck"
+    - "nigger"
+    - "pussy"
+    - "bitch"
+    - "nigga"
+    - "faggot"
+    - "retard"
+    - "shit"
+    - "cunt"
+    - "whore"
+    - "asshole"
+    - "slut"
+    - "dick"
+    - "cock"
+    - "bastard"
+    - "twat"
+    - "wank"
+    - "rape"
+    - "pedo"
+    - "fag"
+    - "dyke"
+    - "tranny"
+    - "nazi"
 
   # Team Tag Settings
   tag-max-length: 6     # Maximum length of team tag

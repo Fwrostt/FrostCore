@@ -1,5 +1,7 @@
 package dev.frost.frostcore.manager;
 
+import dev.frost.frostcore.utils.FrostLogger;
+
 import dev.frost.frostcore.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -112,7 +114,7 @@ public class MessageManager {
         try {
             return miniMessage.deserialize(text);
         } catch (Exception e) {
-            plugin.getLogger().warning("MiniMessage parse failed for: " + text);
+            FrostLogger.warn("MiniMessage parse failed for: " + text);
             return Component.text(text);
         }
     }

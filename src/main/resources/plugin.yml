@@ -1,5 +1,5 @@
 name: FrostCore
-version: '1.0'
+version: '1.1.0'
 main: dev.frost.frostcore.Main
 api-version: '1.21'
 authors: [ Frost ]
@@ -12,6 +12,60 @@ commands:
     aliases: [teams, t]
     permission: frostcore.team.use
     permission-message: §cYou don't have permission to use team commands.
+  tpa:
+    description: Send a teleport request to a player
+    usage: /tpa <player>
+    permission: frostcore.tpa
+  tpahere:
+    description: Request a player to teleport to you
+    usage: /tpahere <player>
+    permission: frostcore.tpa
+  tpaccept:
+    description: Accept a teleport request
+    usage: /tpaccept [player]
+    permission: frostcore.tpa
+  tpdecline:
+    aliases: [tpdeny]
+    description: Decline a teleport request
+    usage: /tpdecline [player]
+    permission: frostcore.tpa
+  warp:
+    description: Teleport to a server warp
+    usage: /warp [name]
+    permission: frostcore.warp
+  spawn:
+    description: Teleport to the server spawn
+    usage: /spawn
+    permission: frostcore.spawn
+  tp:
+    description: Admin teleport command
+    usage: /tp <player> or /tp <x> <y> <z>
+    permission: frostcore.admin
+  tp2p:
+    description: Teleport a player to another player
+    usage: /tp2p <player1> <player2>
+    permission: frostcore.admin
+  tphere:
+    description: Teleport a player to you
+    usage: /tphere <player>
+    permission: frostcore.admin
+  otp:
+    description: Teleport to an offline player's location
+    usage: /otp <player>
+    aliases: [offlinetp]
+    permission: frostcore.admin
+  setwarp:
+    description: Create a server warp
+    usage: /setwarp <name>
+    permission: frostcore.admin
+  delwarp:
+    description: Delete a server warp
+    usage: /delwarp <name>
+    permission: frostcore.admin
+  setspawn:
+    description: Set the server spawn point
+    usage: /setspawn
+    permission: frostcore.admin
 
 permissions:
   frostcore.team.use:
@@ -20,4 +74,27 @@ permissions:
   frostcore.team.admin:
     description: Allows admin-level team commands
     default: op
+  frostcore.tpa:
+    description: Allows using tpa commands
+    default: true
+  frostcore.warp:
+    description: Allows using warps
+    default: true
+  frostcore.spawn:
+    description: Allows using spawn
+    default: true
+  frostcore.admin:
+    description: Allows admin teleport commands
+    default: op
+  frostcore.bypass.cooldown:
+    description: Bypass teleport cooldowns
+    default: false
+  frostcore.bypass.delay:
+    description: Bypass teleport delays
+    default: false
 
+libraries:
+  - com.zaxxer:HikariCP:5.1.0
+  - mysql:mysql-connector-java:8.0.33
+  - org.xerial:sqlite-jdbc:3.47.1.0
+  - com.google.code.gson:gson:2.11.0
