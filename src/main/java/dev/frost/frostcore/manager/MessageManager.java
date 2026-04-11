@@ -117,6 +117,18 @@ public class MessageManager {
         }
     }
 
+    public void send(org.bukkit.command.CommandSender sender, String path) {
+        sender.sendMessage(getComponent(path));
+    }
+
+    public void send(org.bukkit.command.CommandSender sender, String path, Map<String, String> placeholders) {
+        sender.sendMessage(getComponent(path, placeholders));
+    }
+
+    public void sendRaw(org.bukkit.command.CommandSender sender, String message) {
+        sender.sendMessage(parse(message));
+    }
+
     public void send(Player player, String path) {
         player.sendMessage(getComponent(path));
     }

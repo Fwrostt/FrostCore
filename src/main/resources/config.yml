@@ -66,6 +66,14 @@ spawn:
   teleport-on-join: false    # Teleport players to spawn on first join
   teleport-on-respawn: true  # Teleport players to spawn on death
 
+utility:
+  near-radius: 100
+
+# Back Command Settings
+back:
+  cooldown: 5
+  delay: 3
+
 # Personal Homes Settings
 homes:
   enabled: true

@@ -6,9 +6,14 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Handles /tpatoggle, /tpaon, and /tpaoff.
@@ -18,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  *   <li>/tpaoff    — force-disables TPA requests</li>
  * </ul>
  */
-public class TpaToggleCmd implements CommandExecutor {
+public class TpaToggleCmd implements CommandExecutor, TabCompleter {
 
     public static final NamespacedKey TPA_DISABLED_KEY = new NamespacedKey(Main.getInstance(), "tpa_disabled");
 
@@ -63,6 +68,11 @@ public class TpaToggleCmd implements CommandExecutor {
         }
 
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        return Collections.emptyList();
     }
 }
 

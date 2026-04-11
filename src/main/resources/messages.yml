@@ -53,6 +53,13 @@ teleport:
   tp-offline-no-data: "{teleport.prefix}<#FF5555>No location data found for <white>{player}</white>."
   player-not-found: "{teleport.prefix}<#FF5555>Player not found."
 
+  # ━━━ BACK ━━━
+  back-no-location: "{teleport.prefix}<#FF5555>You don't have a previous location to return to."
+  back-teleport: "{teleport.prefix}<#B0C4FF>Teleported to your previous location."
+  back-wait: "{teleport.prefix}<#B0C4FF>Teleporting to your previous location in <white>{time}s</white>..."
+  back-cooldown: "{teleport.prefix}<#FF5555>You must wait <white>{time}s</white> before using /back again."
+  back-teleport-cancelled: "{teleport.prefix}<#FF5555>Teleport cancelled! You moved."
+
 
 teams:
   prefix: "<gradient:#C8732E:#D7942B>TEAMS</gradient> <#AAAAAA>» </#AAAAAA>"
@@ -176,3 +183,104 @@ homes:
   no-homes: "{homes.prefix}<#6BA3E3>You have no personal homes set."
   disabled: "{homes.prefix}<#F08181>Personal homes are currently disabled."
 
+# ━━━ ADMIN ━━━
+admin:
+  prefix: "<gradient:#FF5555:#FF55FF>ADMIN</gradient> <#AAAAAA>» </#AAAAAA>"
+  gamemode-changed: "{admin.prefix}<#B0C4FF>Your gamemode has been set to <white>{mode}</white>."
+  gamemode-changed-other: "{admin.prefix}<#B0C4FF>Set <white>{player}'s</white> gamemode to <white>{mode}</white>."
+  gamemode-usage: "{admin.prefix}<#FF5555>Usage: /gm <0-3/s/c/a/sp> [player]"
+  gamemode-invalid: "{admin.prefix}<#FF5555>Invalid gamemode."
+  player-not-found: "{admin.prefix}<#FF5555>Player not found."
+  sudo-success: "{admin.prefix}<#B0C4FF>Forced <white>{player}</white> to run: <white>{action}</white>"
+  broadcast-prefix: "<#6BA3E3><bold>BROADCAST</bold> <#AAAAAA>» <white>"
+  chat-cleared: "{admin.prefix}<#B0C4FF>The chat has been cleared by <white>{player}</white>."
+  time-set: "{admin.prefix}<#B0C4FF>World time set to <white>{time}</white>."
+  weather-set: "{admin.prefix}<#B0C4FF>Weather set to <white>{weather}</white>."
+  invsee-self: "{admin.prefix}<#FF5555>You cannot view your own inventory."
+  smite-success: "{admin.prefix}<#B0C4FF>Lightning struck <white>{player}</white>!"
+  whois-header: "{admin.prefix}<#B0C4FF>Information for <white>{player}</white>:"
+  vanish-on: "{admin.prefix}<#B0C4FF>You are now <#55FF55><bold>VANISHED</bold></#55FF55>. You are invisible to other players."
+  vanish-off: "{admin.prefix}<#B0C4FF>You are now <#FF5555><bold>VISIBLE</bold></#FF5555>. Other players can see you again."
+  hat-success: "{admin.prefix}<#B0C4FF>You are now wearing a fancy <#6BA3E3>hat</#6BA3E3>!"
+  tpall-success: "{admin.prefix}<#B0C4FF>Teleported <white>{count}</white> players to your location."
+
+# ━━━ PRIVATE MESSAGING ━━━
+message:
+  prefix: "<gradient:#B0C4FF:#6BA3E3>MSG</gradient> <#AAAAAA>» </#AAAAAA>"
+  sent: "{message.prefix}<white>You <dark_gray>→ <#6BA3E3>{player}</#6BA3E3><dark_gray>: <#B0C4FF>{message}"
+  received: "{message.prefix}<#6BA3E3>{player}</#6BA3E3> <dark_gray>→ <white>You<dark_gray>: <#B0C4FF>{message}"
+  no-reply: "{message.prefix}<#FF5555>You have nobody to reply to."
+  reply-offline: "{message.prefix}<#FF5555>That player is no longer online."
+  ignored: "{message.prefix}<#FF5555>This player is ignoring you."
+  ignore-on: "{message.prefix}<#B0C4FF>You are now ignoring <white>{player}</white>."
+  ignore-off: "{message.prefix}<#B0C4FF>You are no longer ignoring <white>{player}</white>."
+
+# ━━━ GENERAL ━━━
+general:
+  no-permission: "<red>You don't have permission to do that."
+
+# ━━━ UTILITIES ━━━
+utilities:
+  prefix: "<gradient:#6BA3E3:#4979C7>FROST</gradient> <#AAAAAA>» </#AAAAAA>"
+  fly-toggle: "{utilities.prefix}<#B0C4FF>Flight mode is now {state}."
+  fly-toggle-other: "{utilities.prefix}<#B0C4FF>Flight mode for <white>{player}</white> is now {state}."
+  heal-success: "{utilities.prefix}<#B0C4FF>You have been fully healed and fed."
+  heal-success-other: "{utilities.prefix}<#B0C4FF>You have fully healed and fed <white>{player}</white>."
+  feed-success: "{utilities.prefix}<#B0C4FF>Your appetite has been satiated."
+  feed-success-other: "{utilities.prefix}<#B0C4FF>You have fed <white>{player}</white>."
+  god-toggle: "{utilities.prefix}<#B0C4FF>God mode is now {state}."
+  god-toggle-other: "{utilities.prefix}<#B0C4FF>God mode for <white>{player}</white> is now {state}."
+  clear-success: "{utilities.prefix}<#B0C4FF>Your inventory has been cleared."
+  clear-success-other: "{utilities.prefix}<#B0C4FF>Cleared inventory of <white>{player}</white>."
+  speed-changed: "{utilities.prefix}<#B0C4FF>Your <white>{type}</white> speed has been set to <white>{val}</white>."
+  speed-usage: "{utilities.prefix}<#FF5555>Usage: /speed <fly|walk> <1-10> [player]"
+  speed-invalid: "{utilities.prefix}<#FF5555>Speed must be a number between 1 and 10."
+  nick-success: "{utilities.prefix}<#B0C4FF>Your nickname has been set to <white>{nick}</white>."
+  nick-success-other: "{utilities.prefix}<#B0C4FF>Set nickname for <white>{player}</white> to <white>{nick}</white>."
+  nick-removed: "{utilities.prefix}<#B0C4FF>Your nickname has been removed."
+  nick-removed-other: "{utilities.prefix}<#B0C4FF>Removed nickname for <white>{player}</white>."
+  nick-usage: "{utilities.prefix}<#FF5555>Usage: /nick [player] <name> or /unnick [player]"
+  rename-success: "{utilities.prefix}<#B0C4FF>Item renamed to <white>{name}</white>."
+  rename-usage: "{utilities.prefix}<#FF5555>Usage: /itemrename <name>"
+  no-item-held: "{utilities.prefix}<#FF5555>You must be holding an item!"
+  lore-add-success: "{utilities.prefix}<#B0C4FF>Added lore line."
+  lore-set-success: "{utilities.prefix}<#B0C4FF>Set lore line."
+  lore-remove-success: "{utilities.prefix}<#B0C4FF>Removed lore line."
+  lore-usage: "{utilities.prefix}<#FF5555>Usage: /lore <add|set|remove> [line] <text>"
+  invalid-line: "{utilities.prefix}<#FF5555>Invalid lore line number."
+  repair-success: "{utilities.prefix}<#B0C4FF>Repaired item for <white>{player}</white>."
+  repair-all-success: "{utilities.prefix}<#B0C4FF>Repaired all items in <white>{player}'s</white> inventory."
+  repair-not-damageable: "{utilities.prefix}<#FF5555>This item cannot be repaired."
+
+# ━━━ MODERATION ━━━
+moderation:
+  prefix: "<gradient:#FF5555:#FF55FF>MOD</gradient> <#AAAAAA>» </#AAAAAA>"
+  mute-success: "{moderation.prefix}<#B0C4FF>You have muted <white>{player}</white> for <white>{time}</white>."
+  muted-alert: "{moderation.prefix}<#FF5555>You have been muted for <white>{time}</white>."
+  muted-message: "{moderation.prefix}<#FF5555>You are muted and cannot chat!"
+  unmute-success: "{moderation.prefix}<#B0C4FF>You have unmuted <white>{player}</white>."
+  unmuted-alert: "{moderation.prefix}<#55FF55>You have been unmuted."
+  chat-locked-broadcast: "{moderation.prefix}<#FF5555>Chat has been <bold>LOCKED</bold> by an administrator."
+  chat-unlocked-broadcast: "{moderation.prefix}<#55FF55>Chat has been <bold>UNLOCKED</bold> by an administrator."
+  chat-locked-message: "{moderation.prefix}<#FF5555>Chat is currently locked!"
+  freeze-success: "{moderation.prefix}<#B0C4FF>You have frozen <white>{player}</white>."
+  unfreeze-success: "{moderation.prefix}<#B0C4FF>You have unfrozen <white>{player}</white>."
+  frozen-alert: "<#FF5555><bold>✘ YOU ARE FROZEN ✘"
+  frozen-alert-long: "{moderation.prefix}<#FF5555><bold>YOU HAVE BEEN FROZEN! <white>Do not disconnect or you may be banned.</white>"
+  unfrozen-alert: "{moderation.prefix}<#55FF55>You have been unfrozen! You can now move again."
+  frozen-command-denied: "{moderation.prefix}<#FF5555>You cannot use commands while frozen!"
+  kick-success: "{moderation.prefix}<#B0C4FF>Kicked <white>{player}</white>: <#6BA3E3>{reason}"
+  ban-success: "{moderation.prefix}<#B0C4FF>Banned <white>{player}</white> for <white>{time}</white>."
+  unban-success: "{moderation.prefix}<#55FF55>Unbanned <white>{player}</white>."
+  warn-success: "{moderation.prefix}<#FFAA00>Warned <white>{player}</white>: <#6BA3E3>{reason}"
+
+# ━━━ UTILITY MISC ━━━
+utility:
+  prefix: "<gradient:#B0C4FF:#6BA3E3>UTIL</gradient> <#AAAAAA>» </#AAAAAA>"
+  top-success: "{utility.prefix}<#B0C4FF>Teleported to the top!"
+  bottom-success: "{utility.prefix}<#B0C4FF>Teleported to the safest bottom block!"
+  near-title: "{utility.prefix}<#B0C4FF>Nearby players (<white>{radius}m</white>):"
+  near-player: "<#B0C4FF> - <white>{player}</white> (<#6BA3E3>{distance}m</#6BA3E3>)"
+  near-none: "{utility.prefix}<#FF5555>No players found nearby."
+  coords: "{utility.prefix}<#B0C4FF>Coordinates: <white>X: {x}, Y: {y}, Z: {z}</white> <#6BA3E3>({world})</#6BA3E3>"
+  bottom-failed: "{utility.prefix}<#FF5555>No safe bottom block found!"

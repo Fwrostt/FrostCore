@@ -1,9 +1,8 @@
 package dev.frost.frostcore.cmds;
 
 import dev.frost.frostcore.Main;
-import dev.frost.frostcore.manager.ConfigManager;
+import dev.frost.frostcore.manager.BackManager;
 import dev.frost.frostcore.manager.MessageManager;
-import dev.frost.frostcore.manager.WarpManager;
 import dev.frost.frostcore.utils.TeleportUtil;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -16,42 +15,40 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-public class SpawnCmd implements CommandExecutor, TabCompleter {
+public class BackCmd implements CommandExecutor, TabCompleter {
 
-    private final MessageManager mm = MessageManager.get();
+    private final BackManager backManager = BackManager.getInstance();
+    private final MessageManager mm = Main.getMessageManager();
     private final TeleportUtil teleportUtil = Main.getTeleportUtil();
-    private final WarpManager warpManager = Main.getWarpManager();
-    private final ConfigManager config = Main.getConfigManager();
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Only players can use this command.");
             return true;
         }
 
-        if (!config.getBoolean("spawn.enabled", true)) {
-            mm.send(player, "teleport.spawn-disabled");
+        if (!player.hasPermission("frostcore.utility.back")) {
+            mm.send(player, "general.no-permission");
             return true;
         }
 
-        Location spawn = warpManager.getSpawn();
-        if (spawn == null) {
-            mm.send(player, "teleport.spawn-not-set");
+        Location backLoc = backManager.getLastLocation(player.getUniqueId());
+        if (backLoc == null) {
+            mm.send(player, "teleport.back-no-location");
             return true;
         }
 
         teleportUtil.teleportWithCooldownAndDelay(
-                player, spawn,
-                "spawn",
-                "spawn.cooldown",
-                "teleport.spawn-cooldown",
-                config.getInt("spawn.delay", 3),
-                "teleport.spawn-wait",
-                "teleport.spawn-teleport",
-                "teleport.spawn-teleport-cancelled"
+                player, backLoc,
+                "back",
+                "back.cooldown",
+                "teleport.back-cooldown",
+                Main.getConfigManager().getInt("back.delay", 3),
+                "teleport.back-wait",
+                "teleport.back-teleport",
+                "teleport.back-teleport-cancelled"
         );
 
         return true;

@@ -218,6 +218,30 @@ public class DatabaseManager {
                 )
             """);
 
+            stmt.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS player_utilities (
+                    uuid        VARCHAR(36) PRIMARY KEY,
+                    nickname    TEXT,
+                    god_mode    BOOLEAN NOT NULL DEFAULT 0
+                )
+            """);
+
+            stmt.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS player_punishments (
+                    uuid         VARCHAR(36) PRIMARY KEY,
+                    mute_expires BIGINT NOT NULL DEFAULT -1,
+                    is_frozen    BOOLEAN NOT NULL DEFAULT 0
+                )
+            """);
+
+            stmt.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS player_bans (
+                    uuid        VARCHAR(36) PRIMARY KEY,
+                    ban_expires BIGINT NOT NULL DEFAULT -1,
+                    ban_reason  TEXT
+                )
+            """);
+
             FrostLogger.info("Database tables verified.");
         } catch (SQLException e) {
             FrostLogger.error("Failed to create database tables!", e);
@@ -935,6 +959,139 @@ public class DatabaseManager {
             FrostLogger.error("Failed to delete all cooldowns for " + uuid, e);
         }
     }
+
+    public Map<UUID, UtilityData> loadPlayerUtilities() {
+        Map<UUID, UtilityData> result = new LinkedHashMap<>();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM player_utilities");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                String nick = rs.getString("nickname");
+                boolean god = rs.getBoolean("god_mode");
+                result.put(uuid, new UtilityData(nick, god));
+            }
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to load player utilities!", e);
+        }
+        return result;
+    }
+
+    public void savePlayerUtility(UUID uuid, String nick, boolean god) {
+        String sql = type == DatabaseType.MYSQL
+                ? "INSERT INTO player_utilities (uuid, nickname, god_mode) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE nickname=VALUES(nickname), god_mode=VALUES(god_mode)"
+                : "INSERT OR REPLACE INTO player_utilities (uuid, nickname, god_mode) VALUES (?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, nick);
+            ps.setBoolean(3, god);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to save player utility: " + uuid, e);
+        }
+    }
+
+    public void savePlayerUtilityAsync(UUID uuid, String nick, boolean god) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> savePlayerUtility(uuid, nick, god));
+    }
+
+    public record UtilityData(String nickname, boolean godMode) {}
+
+    public Map<UUID, PunishmentData> loadPlayerPunishments() {
+        Map<UUID, PunishmentData> result = new LinkedHashMap<>();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM player_punishments");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                long mute = rs.getLong("mute_expires");
+                boolean frozen = rs.getBoolean("is_frozen");
+                result.put(uuid, new PunishmentData(mute, frozen));
+            }
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to load player punishments!", e);
+        }
+        return result;
+    }
+
+    public void savePlayerPunishment(UUID uuid, long muteExpires, boolean frozen) {
+        String sql = type == DatabaseType.MYSQL
+                ? "INSERT INTO player_punishments (uuid, mute_expires, is_frozen) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE mute_expires=VALUES(mute_expires), is_frozen=VALUES(is_frozen)"
+                : "INSERT OR REPLACE INTO player_punishments (uuid, mute_expires, is_frozen) VALUES (?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setLong(2, muteExpires);
+            ps.setBoolean(3, frozen);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to save player punishment: " + uuid, e);
+        }
+    }
+
+    public void savePlayerPunishmentAsync(UUID uuid, long muteExpires, boolean frozen) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> savePlayerPunishment(uuid, muteExpires, frozen));
+    }
+
+    public record PunishmentData(long muteExpires, boolean isFrozen) {}
+
+    // ━━━ BAN SYSTEM ━━━
+
+    public Map<UUID, BanEntry> loadPlayerBans() {
+        Map<UUID, BanEntry> result = new LinkedHashMap<>();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM player_bans");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                long expires = rs.getLong("ban_expires");
+                String reason = rs.getString("ban_reason");
+                result.put(uuid, new BanEntry(expires, reason));
+            }
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to load player bans!", e);
+        }
+        return result;
+    }
+
+    public void savePlayerBan(UUID uuid, long expires, String reason) {
+        String sql = type == DatabaseType.MYSQL
+                ? "INSERT INTO player_bans (uuid, ban_expires, ban_reason) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE ban_expires=VALUES(ban_expires), ban_reason=VALUES(ban_reason)"
+                : "INSERT OR REPLACE INTO player_bans (uuid, ban_expires, ban_reason) VALUES (?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setLong(2, expires);
+            ps.setString(3, reason);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to save player ban: " + uuid, e);
+        }
+    }
+
+    public void savePlayerBanAsync(UUID uuid, long expires, String reason) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> savePlayerBan(uuid, expires, reason));
+    }
+
+    public void deletePlayerBan(UUID uuid) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("DELETE FROM player_bans WHERE uuid = ?")) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to delete player ban: " + uuid, e);
+        }
+    }
+
+    public void deletePlayerBanAsync(UUID uuid) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> deletePlayerBan(uuid));
+    }
+
+    public record BanEntry(long expires, String reason) {}
 }
 
 

@@ -32,6 +32,11 @@ public final class Main extends JavaPlugin {
     @Getter private static TeamEchestManager echestManager;
     @Getter private static WarpManager warpManager;
     @Getter private static HomeManager homeManager;
+    @Getter private static UtilityManager utilityManager;
+    @Getter private static PunishmentManager punishmentManager;
+    @Getter private static BackManager backManager;
+    @Getter private static VanishManager vanishManager;
+    @Getter private static PrivateMessageManager privateMessageManager;
     private static CmdUtil cmdUtil;
     private TeamExpansion teamExpansion;
 
@@ -72,6 +77,11 @@ public final class Main extends JavaPlugin {
         echestManager = new TeamEchestManager(databaseManager);
         warpManager = new WarpManager(this, databaseManager);
         homeManager = new HomeManager(this, configManager);
+        utilityManager = new UtilityManager(databaseManager);
+        punishmentManager = new PunishmentManager(databaseManager);
+        backManager = new BackManager();
+        vanishManager = new VanishManager();
+        privateMessageManager = new PrivateMessageManager();
         cmdUtil = new CmdUtil();
         ConfigurationSerialization.registerClass(Team.class);
     }
@@ -97,6 +107,11 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TeamPvPListener(), this);
         getServer().getPluginManager().registerEvents(
                 new SpawnListener(configManager, warpManager, teleportUtil), this);
+        getServer().getPluginManager().registerEvents(new PlayerUtilityListener(), this);
+        getServer().getPluginManager().registerEvents(new ModerationListener(), this);
+        getServer().getPluginManager().registerEvents(new BackListener(), this);
+        getServer().getPluginManager().registerEvents(new InvseeListener(), this);
+        getServer().getPluginManager().registerEvents(new VanishListener(), this);
         getServer().getPluginManager().registerEvents(homeManager, this);
     }
 
@@ -110,9 +125,9 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("tpahere", tpahereCmd, tpahereCmd);
 
         TpaToggleCmd tpaToggleCmd = new TpaToggleCmd();
-        cmdUtil.registerCommand("tpatoggle", tpaToggleCmd, null);
-        cmdUtil.registerCommand("tpaoff", tpaToggleCmd, null);
-        cmdUtil.registerCommand("tpaon", tpaToggleCmd, null);
+        cmdUtil.registerCommand("tpatoggle", tpaToggleCmd, tpaToggleCmd);
+        cmdUtil.registerCommand("tpaoff", tpaToggleCmd, tpaToggleCmd);
+        cmdUtil.registerCommand("tpaon", tpaToggleCmd, tpaToggleCmd);
 
         TpAcceptCmd tpacceptCmd = new TpAcceptCmd();
         cmdUtil.registerCommand("tpaccept", tpacceptCmd, tpacceptCmd);
@@ -124,10 +139,10 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("warp", warpCmd, warpCmd);
 
         WarpsCmd warpsCmd = new WarpsCmd();
-        cmdUtil.registerCommand("warps", warpsCmd, null);
+        cmdUtil.registerCommand("warps", warpsCmd, warpsCmd);
 
         SpawnCmd spawnCmd = new SpawnCmd();
-        cmdUtil.registerCommand("spawn", spawnCmd, null);
+        cmdUtil.registerCommand("spawn", spawnCmd, spawnCmd);
 
         TpCmd tpCmd = new TpCmd();
         cmdUtil.registerCommand("tp", tpCmd, tpCmd);
@@ -143,7 +158,7 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("delwarp", setwarpCmd, setwarpCmd);
 
         SetHomeCmd sethomeCmd = new SetHomeCmd();
-        cmdUtil.registerCommand("sethome", sethomeCmd, null);
+        cmdUtil.registerCommand("sethome", sethomeCmd, sethomeCmd);
 
         HomeCmd homeCmd = new HomeCmd();
         cmdUtil.registerCommand("home", homeCmd, homeCmd);
@@ -155,13 +170,93 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("renamehome", renamehomeCmd, renamehomeCmd);
 
         HomesCmd homesCmd = new HomesCmd();
-        cmdUtil.registerCommand("homes", homesCmd, null);
+        cmdUtil.registerCommand("homes", homesCmd, homesCmd);
 
         SetSpawnCmd setspawnCmd = new SetSpawnCmd();
-        cmdUtil.registerCommand("setspawn", setspawnCmd, null);
+        cmdUtil.registerCommand("setspawn", setspawnCmd, setspawnCmd);
 
         FrostCoreCmd frostCoreCmd = new FrostCoreCmd();
         cmdUtil.registerCommand("frostcore", frostCoreCmd, frostCoreCmd);
+
+        GamemodeCmd gmCmd = new GamemodeCmd();
+        cmdUtil.registerCommand("gm", gmCmd, gmCmd);
+        cmdUtil.registerCommand("gms", gmCmd, gmCmd);
+        cmdUtil.registerCommand("gmc", gmCmd, gmCmd);
+        cmdUtil.registerCommand("gma", gmCmd, gmCmd);
+        cmdUtil.registerCommand("gmsp", gmCmd, gmCmd);
+
+        PlayerAttributeCmds attrCmds = new PlayerAttributeCmds();
+        cmdUtil.registerCommand("fly", attrCmds, attrCmds);
+        cmdUtil.registerCommand("heal", attrCmds, attrCmds);
+        cmdUtil.registerCommand("feed", attrCmds, attrCmds);
+        cmdUtil.registerCommand("god", attrCmds, attrCmds);
+        cmdUtil.registerCommand("clear", attrCmds, attrCmds);
+        cmdUtil.registerCommand("speed", attrCmds, attrCmds);
+
+        NickCmd nickCmd = new NickCmd();
+        cmdUtil.registerCommand("nick", nickCmd, nickCmd);
+        cmdUtil.registerCommand("unnick", nickCmd, nickCmd);
+
+        ItemEditCmds itemCmds = new ItemEditCmds();
+        cmdUtil.registerCommand("itemrename", itemCmds, itemCmds);
+        cmdUtil.registerCommand("lore", itemCmds, itemCmds);
+        cmdUtil.registerCommand("repair", itemCmds, itemCmds);
+
+        ModerationCmds modCmds = new ModerationCmds();
+        cmdUtil.registerCommand("mute", modCmds, modCmds);
+        cmdUtil.registerCommand("unmute", modCmds, modCmds);
+        cmdUtil.registerCommand("lockchat", modCmds, modCmds);
+        cmdUtil.registerCommand("unlockchat", modCmds, modCmds);
+        cmdUtil.registerCommand("freeze", modCmds, modCmds);
+
+        AdminMiscCmds adminMiscCmds = new AdminMiscCmds();
+        cmdUtil.registerCommand("sudo", adminMiscCmds, adminMiscCmds);
+        cmdUtil.registerCommand("broadcast", adminMiscCmds, adminMiscCmds);
+        cmdUtil.registerCommand("chat", adminMiscCmds, adminMiscCmds);
+        cmdUtil.registerCommand("day", adminMiscCmds, adminMiscCmds);
+        cmdUtil.registerCommand("night", adminMiscCmds, adminMiscCmds);
+        cmdUtil.registerCommand("time", adminMiscCmds, adminMiscCmds);
+        cmdUtil.registerCommand("weather", adminMiscCmds, adminMiscCmds);
+
+        UtilityMiscCmds utilMiscCmds = new UtilityMiscCmds();
+        cmdUtil.registerCommand("top", utilMiscCmds, utilMiscCmds);
+        cmdUtil.registerCommand("bottom", utilMiscCmds, utilMiscCmds);
+        cmdUtil.registerCommand("near", utilMiscCmds, utilMiscCmds);
+        cmdUtil.registerCommand("coords", utilMiscCmds, utilMiscCmds);
+
+        BackCmd backCmd = new BackCmd();
+        cmdUtil.registerCommand("back", backCmd, backCmd);
+
+        AdminExtraCmds adminExtraCmds = new AdminExtraCmds();
+        cmdUtil.registerCommand("invsee", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("enderchest", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("ec", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("hat", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("whois", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("seen", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("smite", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("vanish", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("v", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("seen", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("kick", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("ban", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("unban", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("warn", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("tpall", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("ping", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("skull", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("socialspy", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("ram", adminExtraCmds, adminExtraCmds);
+
+        MessageCmds msgCmds = new MessageCmds();
+        cmdUtil.registerCommand("msg", msgCmds, msgCmds);
+        cmdUtil.registerCommand("tell", msgCmds, msgCmds);
+        cmdUtil.registerCommand("w", msgCmds, msgCmds);
+        cmdUtil.registerCommand("whisper", msgCmds, msgCmds);
+        cmdUtil.registerCommand("pm", msgCmds, msgCmds);
+        cmdUtil.registerCommand("r", msgCmds, msgCmds);
+        cmdUtil.registerCommand("reply", msgCmds, msgCmds);
+        cmdUtil.registerCommand("ignore", msgCmds, msgCmds);
     }
 
     @Override

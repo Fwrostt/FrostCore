@@ -101,8 +101,313 @@ commands:
     usage: /frostcore <reload>
     permission: frostcore.admin
     aliases: [fc]
+  gm:
+    description: Change your gamemode
+    usage: /gm <0-3/s/c/a/sp> [player]
+    permission: frostcore.gamemode
+  gms:
+    description: Set gamemode to survival
+    usage: /gms [player]
+    permission: frostcore.gamemode.survival
+  gmc:
+    description: Set gamemode to creative
+    usage: /gmc [player]
+    permission: frostcore.gamemode.creative
+  gma:
+    description: Set gamemode to adventure
+    usage: /gma [player]
+    permission: frostcore.gamemode.adventure
+  gmsp:
+    description: Set gamemode to spectator
+    usage: /gmsp [player]
+    permission: frostcore.gamemode.spectator
+  fly:
+    description: Toggle flight mode
+    usage: /fly [player] [speed]
+    permission: frostcore.utility.fly
+  heal:
+    description: Heal and feed a player
+    usage: /heal [player]
+    permission: frostcore.utility.heal
+  feed:
+    description: Feed a player
+    usage: /feed [player]
+    permission: frostcore.utility.feed
+  god:
+    description: Toggle god mode
+    usage: /god [player]
+    permission: frostcore.utility.god
+  speed:
+    description: Change walk or fly speed
+    usage: /speed <fly|walk> <1-10> [player]
+    permission: frostcore.utility.speed
+  clear:
+    description: Clear inventory
+    usage: /clear [player]
+    permission: frostcore.utility.clear
+  nick:
+    description: Set a nickname
+    usage: /nick [player] <name>
+    permission: frostcore.utility.nick
+  unnick:
+    description: Remove a nickname
+    usage: /unnick [player]
+    permission: frostcore.utility.nick
+  itemrename:
+    description: Rename the held item
+    usage: /itemrename <name>
+    permission: frostcore.utility.rename
+  lore:
+    description: Modify item lore
+    usage: /lore <add|set|remove> [line] <text>
+    permission: frostcore.utility.lore
+  repair:
+    description: Repair the held item or all items
+    usage: /repair [all] [player]
+    permission: frostcore.utility.repair
+  mute:
+    description: Mute a player
+    usage: /mute <player> [time]
+    permission: frostcore.moderation.mute
+  unmute:
+    description: Unmute a player
+    usage: /unmute <player>
+    permission: frostcore.moderation.mute
+  lockchat:
+    description: Lock global chat
+    usage: /lockchat
+    permission: frostcore.moderation.lockchat
+  unlockchat:
+    description: Unlock global chat
+    usage: /unlockchat
+    permission: frostcore.moderation.lockchat
+  freeze:
+    description: Freeze a player
+    usage: /freeze <player>
+    permission: frostcore.moderation.freeze
+  sudo:
+    description: Force a player to run a command or chat
+    usage: /sudo <player> <message|command>
+    permission: frostcore.admin.sudo
+  broadcast:
+    description: Send a server-wide announcement
+    usage: /broadcast <message>
+    permission: frostcore.admin.broadcast
+  chat:
+    description: Chat management tools
+    usage: /chat clear
+    permission: frostcore.moderation.chatclear
+  day:
+    description: Set world time to day
+    usage: /day
+    permission: frostcore.admin.time
+  night:
+    description: Set world time to night
+    usage: /night
+    permission: frostcore.admin.time
+  time:
+    description: Manage world time
+    usage: /time set <value>
+    permission: frostcore.admin.time
+  weather:
+    description: Manage world weather
+    usage: /weather <clear|rain|thunder>
+    permission: frostcore.admin.weather
+  top:
+    description: Teleport to the highest block
+    usage: /top
+    permission: frostcore.utility.top
+  bottom:
+    description: Teleport to the lowest safe block
+    usage: /bottom
+    permission: frostcore.utility.bottom
+  near:
+    description: List nearby players
+    usage: /near
+    permission: frostcore.utility.near
+  coords:
+    description: See current coordinates
+    usage: /coords
+    permission: frostcore.utility.coords
+  back:
+    description: Teleport to your previous location
+    usage: /back
+    permission: frostcore.utility.back
+  invsee:
+    description: View another player's inventory
+    usage: /invsee <player>
+    permission: frostcore.admin.invsee
+  enderchest:
+    description: Open your or another player's ender chest
+    usage: /enderchest [player]
+    aliases: [ec]
+    permission: frostcore.admin.enderchest
+  hat:
+    description: Wear the held item as a hat
+    usage: /hat
+    permission: frostcore.admin.hat
+  whois:
+    description: View detailed player information
+    usage: /whois <player>
+    permission: frostcore.admin.whois
+  smite:
+    description: Strike a player with lightning
+    usage: /smite <player>
+    permission: frostcore.admin.smite
+  vanish:
+    description: Toggle vanish mode
+    usage: /vanish
+    aliases: [v]
+    permission: frostcore.admin.vanish
+  msg:
+    description: Send a private message
+    usage: /msg <player> <message>
+    aliases: [tell, w, whisper, pm]
+    permission: frostcore.message
+  r:
+    description: Reply to a private message
+    usage: /r <message>
+    aliases: [reply]
+    permission: frostcore.message
+  ignore:
+    description: Ignore a player
+    usage: /ignore <player>
+    permission: frostcore.message
+  seen:
+    description: Check when a player was last online
+    usage: /seen <player>
+    permission: frostcore.admin.whois
+  kick:
+    description: Kick a player from the server
+    usage: /kick <player> [reason]
+    permission: frostcore.moderation.kick
+  ban:
+    description: Ban a player from the server
+    usage: /ban <player> [time] [reason]
+    permission: frostcore.moderation.ban
+  unban:
+    description: Unban a player
+    usage: /unban <player>
+    permission: frostcore.moderation.ban
+  warn:
+    description: Warn a player
+    usage: /warn <player> [reason]
+    permission: frostcore.moderation.warn
+  tpall:
+    description: Teleport all players to you
+    usage: /tpall
+    permission: frostcore.admin.tpall
+  ping:
+    description: Check your ping or another player's ping
+    usage: /ping [player]
+    permission: frostcore.ping
+  skull:
+    description: Get a player's head as an item
+    usage: /skull <player>
+    permission: frostcore.admin.skull
+  socialspy:
+    description: Toggle social spy to see all private messages
+    usage: /socialspy
+    permission: frostcore.admin.socialspy
+  ram:
+    description: View server performance information
+    usage: /ram
+    permission: frostcore.admin.ram
 
 permissions:
+  frostcore.ping:
+    description: Allows checking ping
+    default: true
+  frostcore.admin.ping.others:
+    description: Allows checking other players' ping
+    default: op
+  frostcore.moderation.kick:
+    description: Allows kicking players
+    default: op
+  frostcore.moderation.ban:
+    description: Allows banning/unbanning players
+    default: op
+  frostcore.moderation.warn:
+    description: Allows warning players
+    default: op
+  frostcore.admin.tpall:
+    description: Allows teleporting all players
+    default: op
+  frostcore.admin.skull:
+    description: Allows getting player heads
+    default: op
+  frostcore.admin.socialspy:
+    description: Allows seeing all private messages
+    default: op
+  frostcore.admin.ram:
+    description: Allows viewing server performance info
+    default: op
+  frostcore.message:
+    description: Allows using private messaging
+    default: true
+  frostcore.admin.vanish:
+    description: Allows toggling vanish
+    default: op
+  frostcore.admin.vanish.see:
+    description: Allows seeing vanished players
+    default: op
+  frostcore.admin.invsee:
+    description: Allows viewing other players' inventories
+    default: op
+  frostcore.admin.enderchest:
+    description: Allows opening ender chests
+    default: op
+  frostcore.admin.hat:
+    description: Allows wearing items as hats
+    default: op
+  frostcore.admin.whois:
+    description: Allows viewing player info
+    default: op
+  frostcore.admin.smite:
+    description: Allows striking players with lightning
+    default: op
+  frostcore.admin.sudo:
+    description: Allows forcing players to chat/run commands
+    default: op
+  frostcore.admin.broadcast:
+    description: Allows server-wide broadcasts
+    default: op
+  frostcore.moderation.chatclear:
+    description: Allows clearing the chat
+    default: op
+  frostcore.admin.time:
+    description: Allows changing world time
+    default: op
+  frostcore.admin.weather:
+    description: Allows changing world weather
+    default: op
+  frostcore.utility.top:
+    description: Allows teleporting to the top
+    default: op
+  frostcore.utility.bottom:
+    description: Allows teleporting to the bottom
+    default: op
+  frostcore.utility.near:
+    description: Allows seeing nearby players
+    default: true
+  frostcore.utility.coords:
+    description: Allows seeing coordinates
+    default: op
+  frostcore.utility.back:
+    description: Allows using /back command
+    default: true
+  frostcore.moderation.mute:
+    description: Allows muting players
+    default: op
+  frostcore.moderation.lockchat:
+    description: Allows locking/unlocking chat
+    default: op
+  frostcore.moderation.freeze:
+    description: Allows freezing players
+    default: op
+  frostcore.moderation.bypass.lockchat:
+    description: Allows chatting when locked
+    default: op
   frostcore.team.use:
     description: Allows basic access to /team command
     default: true
@@ -142,6 +447,57 @@ permissions:
   frostcore.bypass.delay:
     description: Bypass teleport delays
     default: false
+  frostcore.gamemode:
+    description: Allows changing self gamemode
+    default: op
+  frostcore.gamemode.others:
+    description: Allows changing other players' gamemode
+    default: op
+  frostcore.gamemode.survival:
+    description: Allows changing gamemode to survival
+    default: op
+  frostcore.gamemode.creative:
+    description: Allows changing gamemode to creative
+    default: op
+  frostcore.gamemode.adventure:
+    description: Allows changing gamemode to adventure
+    default: op
+  frostcore.gamemode.spectator:
+    description: Allows changing gamemode to spectator
+    default: op
+  frostcore.utility.others:
+    description: Allows using utility commands on other players
+    default: op
+  frostcore.utility.fly:
+    description: Allows flight
+    default: op
+  frostcore.utility.heal:
+    description: Allows healing
+    default: op
+  frostcore.utility.feed:
+    description: Allows feeding
+    default: op
+  frostcore.utility.god:
+    description: Allows god mode
+    default: op
+  frostcore.utility.speed:
+    description: Allows changing speed
+    default: op
+  frostcore.utility.clear:
+    description: Allows clearing inventory
+    default: op
+  frostcore.utility.nick:
+    description: Allows setting nicknames
+    default: op
+  frostcore.utility.rename:
+    description: Allows renaming items
+    default: op
+  frostcore.utility.lore:
+    description: Allows modifying item lore
+    default: op
+  frostcore.utility.repair:
+    description: Allows repairing items
+    default: op
 
 libraries:
   - com.zaxxer:HikariCP:5.1.0
