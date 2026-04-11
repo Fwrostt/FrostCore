@@ -66,16 +66,5 @@ database:
     password: "password"
     pool-size: 10
 ```
-
-## 🛠️ Building From Source
-To compile FrostCore yourself, you will need JDK 21+ and Gradle.
-
-```bash
-git clone https://github.com/YourName/FrostCore.git
-cd FrostCore
-gradlew assemble
-```
-The compiled fat-jar will be located in `build/libs/`.
-
 ---
 *Created by [Frost]()*

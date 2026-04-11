@@ -56,6 +56,11 @@ public class TpaHereCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (target.getPersistentDataContainer().has(dev.frost.frostcore.cmds.TpaToggleCmd.TPA_DISABLED_KEY, org.bukkit.persistence.PersistentDataType.BYTE)) {
+            mm.sendRaw(player, "<red>" + target.getName() + " has teleport requests disabled.");
+            return true;
+        }
+
         if (inviteManager.hasInviteFrom(target.getUniqueId(), InviteType.TPA_HERE, player.getUniqueId())) {
             mm.send(player, "teleport.tpa-already-sent");
             return true;

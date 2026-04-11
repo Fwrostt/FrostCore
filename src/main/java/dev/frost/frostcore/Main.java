@@ -322,6 +322,11 @@ public final class Main extends JavaPlugin {
         TpaHereCmd tpahereCmd = new TpaHereCmd();
         cmdUtil.registerCommand("tpahere", tpahereCmd, tpahereCmd);
         
+        TpaToggleCmd tpaToggleCmd = new TpaToggleCmd();
+        cmdUtil.registerCommand("tpatoggle", tpaToggleCmd, null);
+        cmdUtil.registerCommand("tpaoff", tpaToggleCmd, null);
+        cmdUtil.registerCommand("tpaon", tpaToggleCmd, null);
+        
         TpAcceptCmd tpacceptCmd = new TpAcceptCmd();
         cmdUtil.registerCommand("tpaccept", tpacceptCmd, tpacceptCmd);
         

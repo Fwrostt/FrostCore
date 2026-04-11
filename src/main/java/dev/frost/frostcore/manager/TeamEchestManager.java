@@ -63,30 +63,43 @@ public class TeamEchestManager {
         String key = team.getName().toLowerCase();
         int slots = getSlots();
 
-        Inventory inv = openEchests.get(key);
-
-        if (inv == null) {
-            // Load from database (or create empty)
-            inv = Bukkit.createInventory(null, slots,
-                    miniMessage.deserialize("<gold>" + team.getName() + "'s Echest</gold>"));
-
-            String base64 = db.loadEchest(team.getName());
-            if (base64 != null) {
-                ItemStack[] items = ItemStackSerializer.fromBase64(base64);
-                if (items != null) {
-                    // Copy items respecting the current slot count
-                    for (int i = 0; i < Math.min(items.length, slots); i++) {
-                        inv.setItem(i, items[i]);
-                    }
-                }
-            }
-
-            openEchests.put(key, inv);
+        Inventory cached = openEchests.get(key);
+        if (cached != null) {
+            openInventory(player, cached, key);
+            return;
         }
 
-        player.openInventory(inv);
+        player.sendMessage(miniMessage.deserialize("<gray>Opening team echest...</gray>"));
 
-        // Tag the player so the listener knows this is an echest
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            String base64 = db.loadEchest(team.getName());
+
+            Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                if (!player.isOnline()) return;
+
+                Inventory inv = openEchests.get(key);
+                if (inv == null) {
+                    inv = Bukkit.createInventory(null, slots,
+                            miniMessage.deserialize("<gold>" + team.getName() + "'s Echest</gold>"));
+
+                    if (base64 != null) {
+                        ItemStack[] items = ItemStackSerializer.fromBase64(base64);
+                        if (items != null) {
+                            for (int i = 0; i < Math.min(items.length, slots); i++) {
+                                inv.setItem(i, items[i]);
+                            }
+                        }
+                    }
+                    openEchests.put(key, inv);
+                }
+
+                openInventory(player, inv, key);
+            });
+        });
+    }
+
+    private void openInventory(Player player, Inventory inv, String key) {
+        player.openInventory(inv);
         player.setMetadata("viewing_team_echest",
                 new org.bukkit.metadata.FixedMetadataValue(Main.getInstance(), key));
     }

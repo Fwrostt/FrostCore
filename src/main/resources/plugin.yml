@@ -29,6 +29,11 @@ commands:
     description: Decline a teleport request
     usage: /tpdecline [player]
     permission: frostcore.tpa
+  tpatoggle:
+    aliases: [tpaoff, tpaon]
+    description: Toggle receiving teleport requests
+    usage: /tpatoggle
+    permission: frostcore.tpa
   warp:
     description: Teleport to a server warp
     usage: /warp [name]

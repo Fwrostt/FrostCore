@@ -485,12 +485,14 @@ public class TeamManager {
             }
         }
 
-        // Update DB atomically first — if this fails, in-memory stays consistent
+        // Update DB atomically asynchronously — optimistic memory update
         if (db != null) {
-            boolean success = db.renameTeam(oldNameLower, newNameLower);
-            if (!success) {
-                throw new TeamException(TeamError.TEAM_NOT_FOUND, "Database rename failed");
-            }
+            org.bukkit.Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+                boolean success = db.renameTeam(oldNameLower, newNameLower);
+                if (!success) {
+                    dev.frost.frostcore.utils.FrostLogger.error("Database rename failed for team " + oldNameLower + " -> " + newNameLower);
+                }
+            });
         }
 
         // Update in-memory map

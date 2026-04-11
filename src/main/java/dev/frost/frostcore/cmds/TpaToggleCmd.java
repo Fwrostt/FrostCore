@@ -1,0 +1,33 @@
+package dev.frost.frostcore.cmds;
+
+import dev.frost.frostcore.Main;
+import dev.frost.frostcore.manager.MessageManager;
+import org.bukkit.NamespacedKey;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+
+public class TpaToggleCmd implements CommandExecutor {
+
+    public static final NamespacedKey TPA_DISABLED_KEY = new NamespacedKey(Main.getInstance(), "tpa_disabled");
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) return true;
+
+        MessageManager mm = MessageManager.get();
+
+        if (player.getPersistentDataContainer().has(TPA_DISABLED_KEY, PersistentDataType.BYTE)) {
+            player.getPersistentDataContainer().remove(TPA_DISABLED_KEY);
+            mm.sendRaw(player, "<green>Teleport requests are now <bold>ENABLED</bold>.");
+        } else {
+            player.getPersistentDataContainer().set(TPA_DISABLED_KEY, PersistentDataType.BYTE, (byte) 1);
+            mm.sendRaw(player, "<red>Teleport requests are now <bold>DISABLED</bold>.");
+        }
+
+        return true;
+    }
+}
