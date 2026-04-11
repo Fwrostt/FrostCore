@@ -216,19 +216,19 @@ commands:
   top:
     description: Teleport to the highest block
     usage: /top
-    permission: frostcore.utility.top
+    permission: frostcore.admin.top
   bottom:
     description: Teleport to the lowest safe block
     usage: /bottom
-    permission: frostcore.utility.bottom
+    permission: frostcore.admin.bottom
   near:
     description: List nearby players
     usage: /near
-    permission: frostcore.utility.near
+    permission: frostcore.admin.near
   coords:
-    description: See current coordinates
-    usage: /coords
-    permission: frostcore.utility.coords
+    description: See your or another player's coordinates
+    usage: /coords [player]
+    permission: frostcore.admin.coords
   back:
     description: Teleport to your previous location
     usage: /back
@@ -381,17 +381,29 @@ permissions:
   frostcore.admin.weather:
     description: Allows changing world weather
     default: op
+  frostcore.admin.top:
+    description: Allows teleporting to the top block
+    default: op
+  frostcore.admin.bottom:
+    description: Allows teleporting to the bottom safe block
+    default: op
+  frostcore.admin.near:
+    description: Allows listing nearby players
+    default: op
+  frostcore.admin.coords:
+    description: Allows viewing coordinates
+    default: op
   frostcore.utility.top:
-    description: Allows teleporting to the top
+    description: Deprecated - use frostcore.admin.top
     default: op
   frostcore.utility.bottom:
-    description: Allows teleporting to the bottom
+    description: Deprecated - use frostcore.admin.bottom
     default: op
   frostcore.utility.near:
-    description: Allows seeing nearby players
-    default: true
+    description: Deprecated - use frostcore.admin.near
+    default: op
   frostcore.utility.coords:
-    description: Allows seeing coordinates
+    description: Deprecated - use frostcore.admin.coords
     default: op
   frostcore.utility.back:
     description: Allows using /back command

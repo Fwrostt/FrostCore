@@ -8,6 +8,7 @@ import dev.frost.frostcore.manager.VanishManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -49,6 +50,10 @@ public class AdminExtraCmds implements CommandExecutor, TabCompleter {
             case "skull" -> handleSkull(sender, args);
             case "socialspy" -> handleSocialSpy(sender);
             case "ram" -> handleRam(sender);
+            case "top" -> handleTop(sender);
+            case "bottom" -> handleBottom(sender);
+            case "near" -> handleNear(sender);
+            case "coords" -> handleCoords(sender, args);
         }
 
         return true;
@@ -564,6 +569,132 @@ public class AdminExtraCmds implements CommandExecutor, TabCompleter {
         sender.sendMessage(mini.deserialize(bar));
     }
 
+    // ━━━ TOP ━━━
+
+    private void handleTop(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Only players can use this command.");
+            return;
+        }
+        if (!player.hasPermission("frostcore.admin.top")) {
+            mm.send(player, "general.no-permission");
+            return;
+        }
+
+        Location loc = player.getLocation();
+        int topY = player.getWorld().getHighestBlockYAt(loc);
+        Location topLoc = new Location(player.getWorld(), loc.getX(), topY + 1, loc.getZ(), loc.getYaw(), loc.getPitch());
+
+        player.teleport(topLoc);
+        mm.send(player, "admin.top-success");
+    }
+
+    // ━━━ BOTTOM ━━━
+
+    private void handleBottom(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Only players can use this command.");
+            return;
+        }
+        if (!player.hasPermission("frostcore.admin.bottom")) {
+            mm.send(player, "general.no-permission");
+            return;
+        }
+
+        Location loc = player.getLocation();
+        int minY = player.getWorld().getMinHeight();
+        int currentY = loc.getBlockY();
+
+        Location target = null;
+
+        for (int y = minY; y < currentY; y++) {
+            Block block = player.getWorld().getBlockAt(loc.getBlockX(), y, loc.getBlockZ());
+            if (isSafe(block)) {
+                target = block.getLocation().add(0.5, 1, 0.5);
+                target.setYaw(loc.getYaw());
+                target.setPitch(loc.getPitch());
+                break;
+            }
+        }
+
+        if (target != null) {
+            player.teleport(target);
+            mm.send(player, "admin.bottom-success");
+        } else {
+            mm.send(player, "admin.bottom-failed");
+        }
+    }
+
+    private boolean isSafe(Block block) {
+        return block.getType().isSolid() &&
+               block.getRelative(0, 1, 0).getType() == Material.AIR &&
+               block.getRelative(0, 2, 0).getType() == Material.AIR;
+    }
+
+    // ━━━ NEAR ━━━
+
+    private void handleNear(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Only players can use this command.");
+            return;
+        }
+        if (!player.hasPermission("frostcore.admin.near")) {
+            mm.send(player, "general.no-permission");
+            return;
+        }
+
+        double radius = Main.getInstance().getConfig().getDouble("utility.near-radius", 100.0);
+        List<Player> nearby = player.getWorld().getPlayers().stream()
+                .filter(p -> !p.equals(player))
+                .filter(p -> p.getLocation().distance(player.getLocation()) <= radius)
+                .sorted(Comparator.comparingDouble(p -> p.getLocation().distance(player.getLocation())))
+                .collect(Collectors.toList());
+
+        if (nearby.isEmpty()) {
+            mm.send(player, "admin.near-none");
+            return;
+        }
+
+        mm.send(player, "admin.near-title", Map.of("radius", String.valueOf((int)radius)));
+        for (Player p : nearby) {
+            int dist = (int) p.getLocation().distance(player.getLocation());
+            mm.send(player, "admin.near-player", Map.of("player", p.getName(), "distance", String.valueOf(dist)));
+        }
+    }
+
+    // ━━━ COORDS ━━━
+
+    private void handleCoords(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("frostcore.admin.coords")) {
+            mm.send(sender, "general.no-permission");
+            return;
+        }
+
+        Player target;
+        if (args.length > 0) {
+            target = Bukkit.getPlayer(args[0]);
+            if (target == null) {
+                mm.send(sender, "admin.player-not-found");
+                return;
+            }
+        } else if (sender instanceof Player player) {
+            target = player;
+        } else {
+            sender.sendMessage("Console must specify a player: /coords <player>");
+            return;
+        }
+
+        Location loc = target.getLocation();
+        String path = target.equals(sender) ? "admin.coords-self" : "admin.coords-other";
+        mm.send(sender, path, Map.of(
+                "player", target.getName(),
+                "x", String.valueOf(loc.getBlockX()),
+                "y", String.valueOf(loc.getBlockY()),
+                "z", String.valueOf(loc.getBlockZ()),
+                "world", target.getWorld().getName()
+        ));
+    }
+
     // ━━━ TAB COMPLETE ━━━
 
     @Override
@@ -571,7 +702,7 @@ public class AdminExtraCmds implements CommandExecutor, TabCompleter {
         String cmd = label.toLowerCase();
         if (args.length == 1) {
             if (cmd.equals("hat") || cmd.equals("vanish") || cmd.equals("v") || cmd.equals("tpall")
-                    || cmd.equals("socialspy") || cmd.equals("ram")) {
+                    || cmd.equals("socialspy") || cmd.equals("ram") || cmd.equals("top") || cmd.equals("bottom") || cmd.equals("near")) {
                 return Collections.emptyList();
             }
             return Bukkit.getOnlinePlayers().stream()

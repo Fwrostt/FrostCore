@@ -80,7 +80,7 @@ public class InvseeGui {
         this.targetName = target.getName();
         this.isOffline = false;
         this.gui = Bukkit.createInventory(null, 54,
-                MM.deserialize("<gradient:#FF5555:#FF55FF>InvSee++</gradient> <dark_gray>» <white>" + target.getName()));
+                MM.deserialize(target.getName()));
         loadFromPlayer(target);
     }
 

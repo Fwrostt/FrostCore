@@ -31,6 +31,8 @@ public class UtilityMiscCmds implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        
+
         String cmd = label.toLowerCase();
 
         switch (cmd) {

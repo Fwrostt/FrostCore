@@ -78,7 +78,7 @@ public class MessageManager {
 
             String key = message.substring(start + 1, end);
 
-            if (key.contains(":")) {
+            if (key.contains(":") || !config.isString(key)) {
                 searchFrom = end + 1;
                 continue;
             }

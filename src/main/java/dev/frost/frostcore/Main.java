@@ -218,12 +218,6 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("time", adminMiscCmds, adminMiscCmds);
         cmdUtil.registerCommand("weather", adminMiscCmds, adminMiscCmds);
 
-        UtilityMiscCmds utilMiscCmds = new UtilityMiscCmds();
-        cmdUtil.registerCommand("top", utilMiscCmds, utilMiscCmds);
-        cmdUtil.registerCommand("bottom", utilMiscCmds, utilMiscCmds);
-        cmdUtil.registerCommand("near", utilMiscCmds, utilMiscCmds);
-        cmdUtil.registerCommand("coords", utilMiscCmds, utilMiscCmds);
-
         BackCmd backCmd = new BackCmd();
         cmdUtil.registerCommand("back", backCmd, backCmd);
 
@@ -237,7 +231,6 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("smite", adminExtraCmds, adminExtraCmds);
         cmdUtil.registerCommand("vanish", adminExtraCmds, adminExtraCmds);
         cmdUtil.registerCommand("v", adminExtraCmds, adminExtraCmds);
-        cmdUtil.registerCommand("seen", adminExtraCmds, adminExtraCmds);
         cmdUtil.registerCommand("kick", adminExtraCmds, adminExtraCmds);
         cmdUtil.registerCommand("ban", adminExtraCmds, adminExtraCmds);
         cmdUtil.registerCommand("unban", adminExtraCmds, adminExtraCmds);
@@ -247,6 +240,10 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("skull", adminExtraCmds, adminExtraCmds);
         cmdUtil.registerCommand("socialspy", adminExtraCmds, adminExtraCmds);
         cmdUtil.registerCommand("ram", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("top", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("bottom", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("near", adminExtraCmds, adminExtraCmds);
+        cmdUtil.registerCommand("coords", adminExtraCmds, adminExtraCmds);
 
         MessageCmds msgCmds = new MessageCmds();
         cmdUtil.registerCommand("msg", msgCmds, msgCmds);
