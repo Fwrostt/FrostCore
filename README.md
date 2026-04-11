@@ -2,11 +2,11 @@
 
 # ❄️ FrostCore
 
-**A robust, feature-rich SMP Core Plugin for modern Minecraft servers.**
+**A high-performance, premium SMP Core for modern Minecraft servers.**
 
 [![Java 21](https://img.shields.io/badge/Java-21-orange.svg)](https://adoptium.net/)
 [![PaperMC](https://img.shields.io/badge/Paper-1.21-white.svg)](https://papermc.io/)
-[![Version](https://img.shields.io/badge/Version-1.1-blue.svg)](#)
+[![Version](https://img.shields.io/badge/Version-1.1.5-blue.svg)](#)
 
 </div>
 
@@ -14,57 +14,100 @@
 
 ## 📖 Overview
 
-**FrostCore** is an all-in-one survival multiplayer (SMP) core plugin built natively for Paper 1.21. Designed to replace multiple unoptimized plugins, FrostCore offers powerful performance while bringing essential SMP features together under a single, unified system. 
+**FrostCore** is a professional-grade survival multiplayer (SMP) core plugin built natively for **Paper 1.21**. It unifies essential server functionalities—Teams, Homes, Warps, and Teleportation—into a single, high-performance system. 
 
-From fundamental utilities like teleportation and homes to an extensive and feature-packed Team management system, FrostCore is built to handle it all without sacrificing server performance.
+Designed with a focus on **Premium Aesthetics** and **Thread-Safe Performance**, FrostCore ensures your server stays lag-free while providing a top-tier user experience.
 
-## ✨ Key Features
+---
 
-### 🏕️ Essential Server Utilities
-- **Universal Teleportation:** Robust handling of player teleports including `/tpa`, `/tpahere`, `/tpaccept`, and `/tpdecline`. Features highly interactive, clickable chat interfaces for teleport requests.
-- **Homes, Warps & Spawn:** Set global `/spawn` and server warps (`/warp`, `/setwarp`, `/delwarp`). Supports beautifully formatted paginated warp grids.
-- **Admin Teleports:** Fully equipped with overrides including `/tp`, `/tp2p`, `/tphere`, and `/otp` (for teleporting to offline players' last known coordinates).
-- **Aesthetics & UI:** Teleportations process through configurable warmup delays and cooldowns, paired with perfectly smooth action-bar progress indicators, sound chimes, titles, and localized messages. Configurable `admin-bypass` allows for accurate testing.
+## ✨ Key Modules
 
-### 🛡️ Comprehensive Team System
-FrostCore includes a fully-fledged chunk of features solely dedicated to clans, parties, or team systems!
-- **Role Hierarchy:** Structured roles with specific permissions including Owners (highest) and Admins.
-- **Team Homes & Warps:** Teams can have a private team home and create their own custom warp points for internal use with manageable cooldowns and delays.
-- **Shared Storage:** Shared Team Ender-Chests (`/team echest`) whose slot capacity can be configured.
-- **Team Relations:** Establish deep alliances or bitter rivalries by setting team allies or enemies.
-- **Team Chat & Toggles:** Dedicated private chat channels for teams (`/team chat`), and PvP toggling with friendly-fire safeguards.
-- **Invite & Pagination System:** Time-limited team invites, ally requests, and paginated `/team list` formatting.
+### 🏠 Personal Homes System
+A robust, GUI-driven home management system.
+- **Dynamic GUI:** Manage homes with `/homes`. Features smooth blue gradients, intuitive controls (Left-Click to TP, Right-Click to Delete, Middle-Click to Rename).
+- **Flexible Limits:** Configure global home limits or use permissions (`frostcore.homes.limit.X`) for VIP ranks.
+- **Auto-Naming:** Simple `/sethome` automatically handles naming (Home, Home 2, etc.) if no name is provided.
 
-### ⚙️ Under The Hood
-- **Performance First:** Written asynchronously where possible to keep the main thread ticking at 20 TPS.
-- **Database Support:** Built-to-last generic SQL abstraction utilizing `HikariCP` connection pooling. Supports both **SQLite** (local, no setup required) and **MySQL** (cross-server syncing).
-- **PlaceholderAPI Integration:** Expose your server to millions of other plugins via PAPI. Hook into FrostCore's stats and team data.
+### 📍 Professional Warp System
+Universal server navigation made beautiful.
+- **Warp Browser:** `/warps` opens a sleek, paginated GUI.
+- **Smart Centering:** Items are mathematically centered if only a few warps exist, ensuring a premium feel.
+- **Configurable Items:** Customize material, lore, and glow for every warp in `warps.yml`.
 
-## 📦 Installation
-1. Download the latest `FrostCore.jar` from the releases section.
-2. Optional: Ensure [PlaceholderAPI](https://modrinth.com/plugin/placeholderapi) is installed if you want to use FrostCore's placeholders.
-3. Drop the jar file into your server's `plugins/` folder.
-4. Start the server (Requires **Java 21**, PaperMC **1.21**).
-5. Open `plugins/FrostCore/config.yml` to set up your database provider (defaults to SQLite).
-6. Configure `messages.yml` to your desired server theme and colors.
-7. Restart the server!
+### 🛡️ Feature-Rich Team System
+The ultimate clan management module.
+- **Role Hierarchy:** Owners, Admins, and Members with distinct powers.
+- **Visual Team Info:** `/team info <name>` shows a professional dashboard with player heads, stats, and relations.
+- **Team Relations:** Declare Allies and Enemies to define your server's diplomacy.
+- **Shared Assets:** Private Team Homes, shared Ender-Chests (`/team echest`), and Team Chat.
+- **Confirmation GUIs:** Safeguards for disbanding, leaving, or joining teams.
 
-## 📜 Configuration
-Almost everything is customizable, including permissions, role limits, name filters, teleport delays, and every single plugin message.
+---
 
-### Database
-If utilizing a MySQL database, update your credentials in `config.yml`:
+## 🎨 UI & Customization
+
+FrostCore is built to be "Eye-Candy" for your players.
+
+### 📱 GUI Customization
+- **Borders Toggle:** Enable or disable the black-glass frame borders globally in `config.yml`.
+- **Ocean-Blue Gradients:** All UIs use a soothing, non-italicized blue color scheme designed for readability and elegance.
+- **Vertical Separators:** Structural glass panes keep different UI sections (like Team vs Personal Homes) clearly defined.
+
+### ⚡ Teleportation Engine
+- **Action Bar Styles:** Switch between a smooth filling `BAR` (●●●○○) or minimalist `TEXT` ("Teleporting in 3s...") style.
+- **Movement Safeguards:** Teleports are cancelled if the player moves, preventing combat escapes.
+- **Asynchronous Loading:** Chunks are pre-loaded at the destination to ensure zero-lag arrivals.
+
+---
+
+## 📋 Commands & Permissions
+
+### Player Commands
+| Command | Description | Permission |
+|:---|:---|:---|
+| `/home [name]` | Teleport to a personal home | `frostcore.home` |
+| `/sethome [name]` | Create a new home | `frostcore.sethome` |
+| `/delhome <name>` | Delete a home | `frostcore.delhome` |
+| `/homes` | Open the homes GUI | `frostcore.homes` |
+| `/warp <name>` | Teleport to a server warp | `frostcore.warp` |
+| `/warps` | Open the warp browser | `frostcore.warps` |
+| `/team create <name>` | Create a new team | `frostcore.team.create` |
+| `/team info [name]` | View team information | `frostcore.team.info` |
+| `/team list` | List all server teams | `frostcore.team.list` |
+| `/spawn` | Teleport to global spawn | `frostcore.spawn` |
+
+### Admin Commands
+| Command | Description | Permission |
+|:---|:---|:---|
+| `/setwarp <name>` | Create a server warp | `frostcore.admin` |
+| `/delwarp <name>` | Delete a server warp | `frostcore.admin` |
+| `/setspawn` | Set global spawn point | `frostcore.admin` |
+| `/fc reload` | Reload configurations | `frostcore.admin` |
+
+---
+
+## ⚙️ Configuration
+
+### Database Support
+FrostCore supports high-performance database backends via **HikariCP**.
+- **SQLite:** Default (no setup required).
+- **MySQL:** Recommended for cross-server synchronization.
 
 ```yaml
 database:
-  type: MYSQL # Change from SQLITE                    
+  type: MYSQL
   mysql:
     host: localhost
     port: 3306
     database: frostcore
     username: root
     password: "password"
-    pool-size: 10
 ```
+
 ---
-*Created by [Frost]()*
+
+## 📦 Developer Info
+FrostCore includes an internal **GUI API** used to build all menus. All Java source code is meticulously cleaned of inline comments for a professional look, while preserving essential **Javadoc** for developer reference.
+
+*Built for quality by [Frost]()*
+
