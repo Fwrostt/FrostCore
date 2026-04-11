@@ -6,11 +6,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Represents a pending invite between two players.
- * Invites are generic — the {@link InviteType} and metadata
- * determine the context (team join, ally request, TPA, etc.).
- */
 @Getter
 public class Invite {
 
@@ -37,17 +32,12 @@ public class Invite {
         return System.currentTimeMillis() >= expiresAt;
     }
 
-    /**
-     * Remaining time in seconds (0 if expired).
-     */
     public int getRemainingSeconds() {
         long remaining = expiresAt - System.currentTimeMillis();
         return remaining > 0 ? (int) (remaining / 1000) : 0;
     }
 
-    /**
-     * Get a metadata value by key, or a default if not present.
-     */
+    
     public String getMeta(String key, String def) {
         return metadata.getOrDefault(key, def);
     }
@@ -56,4 +46,3 @@ public class Invite {
         return metadata.get(key);
     }
 }
-
