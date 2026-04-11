@@ -173,9 +173,26 @@ public class InviteManager {
 
     /**
      * Cancel all invites for a specific target (e.g. on player quit).
+     * Does NOT fire any callbacks — this is a silent removal.
      */
     public void cancelAllFor(UUID target) {
         invites.remove(target);
+    }
+
+    /**
+     * Cancel all invites that were SENT by the given UUID, regardless of target.
+     * Call this when the sender disconnects so stale invites are removed from
+     * all potential recipients' inboxes.
+     * Does NOT fire any callbacks — this is a silent removal.
+     */
+    public void cancelAllSentBy(UUID sender) {
+        for (Map<InviteType, List<Invite>> byType : invites.values()) {
+            for (List<Invite> list : byType.values()) {
+                synchronized (list) {
+                    list.removeIf(inv -> inv.getSender().equals(sender));
+                }
+            }
+        }
     }
 
     /**

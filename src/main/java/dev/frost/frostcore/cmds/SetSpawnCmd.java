@@ -20,6 +20,11 @@ public class SetSpawnCmd implements CommandExecutor {
             return true;
         }
 
+        if (!player.hasPermission("frostcore.admin")) {
+            mm.sendRaw(player, "<red>You don't have permission to use this command.");
+            return true;
+        }
+
         warpManager.setSpawn(player.getLocation());
         mm.send(player, "teleport.spawn-set");
 

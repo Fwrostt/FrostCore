@@ -74,10 +74,23 @@ public class ConfigManager {
 
     public List<String> getStringList(String path) { return config.getStringList(path); }
 
+    /**
+     * Update a config value in memory only. Call {@link #saveConfig()} separately
+     * if you need the value persisted to disk.
+     */
     public void set(String path, Object value) {
+        config.set(path, value);
+    }
+
+    /**
+     * Update a config value and immediately persist to disk.
+     * Prefer {@link #set(String, Object)} for bulk updates to avoid redundant I/O.
+     */
+    public void setAndSave(String path, Object value) {
         config.set(path, value);
         saveConfig();
     }
+
     public boolean contains(String path) { return config.contains(path); }
     public FileConfiguration getConfig() { return config; }
 }

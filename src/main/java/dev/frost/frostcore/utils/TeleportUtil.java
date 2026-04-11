@@ -108,30 +108,31 @@ public class TeleportUtil {
             if (success && player.isOnline()) {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     mm.send(player, successMsgPath, extraPlaceholders);
-
-                    if (soundEnabled()) {
-                        playTeleportSuccessSound(player);
-                    }
-
-                    if (particlesEnabled()) {
-                        playTeleportParticles(player);
-                    }
-
-                    if (titleEnabled()) {
-                        player.showTitle(Title.title(
-                                Component.empty(),
-                                miniMessage.deserialize("<gradient:#FFD700:#FFA500>Teleported!</gradient>"),
-                                Title.Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ofMillis(400))
-                        ));
-                    }
-
-                    // Clear action bar after tp
-                    if (actionBarEnabled()) {
-                        player.sendActionBar(Component.empty());
-                    }
+                    playArrivalEffects(player);
                 });
             }
         });
+    }
+
+    /**
+     * Play all configured arrival effects (sound, particles, title, action-bar clear).
+     * Called after every successful teleport, both instant and delayed.
+     */
+    private void playArrivalEffects(Player player) {
+        if (soundEnabled())     playTeleportSuccessSound(player);
+        if (particlesEnabled()) playTeleportParticles(player);
+
+        if (titleEnabled()) {
+            player.showTitle(Title.title(
+                    Component.empty(),
+                    miniMessage.deserialize("<gradient:#FFD700:#FFA500>Teleported!</gradient>"),
+                    Title.Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ofMillis(400))
+            ));
+        }
+
+        if (actionBarEnabled()) {
+            player.sendActionBar(Component.empty());
+        }
     }
 
     private void startDelayedTeleport(Player player, Location target, int delaySeconds,
@@ -303,21 +304,7 @@ public class TeleportUtil {
     public void teleportInstant(Player player, Location target) {
         player.teleportAsync(target).thenAccept(success -> {
             if (success && player.isOnline()) {
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    if (soundEnabled()) {
-                        playTeleportSuccessSound(player);
-                    }
-                    if (particlesEnabled()) {
-                        playTeleportParticles(player);
-                    }
-                    if (titleEnabled()) {
-                        player.showTitle(Title.title(
-                                Component.empty(),
-                                miniMessage.deserialize("<gradient:#FFD700:#FFA500>Teleported!</gradient>"),
-                                Title.Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ofMillis(400))
-                        ));
-                    }
-                });
+                Bukkit.getScheduler().runTask(plugin, () -> playArrivalEffects(player));
             }
         });
     }

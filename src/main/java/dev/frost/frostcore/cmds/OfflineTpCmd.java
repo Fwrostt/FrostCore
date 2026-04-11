@@ -29,41 +29,54 @@ public class OfflineTpCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (!player.hasPermission("frostcore.admin")) {
+            mm.sendRaw(player, "<red>You don't have permission to use this command.");
+            return true;
+        }
+
         if (args.length < 1) {
             mm.sendRaw(player, "<#B0C4FF>Usage: <white>/otp <offlineplayer>");
             return true;
         }
 
-        OfflinePlayer target = Arrays.stream(Bukkit.getOfflinePlayers())
-                .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(args[0]))
-                .findFirst()
-                .orElse(null);
+        final String targetName = args[0];
 
-        if (target == null) {
-            mm.send(player, "teleport.player-not-found");
-            return true;
-        }
+        // Run the blocking getOfflinePlayers() call asynchronously to avoid main-thread freeze
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            OfflinePlayer target = Arrays.stream(Bukkit.getOfflinePlayers())
+                    .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(targetName))
+                    .findFirst()
+                    .orElse(null);
 
-        Location loc = target.getLocation();
-        if (loc == null || loc.getWorld() == null) {
-            mm.send(player, "teleport.tp-offline-no-data", Map.of("player", target.getName() != null ? target.getName() : args[0]));
-            return true;
-        }
+            // Return to main thread for the teleport
+            Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                if (!player.isOnline()) return;
 
-        teleportUtil.teleportInstant(player, loc);
-        mm.send(player, "teleport.tp-offline", Map.of("player", target.getName() != null ? target.getName() : args[0]));
+                if (target == null) {
+                    mm.send(player, "teleport.player-not-found");
+                    return;
+                }
+
+                Location loc = target.getLocation();
+                if (loc == null || loc.getWorld() == null) {
+                    String name = target.getName() != null ? target.getName() : targetName;
+                    mm.send(player, "teleport.tp-offline-no-data", Map.of("player", name));
+                    return;
+                }
+
+                String name = target.getName() != null ? target.getName() : targetName;
+                teleportUtil.teleportInstant(player, loc);
+                mm.send(player, "teleport.tp-offline", Map.of("player", name));
+            });
+        });
 
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            return Arrays.stream(Bukkit.getOfflinePlayers())
-                    .filter(p -> p.getName() != null)
-                    .map(OfflinePlayer::getName)
-                    .toList();
-        }
+        // Avoid iterating all offline players in the tab completer — too expensive.
+        // Let the sender type the name manually.
         return Collections.emptyList();
     }
 }

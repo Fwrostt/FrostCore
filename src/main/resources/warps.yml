@@ -1,0 +1,45 @@
+# ╔══════════════════════════════════════════════════════╗
+# ║           FrostCore — warps.yml                      ║
+# ║                                                      ║
+# ║  Configures the GUI display for each server warp.    ║
+# ║  Warp locations are managed in-game via /setwarp.    ║
+# ║  This file is auto-updated when warps are created.   ║
+# ╚══════════════════════════════════════════════════════╝
+#
+# ─── Per-warp fields ──────────────────────────────────────────────────────────
+#
+#  display-name  MiniMessage formatted display name shown in the GUI.
+#
+#  material      The Bukkit Material name for the GUI icon.
+#                See https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+#
+#  lore          A list of MiniMessage-formatted lore lines.
+#                Leave as [] to use the default lore.
+#
+#  glow          true/false — whether the item has an enchantment glow effect.
+#
+#  permission    Permission node required to use this warp.
+#                Leave blank ("") to make the warp public.
+#                This permission applies to BOTH /warp <name> and the GUI.
+#
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Example entry (this is just documentation — warps are created via /setwarp):
+#
+#   warps:
+#     shop:
+#       display-name: "<gradient:#FFD700:#FFA500><bold>🛒 Shop</bold></gradient>"
+#       material: EMERALD
+#       lore:
+#         - ""
+#         - "<gray>▸ Visit the server shop"
+#         - "<dark_gray>Buy, sell, and trade!"
+#         - ""
+#       glow: true
+#       permission: ""
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+warps:
+  # Entries are generated automatically when you run /setwarp <name>
+  # You can edit them freely — changes take effect after /frostcore reload

@@ -3,6 +3,7 @@ package dev.frost.frostcore.listeners;
 import dev.frost.frostcore.Main;
 import dev.frost.frostcore.manager.TeamManager;
 import dev.frost.frostcore.teams.Team;
+import dev.frost.frostcore.utils.FrostLogger;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -56,8 +57,9 @@ public class TeamPvPListener implements Listener {
                 }
             }
 
-        } catch (Exception ignored) {
-            // If team lookup fails, allow damage (fail open)
+        } catch (Exception e) {
+            // Fail open — if team lookup fails, allow the hit. Log for debugging.
+            FrostLogger.warn("TeamPvPListener error: " + e.getMessage());
         }
     }
 

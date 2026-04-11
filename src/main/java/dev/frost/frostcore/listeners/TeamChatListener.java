@@ -4,6 +4,7 @@ import dev.frost.frostcore.Main;
 import dev.frost.frostcore.manager.MessageManager;
 import dev.frost.frostcore.manager.TeamManager;
 import dev.frost.frostcore.teams.Team;
+import dev.frost.frostcore.utils.FrostLogger;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -77,8 +78,9 @@ public class TeamChatListener implements Listener {
                     Component.text("[TeamChat:" + team.getName() + "] ").append(formatted)
             );
 
-        } catch (Exception ignored) {
-            // If anything fails, let the message go through normally
+        } catch (Exception e) {
+            // Don't let a chat-routing error silence the player's message
+            FrostLogger.warn("TeamChatListener error for " + player.getName() + ": " + e.getMessage());
         }
     }
 }

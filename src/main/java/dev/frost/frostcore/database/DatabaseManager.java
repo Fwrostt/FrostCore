@@ -201,6 +201,15 @@ public class DatabaseManager {
                 )
             """);
 
+            stmt.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS player_cooldowns (
+                    uuid        VARCHAR(36) NOT NULL,
+                    cooldown_id VARCHAR(64) NOT NULL,
+                    expires_at  BIGINT NOT NULL,
+                    PRIMARY KEY (uuid, cooldown_id)
+                )
+            """);
+
             FrostLogger.info("Database tables verified.");
         } catch (SQLException e) {
             FrostLogger.error("Failed to create database tables!", e);
@@ -793,6 +802,76 @@ public class DatabaseManager {
 
     public void saveSpawnAsync(Location loc) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveSpawn(loc));
+    }
+
+    // ==================== PLAYER COOLDOWNS ====================
+
+    /**
+     * Load all stored (non-expired) cooldowns, keyed by player UUID.
+     * Called synchronously on startup.
+     */
+    public Map<UUID, Map<String, Long>> loadAllCooldowns() {
+        Map<UUID, Map<String, Long>> result = new java.util.LinkedHashMap<>();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM player_cooldowns");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                String id  = rs.getString("cooldown_id");
+                long   exp = rs.getLong("expires_at");
+                result.computeIfAbsent(uuid, k -> new java.util.LinkedHashMap<>()).put(id, exp);
+            }
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to load player cooldowns!", e);
+        }
+        return result;
+    }
+
+    /**
+     * Upsert a single cooldown entry.
+     */
+    public void saveCooldown(UUID uuid, String cooldownId, long expiresAt) {
+        String sql = type == DatabaseType.MYSQL
+                ? "INSERT INTO player_cooldowns (uuid, cooldown_id, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE expires_at=VALUES(expires_at)"
+                : "INSERT OR REPLACE INTO player_cooldowns (uuid, cooldown_id, expires_at) VALUES (?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, cooldownId);
+            ps.setLong(3, expiresAt);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to save cooldown for " + uuid + "/" + cooldownId, e);
+        }
+    }
+
+    /**
+     * Delete a single cooldown entry (expired or cleared).
+     */
+    public void deleteCooldown(UUID uuid, String cooldownId) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "DELETE FROM player_cooldowns WHERE uuid = ? AND cooldown_id = ?")) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, cooldownId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to delete cooldown for " + uuid + "/" + cooldownId, e);
+        }
+    }
+
+    /**
+     * Delete ALL cooldowns for a player.
+     */
+    public void deleteAllCooldowns(UUID uuid) {
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "DELETE FROM player_cooldowns WHERE uuid = ?")) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            FrostLogger.error("Failed to delete all cooldowns for " + uuid, e);
+        }
     }
 }
 

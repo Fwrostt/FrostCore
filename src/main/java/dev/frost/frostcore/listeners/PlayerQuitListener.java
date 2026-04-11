@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.UUID;
+
 /**
  * Cleans up pending invites when a player disconnects.
  */
@@ -15,7 +17,10 @@ public class PlayerQuitListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        // Remove all pending invites targeted at or sent by this player
-        inviteManager.cancelAllFor(event.getPlayer().getUniqueId());
+        UUID uuid = event.getPlayer().getUniqueId();
+        // Cancel all invites this player received
+        inviteManager.cancelAllFor(uuid);
+        // Cancel all invites this player sent to others
+        inviteManager.cancelAllSentBy(uuid);
     }
 }

@@ -1,0 +1,50 @@
+package dev.frost.frostcore.cmds;
+
+import dev.frost.frostcore.Main;
+import dev.frost.frostcore.gui.WarpsGui;
+import dev.frost.frostcore.manager.ConfigManager;
+import dev.frost.frostcore.manager.MessageManager;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+/**
+ * Handles {@code /warps} — opens the interactive warp browser GUI.
+ * <p>
+ * If {@code warps.gui-enabled} is {@code false} in {@code config.yml}, it falls back
+ * to displaying the classic chat warp list instead (delegates to {@link WarpCmd}).
+ */
+public class WarpsCmd implements CommandExecutor {
+
+    private final MessageManager mm     = MessageManager.get();
+    private final ConfigManager  config = Main.getConfigManager();
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Only players can use this command.");
+            return true;
+        }
+
+        if (!player.hasPermission("frostcore.warp")) {
+            mm.sendRaw(player, "<red>You don't have permission to use this command.");
+            return true;
+        }
+
+        if (!config.getBoolean("warps.enabled", true)) {
+            mm.send(player, "teleport.warp-disabled");
+            return true;
+        }
+
+        // If GUI is disabled, fall back to chat list
+        if (!config.getBoolean("warps.gui-enabled", true)) {
+            sender.sendMessage("Use /warp <name> to teleport to a warp.");
+            return true;
+        }
+
+        WarpsGui gui = new WarpsGui(player);
+        gui.open(player);
+        return true;
+    }
+}

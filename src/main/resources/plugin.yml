@@ -1,5 +1,5 @@
 name: FrostCore
-version: '1.1.0'
+version: '1.1.4'
 main: dev.frost.frostcore.Main
 api-version: '1.21'
 authors: [ Frost ]
@@ -35,8 +35,12 @@ commands:
     usage: /tpatoggle
     permission: frostcore.tpa
   warp:
-    description: Teleport to a server warp
-    usage: /warp [name]
+    description: Teleport to a server warp by name
+    usage: /warp <warp>
+    permission: frostcore.warp
+  warps:
+    description: Open the interactive warp browser GUI
+    usage: /warps
     permission: frostcore.warp
   spawn:
     description: Teleport to the server spawn
@@ -71,6 +75,11 @@ commands:
     description: Set the server spawn point
     usage: /setspawn
     permission: frostcore.admin
+  frostcore:
+    description: FrostCore admin utilities
+    usage: /frostcore <reload>
+    permission: frostcore.admin
+    aliases: [fc]
 
 permissions:
   frostcore.team.use:

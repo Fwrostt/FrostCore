@@ -218,40 +218,65 @@ public class Team implements ConfigurationSerializable {
 
     @SuppressWarnings("unchecked")
     public static Team deserialize(Map<String, Object> map) {
-        String name = (String) map.get("name");
-        String tag = (String) map.get("tag");
-        boolean pvp = (boolean) map.get("pvp");
+        String name  = (String) map.get("name");
+        String tag   = (String) map.get("tag");
+        String color = (String) map.get("color");
+        boolean pvp  = (boolean) map.get("pvp");
+
+        // Use createEmpty() so no owner is pre-added — we populate sets explicitly below
+        Team team = createEmpty(name, tag, color != null ? color : "black", pvp);
+
         List<String> ownerList = (List<String>) map.get("owners");
-        UUID owner = UUID.fromString(ownerList.getFirst());
-        Team team = new Team(name, tag, owner, pvp);
-        team.setColor((String) map.get("color"));
-        for (String uuid : ownerList) {
-            team.getOwners().add(UUID.fromString(uuid));
+        if (ownerList != null) {
+            for (String uuid : ownerList) {
+                team.getOwners().add(UUID.fromString(uuid));
+            }
         }
-        for (String uuid : (List<String>) map.get("admins")) {
-            team.getAdmins().add(UUID.fromString(uuid));
+
+        List<String> adminList = (List<String>) map.get("admins");
+        if (adminList != null) {
+            for (String uuid : adminList) {
+                team.getAdmins().add(UUID.fromString(uuid));
+            }
         }
-        for (String uuid : (List<String>) map.get("members")) {
-            team.getMembers().add(UUID.fromString(uuid));
+
+        List<String> memberList = (List<String>) map.get("members");
+        if (memberList != null) {
+            for (String uuid : memberList) {
+                team.getMembers().add(UUID.fromString(uuid));
+            }
         }
+
         if (map.containsKey("home")) {
             team.setHome(deserializeLocation((Map<String, Object>) map.get("home")));
         }
+
         Map<String, Object> warpMap = (Map<String, Object>) map.get("warps");
-        for (Map.Entry<String, Object> entry : warpMap.entrySet()) {
-            Location loc = deserializeLocation((Map<String, Object>) entry.getValue());
-            team.getWarps().put(entry.getKey(), loc);
-        }
-        team.getAllies().addAll((List<String>) map.get("allies"));
-        team.getEnemies().addAll((List<String>) map.get("enemies"));
-        if (map.containsKey("chat-enabled")) {
-            Map<String, Object> chatMap = (Map<String, Object>) map.get("chat-enabled");
-            for (Map.Entry<String, Object> entry : chatMap.entrySet()) {
-                team.getChatEnabled().put(UUID.fromString(entry.getKey()), (Boolean) entry.getValue());
+        if (warpMap != null) {
+            for (Map.Entry<String, Object> entry : warpMap.entrySet()) {
+                Location loc = deserializeLocation((Map<String, Object>) entry.getValue());
+                if (loc != null) team.getWarps().put(entry.getKey(), loc);
             }
         }
+
+        List<String> alliesList = (List<String>) map.get("allies");
+        if (alliesList != null) team.getAllies().addAll(alliesList);
+
+        List<String> enemiesList = (List<String>) map.get("enemies");
+        if (enemiesList != null) team.getEnemies().addAll(enemiesList);
+
+        if (map.containsKey("chat-enabled")) {
+            Map<String, Object> chatMap = (Map<String, Object>) map.get("chat-enabled");
+            if (chatMap != null) {
+                for (Map.Entry<String, Object> entry : chatMap.entrySet()) {
+                    team.getChatEnabled().put(UUID.fromString(entry.getKey()), (Boolean) entry.getValue());
+                }
+            }
+        }
+
         return team;
     }
+
 
     @Override
     public String toString() {

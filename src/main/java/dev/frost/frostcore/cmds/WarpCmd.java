@@ -51,6 +51,14 @@ public class WarpCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // Check per-warp permission (configured in warps.yml)
+        dev.frost.frostcore.manager.WarpItemConfig warpCfg = warpManager.getWarpConfig(warpName);
+        if (warpCfg.requiresPermission() && !player.hasPermission(warpCfg.getPermission())) {
+            mm.sendRaw(player, "<red>✘ You don't have permission to use the <white>"
+                    + warpName + "</white> warp.");
+            return true;
+        }
+
         teleportUtil.teleportWithCooldownAndDelay(
                 player, loc,
                 "warp",
@@ -83,7 +91,9 @@ public class WarpCmd implements CommandExecutor, TabCompleter {
         Component warpLine = Component.empty().append(miniMessage.deserialize(" "));
         int count = 0;
         for (String name : warpNames) {
-            Component warp = miniMessage.deserialize("<click:run_command:'/warp " + name + "'><hover:show_text:'<#A3FFA3>Click to warp to <white>" + name + "</white>'><#B0C4FF>• <white>" + name + "</white></hover></click>");
+            Component warp = miniMessage.deserialize("<#B0C4FF>• <white>" + name + "</white>")
+                    .clickEvent(ClickEvent.runCommand("/warp " + name))
+                    .hoverEvent(HoverEvent.showText(miniMessage.deserialize("<#A3FFA3>Click to warp to <white>" + name + "</white>")));
 
             if (count > 0 && count % 3 == 0) {
                 player.sendMessage(warpLine);

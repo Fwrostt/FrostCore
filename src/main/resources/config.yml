@@ -36,8 +36,27 @@ tpa:
 # Server Warps (admin-created, accessible to all players)
 warps:
   enabled: true
-  cooldown: 10        # Cooldown between warp uses
-  delay: 3            # Warmup delay before teleporting
+  cooldown: 10        # Cooldown between warp uses (seconds)
+  delay: 3            # Warmup delay before teleporting (seconds)
+
+  # ── GUI Warp Browser (/warps) ────────────────────────────────────────────
+  # When gui-enabled is true, /warps opens a chest GUI.
+  # When false, /warps shows the classic chat list.
+  gui-enabled: true
+
+  gui:
+    # Number of chest rows (3–6). Determines how many warp slots fit per page.
+    # rows: 5  →  content area rows 1–3 = 21 slots/page  (recommended)
+    # rows: 6  →  content area rows 1–4 = 28 slots/page
+    rows: 5
+
+    # Content area: slots in this rectangle are filled with warp items.
+    # Leave a 1-slot border on each side for the glass pane frame.
+    content:
+      start-row: 1   # First content row  (0 = top row; keep ≥1 for top border)
+      end-row: 3     # Last content row   (keep ≤ rows-2 to leave space for nav)
+      start-col: 1   # First content col  (0 = left edge; keep ≥1 for side border)
+      end-col: 7     # Last content col   (8 = right edge; keep ≤7 for side border)
 
 # Spawn Settings
 spawn:

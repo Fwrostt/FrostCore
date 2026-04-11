@@ -1,42 +1,47 @@
 package dev.frost.frostcore.manager;
 
-import dev.frost.frostcore.utils.FrostLogger;
-
 import dev.frost.frostcore.Main;
 import dev.frost.frostcore.database.DatabaseManager;
 import dev.frost.frostcore.exceptions.TeamException;
 import dev.frost.frostcore.teams.Team;
 import dev.frost.frostcore.teams.TeamError;
+import dev.frost.frostcore.utils.FrostLogger;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TeamManager {
 
-    private final Map<String, Team> teams = new HashMap<>();
-    private final Map<UUID, Team> playerTeams = new HashMap<>();
+    // ConcurrentHashMap — safe for reads from async DB callbacks
+    private final Map<String, Team> teams = new ConcurrentHashMap<>();
+    private final Map<UUID, Team> playerTeams = new ConcurrentHashMap<>();
+
     private static TeamManager instance;
 
     private final ConfigManager config = Main.getConfigManager();
     private DatabaseManager db;
 
-    private int maxOwners() { return config.getInt("teams.max-owners"); }
-    private int maxAdmins() { return config.getInt("teams.max-admins"); }
-    private int playerLimit() { return config.getInt("teams.player-limit"); }
-    private int maxWarps() { return config.getInt("teams.warps.limit"); }
-    private int maxAllies() { return config.getInt("teams.relations.max-allies"); }
+    private int maxOwners()  { return config.getInt("teams.max-owners"); }
+    private int maxAdmins()  { return config.getInt("teams.max-admins"); }
+    private int playerLimit(){ return config.getInt("teams.player-limit"); }
+    private int maxWarps()   { return config.getInt("teams.warps.limit"); }
+    private int maxAllies()  { return config.getInt("teams.relations.max-allies"); }
     private int maxEnemies() { return config.getInt("teams.relations.max-enemies"); }
-    private int minName() { return config.getInt("teams.team-name-min-length"); }
-    private int maxName() { return config.getInt("teams.team-name-max-length"); }
+    private int minName()    { return config.getInt("teams.team-name-min-length"); }
+    private int maxName()    { return config.getInt("teams.team-name-max-length"); }
+    private int minTag()     { return config.getInt("teams.tag-min-length", 1); }
+    private int maxTag()     { return config.getInt("teams.tag-max-length", 6); }
     private List<String> bannedNames() { return config.getStringList("teams.team-name-banned"); }
-    private boolean defaultPvp() { return config.getBoolean("teams.pvp-toggle"); }
+    private boolean defaultPvp()       { return config.getBoolean("teams.pvp-toggle"); }
 
     private TeamManager() {}
 
     /**
-     * Thread-safe lazy singleton initialization.
+     * Thread-safe lazy singleton initialisation.
      */
-    public static TeamManager getInstance() {
+    public static synchronized TeamManager getInstance() {
         if (instance == null) {
             instance = new TeamManager();
         }
@@ -44,7 +49,7 @@ public class TeamManager {
     }
 
     /**
-     * Set the database manager. Called from Main after DatabaseManager is initialized.
+     * Set the database manager. Called from Main after DatabaseManager is initialised.
      */
     public void setDatabaseManager(DatabaseManager db) {
         this.db = db;
@@ -69,8 +74,8 @@ public class TeamManager {
             teams.put(team.getName().toLowerCase(), team);
 
             // Populate playerTeams index
-            for (UUID uuid : team.getOwners()) playerTeams.put(uuid, team);
-            for (UUID uuid : team.getAdmins()) playerTeams.put(uuid, team);
+            for (UUID uuid : team.getOwners())  playerTeams.put(uuid, team);
+            for (UUID uuid : team.getAdmins())  playerTeams.put(uuid, team);
             for (UUID uuid : team.getMembers()) playerTeams.put(uuid, team);
         }
 
@@ -109,9 +114,9 @@ public class TeamManager {
      * Returns null if not in a team.
      */
     public String getRole(Team team, UUID uuid) {
-        if (team.isOwner(uuid)) return "OWNER";
-        if (team.isAdmin(uuid)) return "ADMIN";
-        if (team.getMembers().contains(uuid)) return "MEMBER";
+        if (team.isOwner(uuid))                   return "OWNER";
+        if (team.isAdmin(uuid))                   return "ADMIN";
+        if (team.getMembers().contains(uuid))     return "MEMBER";
         return null;
     }
 
@@ -120,7 +125,7 @@ public class TeamManager {
     }
 
     public Collection<Team> getAllTeams() {
-        return teams.values();
+        return Collections.unmodifiableCollection(teams.values());
     }
 
     // ==================== MUTATIONS ====================
@@ -149,6 +154,9 @@ public class TeamManager {
                 throw new TeamException(TeamError.TEAM_NAME_BANNED, "Team name contains banned word");
             }
         }
+
+        // Validate tag
+        validateTag(tag);
 
         Team team = new Team(name, tag, owner, defaultPvp());
 
@@ -220,7 +228,7 @@ public class TeamManager {
     public void removeMember(UUID uuid) throws TeamException {
         Team team = getTeam(uuid);
 
-        // Prevent the last owner from leaving
+        // Prevent the last owner from leaving without disbanding
         if (team.isOwner(uuid) && team.getOwners().size() <= 1) {
             throw new TeamException(TeamError.CANNOT_LEAVE_AS_OWNER,
                     "You are the last owner. Use /team disband or /team promote someone first.");
@@ -268,19 +276,24 @@ public class TeamManager {
             throw new TeamException(TeamError.CANNOT_DEMOTE_LAST_OWNER, "Cannot demote the last owner");
         }
 
-        team.getOwners().remove(uuid);
+        // Use the model method for consistent encapsulation
+        team.demoteToMember(uuid);  // moves owner → member
+        // Now promote back to admin via model
+        team.getMembers().remove(uuid);
         team.getAdmins().add(uuid);
 
         if (db != null) db.saveMembersAsync(team);
     }
 
+    /**
+     * Demote an admin to member via the model method (consistent encapsulation).
+     */
     public void demoteAdminToMember(Team team, UUID uuid) throws TeamException {
         if (!team.isAdmin(uuid)) {
             throw new TeamException(TeamError.ALREADY_LOWEST_RANK, "Player is not an admin");
         }
 
-        team.getAdmins().remove(uuid);
-        team.getMembers().add(uuid);
+        team.demoteToMember(uuid);
 
         if (db != null) db.saveMembersAsync(team);
     }
@@ -456,12 +469,39 @@ public class TeamManager {
         if (db != null) db.saveMembersAsync(team);
     }
 
+    // ==================== TAG VALIDATION ====================
+
+    /**
+     * Validates a team tag for length and disallowed characters.
+     * Tags must not contain MiniMessage angle-bracket tags, spaces, or curly braces.
+     *
+     * @throws TeamException if the tag is invalid
+     */
+    public void validateTag(String tag) throws TeamException {
+        if (tag == null || tag.isEmpty()) {
+            throw new TeamException(TeamError.TEAM_NAME_TOO_SHORT, "Tag cannot be empty");
+        }
+        if (tag.length() < minTag()) {
+            throw new TeamException(TeamError.TEAM_NAME_TOO_SHORT, "Tag is too short (min " + minTag() + ")");
+        }
+        if (tag.length() > maxTag()) {
+            throw new TeamException(TeamError.TEAM_NAME_TOO_LONG, "Tag is too long (max " + maxTag() + ")");
+        }
+        // Reject MiniMessage injection and structural characters
+        if (tag.contains("<") || tag.contains(">") || tag.contains("{") || tag.contains("}")) {
+            throw new TeamException(TeamError.TEAM_NAME_BANNED, "Tag contains disallowed characters");
+        }
+        if (tag.contains(" ")) {
+            throw new TeamException(TeamError.TEAM_NAME_BANNED, "Tag cannot contain spaces");
+        }
+    }
+
     // ==================== RENAME ====================
 
     /**
      * Rename a team. Updates in-memory state and all DB tables atomically.
      *
-     * @param team the team to rename
+     * @param team    the team to rename
      * @param newName the new name
      * @throws TeamException if the new name is invalid or already taken
      */
@@ -487,10 +527,10 @@ public class TeamManager {
 
         // Update DB atomically asynchronously — optimistic memory update
         if (db != null) {
-            org.bukkit.Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
                 boolean success = db.renameTeam(oldNameLower, newNameLower);
                 if (!success) {
-                    dev.frost.frostcore.utils.FrostLogger.error("Database rename failed for team " + oldNameLower + " -> " + newNameLower);
+                    FrostLogger.error("Database rename failed for team " + oldNameLower + " -> " + newNameLower);
                 }
             });
         }

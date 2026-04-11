@@ -11,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,21 +51,21 @@ public class TpaCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (dev.frost.frostcore.manager.CooldownManager.isOnCooldown(player, "tpa")) {
-            int remaining = dev.frost.frostcore.manager.CooldownManager.getRemainingTime(player, "tpa");
-            mm.send(player, "teleport.tpa-cooldown", Map.of("time", String.valueOf(remaining)));
-            return true;
-        }
-
-        if (target.getPersistentDataContainer().has(dev.frost.frostcore.cmds.TpaToggleCmd.TPA_DISABLED_KEY, org.bukkit.persistence.PersistentDataType.BYTE)) {
+        // Check if target has TPA disabled via PersistentData
+        if (target.getPersistentDataContainer().has(TpaToggleCmd.TPA_DISABLED_KEY, PersistentDataType.BYTE)) {
             mm.sendRaw(player, "<red>" + target.getName() + " has teleport requests disabled.");
             return true;
         }
 
+        // Prevent spamming the same player with duplicate requests
         if (inviteManager.hasInviteFrom(target.getUniqueId(), InviteType.TPA, player.getUniqueId())) {
             mm.send(player, "teleport.tpa-already-sent");
             return true;
         }
+
+        // NOTE: cooldown is intentionally NOT checked here.
+        // TeleportUtil.teleportWithCooldownAndDelay() is the single source-of-truth for
+        // cooldown enforcement — it checks at teleport execution time, not at request time.
 
         int expiry = config.getInt("tpa.expiry", 60);
 
