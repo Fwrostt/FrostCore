@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class StaffRollbackCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/staffrollback <staff> [duration]"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/staffrollback <staff> [duration]"); return true; }
         OfflinePlayer staff = Bukkit.getOfflinePlayer(args[0]);
 
         Long sinceMs = null;
@@ -32,7 +32,7 @@ public class StaffRollbackCmd implements CommandExecutor, TabCompleter {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             int count = ModerationManager.getInstance().getDatabase().staffRollback(staff.getUniqueId(), since);
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Rolled back <white>" + count + " <#7ECFA0>punishments by <white>" + staff.getName() + ".");
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Rolled back <white>" + count + " <#7ECFA0>punishments by <white>" + staff.getName() + ".");
                 if (ModerationManager.getInstance().getWebhookManager() != null) {
                     ModerationManager.getInstance().getWebhookManager().sendStaffActivityAsync("Staff Rollback", sender.getName(), "Rolled back " + count + " punishments by " + staff.getName());
                 }

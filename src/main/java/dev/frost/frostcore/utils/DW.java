@@ -154,16 +154,20 @@ public class DW {
         writer.flush();
         writer.close();
         int responseCode = connection.getResponseCode();
-        if (responseCode != 200) {
+        // Discord API can sometimes return 204 No Content for success
+        if (responseCode < 200 || responseCode >= 300) {
             String line;
             InputStream errorStream = connection.getErrorStream();
+            if (errorStream == null) {
+                throw new IOException("Failed to send webhook: HTTP " + responseCode + " - No error stream returned.");
+            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
             StringBuilder response = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 response.append(line);
             }
             reader.close();
-            throw new IOException("Failed to send webhook: " + responseCode + " - " + response.toString());
+            throw new IOException("Failed to send webhook: HTTP " + responseCode + " - " + response.toString());
         }
         connection.getInputStream().close();
         connection.disconnect();
@@ -211,7 +215,24 @@ public class DW {
         }
 
         private String quote(String string) {
-            return "\"" + string + "\"";
+            return "\"" + escape(string) + "\"";
+        }
+
+        private String escape(String s) {
+            if (s == null) return "";
+            StringBuilder sb = new StringBuilder(s.length());
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                switch (c) {
+                    case '"':  sb.append("\\\""); break;
+                    case '\\': sb.append("\\\\"); break;
+                    case '\n': sb.append("\\n");  break;
+                    case '\r': sb.append("\\r");  break;
+                    case '\t': sb.append("\\t");  break;
+                    default:   sb.append(c);
+                }
+            }
+            return sb.toString();
         }
     }
 

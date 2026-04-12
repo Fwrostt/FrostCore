@@ -28,7 +28,7 @@ public class WeatherCmd implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            mm.sendRaw(sender, "<#FF5555>Usage: /weather <clear|rain|thunder>");
+            mm.sendRaw(sender, "<#FF5555>/weather <clear|rain|thunder>");
             return true;
         }
 

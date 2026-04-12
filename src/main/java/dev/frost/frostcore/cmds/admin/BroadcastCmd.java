@@ -26,7 +26,7 @@ public class BroadcastCmd implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            mm.sendRaw(sender, "<#FF5555>Usage: /broadcast <message>");
+            mm.sendRaw(sender, "<#FF5555>/broadcast <message>");
             return true;
         }
 

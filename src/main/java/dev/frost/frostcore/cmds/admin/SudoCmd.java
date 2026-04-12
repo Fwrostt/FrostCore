@@ -29,7 +29,7 @@ public class SudoCmd implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            mm.sendRaw(sender, "<#FF5555>Usage: /sudo <player> <message|/command>");
+            mm.sendRaw(sender, "<#FF5555>/sudo <player> <message|/command>");
             return true;
         }
 

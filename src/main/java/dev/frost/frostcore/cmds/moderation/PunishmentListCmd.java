@@ -40,7 +40,7 @@ public class PunishmentListCmd implements CommandExecutor, TabCompleter {
                     int total = modDb.countActivePunishments(category);
                     int totalPages = Math.max(1, (int) Math.ceil(total / 10.0));
                     mm.sendRaw(sender, "");
-                    mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>" + title + " <dark_gray>(Page " + (pNum + 1) + "/" + totalPages + ", " + total + " total)");
+                    mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>" + title + " <dark_gray>(Page " + (pNum + 1) + "/" + totalPages + ", " + total + " total)");
                     mm.sendRaw(sender, "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
                     if (list.isEmpty()) {

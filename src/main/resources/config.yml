@@ -202,3 +202,4 @@ moderation:
     punishments: ""      # Bans, mutes, warns, kicks
     reports: ""          # Player reports
     staff-activity: ""   # Staff admin actions (lockdown, rollback, prune)
+    staffchat: ""        # Staff messages

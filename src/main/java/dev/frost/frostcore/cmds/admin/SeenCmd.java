@@ -32,7 +32,7 @@ public class SeenCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length < 1) {
-            mm.sendRaw(sender, "<#FF5555>Usage: /seen <player>");
+            mm.sendRaw(sender, "<#FF5555>/seen <player>");
             return true;
         }
 
@@ -54,7 +54,7 @@ public class SeenCmd implements CommandExecutor, TabCompleter {
         String bar = "<dark_gray><strikethrough>                                        </strikethrough>";
 
         sender.sendMessage(mini.deserialize(bar));
-        sender.sendMessage(mini.deserialize("  <gradient:#55FF55:#00C9FF><bold>ONLINE</bold></gradient> <dark_gray>» <white>" + target.getName()));
+        sender.sendMessage(mini.deserialize("  <gradient:#55FF55:#00C9FF><bold>ONLINE</bold> <dark_gray>» <white>" + target.getName()));
         sender.sendMessage(mini.deserialize(bar));
         sender.sendMessage(mini.deserialize("  <#6BA3E3>⏺ Status:     <#55FF55>Currently Online"));
         sender.sendMessage(mini.deserialize("  <#6BA3E3>🌍 World:      <white>" + target.getWorld().getName()));
@@ -77,7 +77,7 @@ public class SeenCmd implements CommandExecutor, TabCompleter {
         long timeSince = System.currentTimeMillis() - target.getLastLogin();
 
         sender.sendMessage(mini.deserialize(bar));
-        sender.sendMessage(mini.deserialize("  <gradient:#FF5555:#FF55FF><bold>OFFLINE</bold></gradient> <dark_gray>» <white>" + name));
+        sender.sendMessage(mini.deserialize("  <gradient:#FF5555:#FF55FF><bold>OFFLINE</bold> <dark_gray>» <white>" + name));
         sender.sendMessage(mini.deserialize(bar));
         sender.sendMessage(mini.deserialize("  <#6BA3E3>⏺ Status:     <#FF5555>Offline"));
         sender.sendMessage(mini.deserialize("  <#6BA3E3>📅 Last Seen:  <white>" + DATE_FORMAT.format(new Date(target.getLastLogin()))));

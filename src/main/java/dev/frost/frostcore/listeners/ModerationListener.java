@@ -48,14 +48,11 @@ public class ModerationListener implements Listener {
         UUID uuid = event.getUniqueId();
         String ip = event.getAddress().getHostAddress();
 
-        // Lockdown check
         if (mod.isLockdown()) {
-            // Allow bypass
-            // Note: can't check permissions in async pre-login, so we check allowed list
             if (!mod.isAllowed(uuid)) {
                 String reason = mod.getLockdownReason() != null ? mod.getLockdownReason() : "Maintenance";
                 event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                        mini.deserialize("\n<gradient:#D4727A:#A35560><bold>SERVER LOCKED</bold></gradient>\n\n<#8FA3BF>Reason: <white>" + reason + "\n"));
+                        mini.deserialize("\n<#D4727A><bold>SERVER LOCKED</bold>\n\n<#8FA3BF>Reason: <white>" + reason + "\n"));
                 return;
             }
         }
@@ -82,7 +79,7 @@ public class ModerationListener implements Listener {
 
     private String buildBanScreen(Punishment p) {
         StringBuilder sb = new StringBuilder();
-        sb.append("\n<gradient:#D4727A:#A35560><bold>BANNED</bold></gradient>\n\n");
+        sb.append("\n<#D4727A><bold>BANNED</bold>\n\n");
         sb.append("<#8FA3BF>Reason: <white>").append(p.reason()).append("\n");
         if (!p.isPermanent()) {
             sb.append("<#8FA3BF>Duration: <white>").append(p.getFormattedDuration()).append("\n");
@@ -107,7 +104,7 @@ public class ModerationListener implements Listener {
             Punishment mute = mod.getActiveMute(player.getUniqueId());
             if (mute != null) {
                 String remaining = mute.isPermanent() ? "Permanent" : mute.getFormattedRemaining();
-                mm().sendRaw(player, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You are muted. <#8FA3BF>Remaining: <white>" + remaining);
+                mm().sendRaw(player, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You are muted. <#8FA3BF>Remaining: <white>" + remaining);
             } else {
                 mm().send(player, "moderation.muted-message");
             }
@@ -118,7 +115,7 @@ public class ModerationListener implements Listener {
         // IP mute check
         String ip = player.getAddress() != null ? player.getAddress().getAddress().getHostAddress() : null;
         if (ip != null && mod.isIpMuted(ip)) {
-            mm().sendRaw(player, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You are IP muted.");
+            mm().sendRaw(player, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You are IP muted.");
             event.setCancelled(true);
             return;
         }
@@ -154,7 +151,7 @@ public class ModerationListener implements Listener {
                     var jailLoc = jail.toBukkitLocation();
                     if (jailLoc != null && event.getTo().distance(jailLoc) > 5) {
                         event.setCancelled(true);
-                        mm().sendRaw(player, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You are jailed. You cannot leave this area.");
+                        mm().sendRaw(player, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You are jailed. You cannot leave this area.");
                     }
                 }
             }
@@ -220,7 +217,7 @@ public class ModerationListener implements Listener {
                     || cmd.equals("/team") || cmd.equals("/t")) {
                 return;
             }
-            mm().sendRaw(player, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot use commands while jailed.");
+            mm().sendRaw(player, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot use commands while jailed.");
             event.setCancelled(true);
             return;
         }
@@ -230,7 +227,7 @@ public class ModerationListener implements Listener {
             List<String> blockedCmds = Main.getConfigManager().getStringList("moderation.muted-blocked-commands");
             for (String blocked : blockedCmds) {
                 if (cmd.equalsIgnoreCase(blocked)) {
-                    mm().sendRaw(player, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot use this command while muted.");
+                    mm().sendRaw(player, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot use this command while muted.");
                     event.setCancelled(true);
                     return;
                 }

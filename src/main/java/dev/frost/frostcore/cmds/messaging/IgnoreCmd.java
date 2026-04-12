@@ -29,7 +29,7 @@ public class IgnoreCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length < 1) {
-            mm.sendRaw(player, "<#FF5555>Usage: /ignore <player>");
+            mm.sendRaw(player, "<#FF5555>/ignore <player>");
             return true;
         }
 

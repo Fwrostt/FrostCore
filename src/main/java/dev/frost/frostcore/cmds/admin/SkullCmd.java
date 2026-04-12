@@ -34,7 +34,7 @@ public class SkullCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length < 1) {
-            mm.sendRaw(player, "<#FF5555>Usage: /skull <player>");
+            mm.sendRaw(player, "<#FF5555>/skull <player>");
             return true;
         }
 
@@ -44,7 +44,7 @@ public class SkullCmd implements CommandExecutor, TabCompleter {
         meta.displayName(mini.deserialize("<white>" + args[0] + "'s Head"));
         skull.setItemMeta(meta);
         player.getInventory().addItem(skull);
-        mm.sendRaw(player, "<gradient:#6BA3E3:#4979C7>FROST</gradient> <#AAAAAA>» <#B0C4FF>You received <white>" + args[0] + "</white>'s skull.");
+        mm.sendRaw(player, "<gradient:#6BA3E3:#4979C7>FROST <#AAAAAA>» <#B0C4FF>You received <white>" + args[0] + "</white>'s skull.");
         return true;
     }
 

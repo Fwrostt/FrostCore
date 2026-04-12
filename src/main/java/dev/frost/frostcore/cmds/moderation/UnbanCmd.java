@@ -28,7 +28,7 @@ public class UnbanCmd implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         ModerationManager mod = ModerationManager.getInstance();
         if (args.length < 1) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/unban <player|ID>");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/unban <player|ID>");
             return true;
         }
 
@@ -36,9 +36,9 @@ public class UnbanCmd implements CommandExecutor, TabCompleter {
         try {
             int id = Integer.parseInt(args[0]);
             if (mod.removePunishment(id, sender, "Unbanned", false)) {
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Punishment #" + id + " has been removed.");
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Punishment #" + id + " has been removed.");
             } else {
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Punishment #" + id + " not found.");
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Punishment #" + id + " not found.");
             }
             return true;
         } catch (NumberFormatException ignored) {}
@@ -47,16 +47,16 @@ public class UnbanCmd implements CommandExecutor, TabCompleter {
         Punishment byRandom = mod.getDatabase().getPunishmentByRandomId(args[0].toUpperCase());
         if (byRandom != null) {
             mod.removePunishment(byRandom.id(), sender, "Unbanned", false);
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Unbanned <white>" + byRandom.getTargetDisplayName() + ".");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Unbanned <white>" + byRandom.getTargetDisplayName() + ".");
             return true;
         }
 
         // Try by player name
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (mod.removePunishmentByPlayer(target.getUniqueId(), "BAN", sender, "Unbanned")) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Unbanned <white>" + target.getName() + ".");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Unbanned <white>" + target.getName() + ".");
         } else {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>No active ban found for <white>" + args[0] + ".");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>No active ban found for <white>" + args[0] + ".");
         }
         return true;
     }

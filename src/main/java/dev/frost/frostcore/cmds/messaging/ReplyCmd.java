@@ -30,7 +30,7 @@ public class ReplyCmd implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            mm.sendRaw(player, "<#FF5555>Usage: /r <message>");
+            mm.sendRaw(player, "<#FF5555>/r <message>");
             return true;
         }
 
@@ -69,7 +69,7 @@ public class ReplyCmd implements CommandExecutor, TabCompleter {
             if (spyUUID.equals(sender.getUniqueId()) || spyUUID.equals(target.getUniqueId())) continue;
             Player spy = org.bukkit.Bukkit.getPlayer(spyUUID);
             if (spy != null && spy.isOnline()) {
-                mm.sendRaw(spy, "<dark_gray>[<gradient:#FF5555:#FF55FF>SPY</gradient>] <#6BA3E3>" + sender.getName() + " <dark_gray>→ <#6BA3E3>" + target.getName() + "<dark_gray>: <#B0C4FF>" + message);
+                mm.sendRaw(spy, "<dark_gray>[<gradient:#FF5555:#FF55FF>SPY] <#6BA3E3>" + sender.getName() + " <dark_gray>→ <#6BA3E3>" + target.getName() + "<dark_gray>: <#B0C4FF>" + message);
             }
         }
     }

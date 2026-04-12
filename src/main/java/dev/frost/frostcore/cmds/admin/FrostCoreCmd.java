@@ -35,7 +35,7 @@ public class FrostCoreCmd implements CommandExecutor, TabCompleter {
 
         if (args.length == 0 || !args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
-                    .deserialize("<#B0C4FF>Usage: <white>/frostcore reload"));
+                    .deserialize("<#B0C4FF>/frostcore reload"));
             return true;
         }
 
@@ -53,9 +53,13 @@ public class FrostCoreCmd implements CommandExecutor, TabCompleter {
             Main.getWarpManager().reloadWarpsYml();
         }
 
+        if (Main.getWebhookManager() != null) {
+            Main.getWebhookManager().reload();
+        }
+
         FrostLogger.info("Configuration reloaded by " + sender.getName() + ".");
         sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
-                .deserialize("<green><bold>✔</bold></green> <white>FrostCore configuration reloaded.</white> <gray>(config.yml, messages.yml, warps.yml)"));
+                .deserialize("<green><bold>✔</bold></green> <white>FrostCore configuration reloaded.</white> <gray>(config.yml, messages.yml, warps.yml, webhooks)"));
         return true;
     }
 

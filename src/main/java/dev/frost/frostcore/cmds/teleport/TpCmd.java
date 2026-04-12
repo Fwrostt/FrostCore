@@ -66,13 +66,13 @@ public class TpCmd implements CommandExecutor, TabCompleter {
                 }
                 return true;
             } else {
-                mm.sendRaw(player, "<#B0C4FF>Usage: <white>/tp <player> <#B0C4FF>or <white>/tp <x> <y> <z>");
+                mm.sendRaw(player, "<#B0C4FF>/tp <player> <#B0C4FF>or <white>/tp <x> <y> <z>");
                 return true;
             }
         } else if (cmdName.equals("tp2p")) {
 
             if (args.length < 2) {
-                mm.sendRaw(player, "<#B0C4FF>Usage: <white>/tp2p <player1> <player2>");
+                mm.sendRaw(player, "<#B0C4FF>/tp2p <player1> <player2>");
                 return true;
             }
             Player target1 = Bukkit.getPlayerExact(args[0]);
@@ -89,7 +89,7 @@ public class TpCmd implements CommandExecutor, TabCompleter {
         } else if (cmdName.equals("tphere")) {
 
             if (args.length < 1) {
-                mm.sendRaw(player, "<#B0C4FF>Usage: <white>/tphere <player>");
+                mm.sendRaw(player, "<#B0C4FF>/tphere <player>");
                 return true;
             }
 

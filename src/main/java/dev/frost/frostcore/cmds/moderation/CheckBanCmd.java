@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class CheckBanCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/checkban <player|ID>"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/checkban <player|ID>"); return true; }
         ModerationManager mod = ModerationManager.getInstance();
 
         // Try ID
@@ -33,7 +33,7 @@ public class CheckBanCmd implements CommandExecutor, TabCompleter {
             Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
                 Punishment dbBan = mod.getDatabase().getActivePunishment(target.getUniqueId(), "BAN");
                 Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-                    if (dbBan == null) mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>" + target.getName() + " is not banned.");
+                    if (dbBan == null) mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>" + target.getName() + " is not banned.");
                     else showPunishment(sender, dbBan);
                 });
             });
@@ -42,9 +42,9 @@ public class CheckBanCmd implements CommandExecutor, TabCompleter {
     }
 
     private void showPunishment(CommandSender sender, Punishment p) {
-        if (p == null) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Not found."); return; }
+        if (p == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Not found."); return; }
         mm.sendRaw(sender, "");
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>" + p.type().getDisplayName() + " Info");
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>" + p.type().getDisplayName() + " Info");
         mm.sendRaw(sender, "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         mm.sendRaw(sender, "  <#8FA3BF>Player: <white>" + p.getTargetDisplayName());
         mm.sendRaw(sender, "  <#8FA3BF>Reason: <white>" + p.reason());

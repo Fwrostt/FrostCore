@@ -13,14 +13,14 @@
 # │        GENERAL / GLOBAL         │
 # └─────────────────────────────────┘
 general:
-  no-permission: "<gradient:#D4727A:#A35560>✘</gradient> <#8FA3BF>You don't have permission to do that."
+  no-permission: "<#D4727A>✘ <#8FA3BF>You don't have permission to do that."
 
 
 # ┌─────────────────────────────────┐
 # │          TELEPORTATION          │
 # └─────────────────────────────────┘
 teleport:
-  prefix: "<gradient:#6B8DAE:#8BADC4>TELEPORT</gradient> <dark_gray>» </dark_gray>"
+  prefix: "<#6B8DAE>TELEPORT <dark_gray>»</dark_gray> "
 
   # ── TPA ──
   tpa-sent: "{teleport.prefix}<#8FA3BF>Request sent to <white>{player}</white>."
@@ -88,7 +88,7 @@ teleport:
 # │            TEAMS                │
 # └─────────────────────────────────┘
 teams:
-  prefix: "<gradient:#C8A87C:#A68B5B>TEAM</gradient> <dark_gray>» </dark_gray>"
+  prefix: "<#C8A87C>TEAM <dark_gray>»</dark_gray> "
 
   # ── TEAM CHAT ──
   chat-format: "<dark_gray>[<gradient:#C8A87C:#A68B5B>Team</gradient>] <white>{player}</white> <dark_gray>» <#D4C4A8>{chat}"
@@ -199,7 +199,7 @@ teams:
 # │        PERSONAL HOMES           │
 # └─────────────────────────────────┘
 homes:
-  prefix: "<gradient:#6B8DAE:#8BADC4>HOME</gradient> <dark_gray>» </dark_gray>"
+  prefix: "<#6B8DAE>HOME <dark_gray>»</dark_gray> "
   set-success: "{homes.prefix}<#7ECFA0>Home <white>{home}</white> has been set."
   delete-success: "{homes.prefix}<#D4727A>Home <white>{home}</white> deleted."
   rename-success: "{homes.prefix}<#7ECFA0>Home <white>{old}</white> renamed to <white>{new}</white>."
@@ -218,12 +218,12 @@ homes:
 # │         ADMINISTRATION          │
 # └─────────────────────────────────┘
 admin:
-  prefix: "<gradient:#A68FCF:#8B78B5>ADMIN</gradient> <dark_gray>» </dark_gray>"
+  prefix: "<#A68FCF>ADMIN <dark_gray>»</dark_gray> "
 
   # ── GAMEMODE ──
   gamemode-changed: "{admin.prefix}<#8FA3BF>Your gamemode has been set to <white>{mode}</white>."
   gamemode-changed-other: "{admin.prefix}<#8FA3BF>Set <white>{player}</white>'s gamemode to <white>{mode}</white>."
-  gamemode-usage: "{admin.prefix}<#D4727A>Usage: /gm <0-3/s/c/a/sp> [player]"
+  gamemode-usage: "{admin.prefix}<#D4727A>/gm <0-3/s/c/a/sp> [player]"
   gamemode-invalid: "{admin.prefix}<#D4727A>Invalid gamemode."
 
   # ── PLAYER LOOKUP ──
@@ -232,7 +232,7 @@ admin:
 
   # ── COMMANDS ──
   sudo-success: "{admin.prefix}<#8FA3BF>Forced <white>{player}</white> to run: <white>{action}</white>"
-  broadcast-prefix: "<gradient:#A68FCF:#8B78B5><bold>BROADCAST</bold></gradient> <dark_gray>» </dark_gray><white>"
+  broadcast-prefix: "<#A68FCF><bold>BROADCAST</bold> <dark_gray>»</dark_gray> <white>"
   chat-cleared: "{admin.prefix}<#8FA3BF>The chat has been cleared by <white>{player}</white>."
   time-set: "{admin.prefix}<#8FA3BF>World time set to <white>{time}</white>."
   weather-set: "{admin.prefix}<#8FA3BF>Weather set to <white>{weather}</white>."
@@ -262,9 +262,9 @@ admin:
 # │        PRIVATE MESSAGING        │
 # └─────────────────────────────────┘
 message:
-  prefix: "<gradient:#6B8DAE:#8BADC4>MSG</gradient> <dark_gray>» </dark_gray>"
-  sent: "<white>You <dark_gray>→ <gradient:#6B8DAE:#8BADC4>{player}</gradient><dark_gray>: <#8FA3BF>{message}"
-  received: "<gradient:#6B8DAE:#8BADC4>{player}</gradient> <dark_gray>→ <white>You<dark_gray>: <#8FA3BF>{message}"
+  prefix: "<#6B8DAE>MSG <dark_gray>»</dark_gray> "
+  sent: "<white>You <dark_gray>→</dark_gray> <#6B8DAE>{player}</#6B8DAE><dark_gray>: <#8FA3BF>{message}"
+  received: "<#6B8DAE>{player}</#6B8DAE> <dark_gray>→</dark_gray> <white>You</white><dark_gray>: <#8FA3BF>{message}"
   socialspy: "<dark_gray>[<#707880>Spy</dark_gray>] <#707880>{sender} → {target}: <#8FA3BF>{message}"
   no-reply: "{message.prefix}<#D4727A>You have nobody to reply to."
   reply-offline: "{message.prefix}<#D4727A>That player is no longer online."
@@ -277,7 +277,7 @@ message:
 # │         UTILITY COMMANDS        │
 # └─────────────────────────────────┘
 utilities:
-  prefix: "<gradient:#6B9E8A:#5A8774>UTILS</gradient> <dark_gray>» </dark_gray>"
+  prefix: "<#6B9E8A>UTILS <dark_gray>»</dark_gray> "
 
   # ── FLIGHT ──
   fly-toggle: "{utilities.prefix}<#8FA3BF>Flight mode is now {state}."
@@ -299,7 +299,7 @@ utilities:
 
   # ── SPEED ──
   speed-changed: "{utilities.prefix}<#8FA3BF>Your <white>{type}</white> speed has been set to <white>{val}</white>."
-  speed-usage: "{utilities.prefix}<#D4727A>Usage: /speed <fly|walk> <1-10> [player]"
+  speed-usage: "{utilities.prefix}<#D4727A>/speed <fly|walk> <1-10> [player]"
   speed-invalid: "{utilities.prefix}<#D4727A>Speed must be a number between 1 and 10."
 
   # ── NICKNAME ──
@@ -307,16 +307,16 @@ utilities:
   nick-success-other: "{utilities.prefix}<#7ECFA0>Set nickname for <white>{player}</white> to <white>{nick}</white>."
   nick-removed: "{utilities.prefix}<#D4727A>Your nickname has been removed."
   nick-removed-other: "{utilities.prefix}<#D4727A>Removed nickname for <white>{player}</white>."
-  nick-usage: "{utilities.prefix}<#D4727A>Usage: /nick [player] <name> or /unnick [player]"
+  nick-usage: "{utilities.prefix}<#D4727A>/nick [player] <name> or /unnick [player]"
 
   # ── ITEM EDITING ──
   rename-success: "{utilities.prefix}<#7ECFA0>Item renamed to <white>{name}</white>."
-  rename-usage: "{utilities.prefix}<#D4727A>Usage: /itemrename <name>"
+  rename-usage: "{utilities.prefix}<#D4727A>/itemrename <name>"
   no-item-held: "{utilities.prefix}<#D4727A>You must be holding an item!"
   lore-add-success: "{utilities.prefix}<#7ECFA0>Added lore line."
   lore-set-success: "{utilities.prefix}<#7ECFA0>Set lore line."
   lore-remove-success: "{utilities.prefix}<#D4727A>Removed lore line."
-  lore-usage: "{utilities.prefix}<#D4727A>Usage: /lore <add|set|remove> [line] <text>"
+  lore-usage: "{utilities.prefix}<#D4727A>/lore <add|set|remove> [line] <text>"
   invalid-line: "{utilities.prefix}<#D4727A>Invalid lore line number."
 
   # ── REPAIR ──
@@ -329,7 +329,7 @@ utilities:
 # │          MODERATION             │
 # └─────────────────────────────────┘
 moderation:
-  prefix: "<gradient:#C27070:#A35560>MOD</gradient> <dark_gray>» </dark_gray>"
+  prefix: "<#D4727A>MOD <dark_gray>»</dark_gray> "
 
   # ── MUTE ──
   mute-success: "{moderation.prefix}<#8FA3BF>You have muted <white>{player}</white> for <white>{time}</white>."
@@ -356,3 +356,6 @@ moderation:
   ban-success: "{moderation.prefix}<#8FA3BF>Banned <white>{player}</white> for <white>{time}</white>."
   unban-success: "{moderation.prefix}<#7ECFA0>Unbanned <white>{player}</white>."
   warn-success: "{moderation.prefix}<#D4A76A>Warned <white>{player}</white>: <white>{reason}</white>"
+
+   # ── STAFF CHAT ──
+  staffchat-format: "<dark_gray>[<#D4727A>Staff</#D4727A>] <white>{player}</white> <dark_gray>» <#D4C4A8>{message}"

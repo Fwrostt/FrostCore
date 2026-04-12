@@ -33,7 +33,7 @@ public class TpallCmd implements CommandExecutor, TabCompleter {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!p.equals(player)) {
                 p.teleport(player.getLocation());
-                mm.sendRaw(p, "<gradient:#6B8DAE:#8BADC4>TELEPORT</gradient> <dark_gray>» <#8FA3BF>You were teleported to <white>" + player.getName() + "</white>.");
+                mm.sendRaw(p, "<gradient:#6B8DAE:#8BADC4>TELEPORT <dark_gray>» <#8FA3BF>You were teleported to <white>" + player.getName() + "</white>.");
                 count++;
             }
         }

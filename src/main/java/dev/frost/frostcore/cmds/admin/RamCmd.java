@@ -36,7 +36,7 @@ public class RamCmd implements CommandExecutor, TabCompleter {
         String memBar = buildBar(usedMem, maxMem, usagePercent < 75 ? "<#55FF55>" : "<#FF5555>", "<dark_gray>");
 
         sender.sendMessage(mini.deserialize(bar));
-        sender.sendMessage(mini.deserialize("  <gradient:#6BA3E3:#4979C7><bold>SERVER INFO</bold></gradient>"));
+        sender.sendMessage(mini.deserialize("  <gradient:#6BA3E3:#4979C7><bold>SERVER INFO</bold>"));
         sender.sendMessage(mini.deserialize(bar));
         sender.sendMessage(mini.deserialize("  <#6BA3E3>💾 Memory:      " + memBar + " <white>" + usedMem + "/" + maxMem + " MB"));
         sender.sendMessage(mini.deserialize("  <#6BA3E3>👥 Online:      <white>" + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers()));

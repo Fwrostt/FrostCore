@@ -34,7 +34,7 @@ public class WhoisCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length < 1) {
-            mm.sendRaw(sender, "<#FF5555>Usage: /whois <player>");
+            mm.sendRaw(sender, "<#FF5555>/whois <player>");
             return true;
         }
 
@@ -56,7 +56,7 @@ public class WhoisCmd implements CommandExecutor, TabCompleter {
         String bar = "<dark_gray><strikethrough>                                                  </strikethrough>";
 
         sender.sendMessage(mini.deserialize(bar));
-        sender.sendMessage(mini.deserialize("  <gradient:#FF5555:#FF55FF><bold>PLAYER INFO</bold></gradient> <dark_gray>» <white>" + target.getName()));
+        sender.sendMessage(mini.deserialize("  <gradient:#FF5555:#FF55FF><bold>PLAYER INFO</bold> <dark_gray>» <white>" + target.getName()));
         sender.sendMessage(mini.deserialize(bar));
 
         sender.sendMessage(mini.deserialize("  <#6BA3E3>⏺ Status:       <#55FF55>Online"));
@@ -97,7 +97,7 @@ public class WhoisCmd implements CommandExecutor, TabCompleter {
         String name = target.getName() != null ? target.getName() : "Unknown";
 
         sender.sendMessage(mini.deserialize(bar));
-        sender.sendMessage(mini.deserialize("  <gradient:#FF5555:#FF55FF><bold>PLAYER INFO</bold></gradient> <dark_gray>» <white>" + name));
+        sender.sendMessage(mini.deserialize("  <gradient:#FF5555:#FF55FF><bold>PLAYER INFO</bold> <dark_gray>» <white>" + name));
         sender.sendMessage(mini.deserialize(bar));
 
         sender.sendMessage(mini.deserialize("  <#6BA3E3>⏺ Status:       <#FF5555>Offline"));

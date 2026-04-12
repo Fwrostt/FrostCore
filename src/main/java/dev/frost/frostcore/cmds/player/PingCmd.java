@@ -28,11 +28,11 @@ public class PingCmd implements CommandExecutor, TabCompleter {
             }
             int ping = target.getPing();
             String color = ping < 50 ? "<#7ECFA0>" : ping < 100 ? "<#D4A76A>" : "<#D4727A>";
-            mm.sendRaw(sender, "<gradient:#6B8DAE:#8BADC4>FROST</gradient> <dark_gray>» <#8FA3BF>" + target.getName() + "'s ping: " + color + ping + "ms");
+            mm.sendRaw(sender, "<gradient:#6B8DAE:#8BADC4>FROST <dark_gray>» <#8FA3BF>" + target.getName() + "'s ping: " + color + ping + "ms");
         } else if (sender instanceof Player player) {
             int ping = player.getPing();
             String color = ping < 50 ? "<#7ECFA0>" : ping < 100 ? "<#D4A76A>" : "<#D4727A>";
-            mm.sendRaw(player, "<gradient:#6B8DAE:#8BADC4>FROST</gradient> <dark_gray>» <#8FA3BF>Your ping: " + color + ping + "ms");
+            mm.sendRaw(player, "<gradient:#6B8DAE:#8BADC4>FROST <dark_gray>» <#8FA3BF>Your ping: " + color + ping + "ms");
         }
         return true;
     }

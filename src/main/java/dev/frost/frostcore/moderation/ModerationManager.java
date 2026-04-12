@@ -269,18 +269,18 @@ public class ModerationManager {
             }
             case MUTE, TEMPMUTE, IPMUTE -> {
                 MessageManager mm = Main.getMessageManager();
-                mm.sendRaw(target, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>You have been muted. Reason: <white>" + p.reason());
+                mm.sendRaw(target, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>You have been muted. Reason: <white>" + p.reason());
             }
             case WARN -> {
                 MessageManager mm = Main.getMessageManager();
                 mm.sendRaw(target, "");
-                mm.sendRaw(target, "  <gradient:#C8A87C:#A68B5B><bold>⚠ WARNING</bold></gradient>");
+                mm.sendRaw(target, "  <gradient:#C8A87C:#A68B5B><bold>⚠ WARNING</bold>");
                 mm.sendRaw(target, "  <#8FA3BF>Reason: <white>" + p.reason());
                 mm.sendRaw(target, "");
             }
             case JAIL -> {
                 MessageManager mm = Main.getMessageManager();
-                mm.sendRaw(target, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>You have been jailed. Reason: <white>" + p.reason());
+                mm.sendRaw(target, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>You have been jailed. Reason: <white>" + p.reason());
                 // Teleport to jail
                 ModerationDatabase.JailedEntry entry = jailedPlayers.get(p.targetUuid());
                 if (entry != null) {
@@ -298,7 +298,7 @@ public class ModerationManager {
 
     private String buildKickScreen(String title, Punishment p) {
         StringBuilder sb = new StringBuilder();
-        sb.append("\n<gradient:#D4727A:#A35560><bold>").append(title).append("</bold></gradient>\n\n");
+        sb.append("\n<#D4727A><bold>").append(title).append("</bold>\n\n");
         sb.append("<#8FA3BF>Reason: <white>").append(p.reason()).append("\n");
         if (!p.isPermanent()) {
             sb.append("<#8FA3BF>Duration: <white>").append(p.getFormattedDuration()).append("\n");
@@ -312,7 +312,7 @@ public class ModerationManager {
 
     private void broadcastToStaff(Punishment p, boolean silent) {
         String prefix = silent ? "<dark_gray>[Silent] " : "";
-        String msg = prefix + "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>"
+        String msg = prefix + "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>"
                 + p.getStaffDisplayName() + " " + p.type().getPastTense() + " <white>"
                 + p.getTargetDisplayName()
                 + " <dark_gray>| <#8FA3BF>" + p.reason()

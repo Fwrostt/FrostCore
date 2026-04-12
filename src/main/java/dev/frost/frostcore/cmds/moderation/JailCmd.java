@@ -18,25 +18,25 @@ public class JailCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
         ModerationManager mod = ModerationManager.getInstance();
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/jail <player> [jail] [duration] [reason]"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/jail <player> [jail] [duration] [reason]"); return true; }
         Player target = Bukkit.getPlayer(args[0]);
-        if (target == null) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player must be online."); return true; }
-        if (!Main.getGroupLimitManager().canPunish(sender, target)) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot punish this player."); return true; }
-        if (mod.isJailed(target.getUniqueId())) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>This player is already jailed."); return true; }
+        if (target == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Player must be online."); return true; }
+        if (!Main.getGroupLimitManager().canPunish(sender, target)) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot punish this player."); return true; }
+        if (mod.isJailed(target.getUniqueId())) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>This player is already jailed."); return true; }
 
         // Determine jail name
         String jailName = "default";
         if (args.length >= 2 && mod.getJailLocation(args[1]) != null) {
             jailName = args[1].toLowerCase();
         } else if (mod.getJailLocations().isEmpty()) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>No jail locations set. Use <white>/setjail <name>");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>No jail locations set. Use <white>/setjail <name>");
             return true;
         } else {
             jailName = mod.getJailLocations().keySet().iterator().next();
         }
 
         JailLocation jail = mod.getJailLocation(jailName);
-        if (jail == null) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Jail not found: <white>" + jailName); return true; }
+        if (jail == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Jail not found: <white>" + jailName); return true; }
 
         // Parse duration and reason from remaining args
         long duration = -1;
@@ -61,7 +61,7 @@ public class JailCmd implements CommandExecutor, TabCompleter {
         if (loc != null) target.teleport(loc);
 
         String durationStr = duration == -1 ? "permanently" : "for " + Punishment.formatDuration(duration);
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Jailed <white>" + target.getName() + " <#8FA3BF>" + durationStr + " <dark_gray>(Jail: " + jailName + ")");
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Jailed <white>" + target.getName() + " <#8FA3BF>" + durationStr + " <dark_gray>(Jail: " + jailName + ")");
         return true;
     }
     @Override public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {

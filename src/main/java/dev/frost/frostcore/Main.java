@@ -128,6 +128,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BackListener(), this);
         getServer().getPluginManager().registerEvents(new InvseeListener(), this);
         getServer().getPluginManager().registerEvents(new VanishListener(), this);
+        getServer().getPluginManager().registerEvents(new StaffChatListener(), this);
         getServer().getPluginManager().registerEvents(homeManager, this);
     }
 
@@ -238,6 +239,9 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("unlockchat", unlockchatCmd, unlockchatCmd);
         FreezeCmd freezeCmd = new FreezeCmd();
         cmdUtil.registerCommand("freeze", freezeCmd, freezeCmd);
+        ScreenshareCmd screenshareCmd = new ScreenshareCmd();
+        cmdUtil.registerCommand("screenshare", screenshareCmd, screenshareCmd);
+        cmdUtil.registerCommand("ss", screenshareCmd, screenshareCmd);
 
         KickCmd kickCmd = new KickCmd();
         cmdUtil.registerCommand("kick", kickCmd, kickCmd);
@@ -317,6 +321,9 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("staffrollback", staffRollbackCmd, staffRollbackCmd);
         ModerationCmd moderationCmd = new ModerationCmd();
         cmdUtil.registerCommand("moderation", moderationCmd, moderationCmd);
+        StaffChatCmd staffChatCmd = new StaffChatCmd();
+        cmdUtil.registerCommand("staffchat", staffChatCmd, staffChatCmd);
+        cmdUtil.registerCommand("sc", staffChatCmd, staffChatCmd);
 
         SudoCmd sudoCmd = new SudoCmd();
         cmdUtil.registerCommand("sudo", sudoCmd, sudoCmd);

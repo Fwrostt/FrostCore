@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 public class KickCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/kick <player> [reason] [-s]"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/kick <player> [reason] [-s]"); return true; }
         Player target = Bukkit.getPlayer(args[0]);
-        if (target == null) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player not found or offline."); return true; }
-        if (!Main.getGroupLimitManager().canPunish(sender, target)) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot punish this player."); return true; }
+        if (target == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Player not found or offline."); return true; }
+        if (!Main.getGroupLimitManager().canPunish(sender, target)) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot punish this player."); return true; }
 
-        ParsedArgs parsed = ParsedArgs.parse(args, 1);
+        ParsedArgs parsed = ParsedArgs.parseReasonOnly(args, 1);
         String reason = parsed.reason.isEmpty() ? "Kicked by an administrator" : parsed.reason;
         ModerationManager.getInstance().punish(PunishmentType.KICK, target.getUniqueId(), target.getName(), null, reason, sender, 0, parsed.silent);
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Kicked <white>" + target.getName() + ".");
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Kicked <white>" + target.getName() + ".");
         return true;
     }
     @Override public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {

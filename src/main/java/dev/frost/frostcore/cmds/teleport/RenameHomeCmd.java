@@ -30,7 +30,7 @@ public class RenameHomeCmd implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            mm.sendRaw(player, "<red>Usage: /renamehome <old> <new>");
+            mm.sendRaw(player, "<red>/renamehome <old> <new>");
             return true;
         }
 

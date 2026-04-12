@@ -3,10 +3,7 @@ package dev.frost.frostcore.moderation;
 import java.security.SecureRandom;
 import java.util.UUID;
 
-/**
- * Immutable representation of a single punishment record.
- * Corresponds to one row in the {@code punishments} database table.
- */
+
 public record Punishment(
         int id,
         PunishmentType type,

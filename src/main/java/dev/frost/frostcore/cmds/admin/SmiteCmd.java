@@ -26,7 +26,7 @@ public class SmiteCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length < 1) {
-            mm.sendRaw(sender, "<#FF5555>Usage: /smite <player>");
+            mm.sendRaw(sender, "<#FF5555>/smite <player>");
             return true;
         }
         Player target = Bukkit.getPlayer(args[0]);

@@ -185,6 +185,16 @@ commands:
     description: Freeze a player
     usage: /freeze <player>
     permission: frostcore.moderation.freeze
+  screenshare:
+    description: Put a player into screenshare mode
+    usage: /screenshare <player>
+    aliases: [ss]
+    permission: frostcore.moderation.screenshare
+  staffchat:
+    description: Toggle staff chat or send a message
+    usage: /staffchat [message]
+    aliases: [sc]
+    permission: frostcore.staffchat
   sudo:
     description: Force a player to run a command or chat
     usage: /sudo <player> <message|command>
@@ -515,6 +525,12 @@ permissions:
     default: op
   frostcore.moderation.freeze:
     description: Allows freezing players
+    default: op
+  frostcore.moderation.screenshare:
+    description: Allows putting players into screenshare mode
+    default: op
+  frostcore.staffchat:
+    description: Allows using staff chat
     default: op
   frostcore.moderation.ipban:
     description: Allows IP banning players

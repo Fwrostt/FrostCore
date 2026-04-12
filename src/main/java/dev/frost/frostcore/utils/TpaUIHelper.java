@@ -15,7 +15,7 @@ public class TpaUIHelper {
 
     public static void sendTpaRequest(Player target, String senderName, String description, int expiry) {
 
-        String div = "<gradient:#6B8DAE:#8BADC4><strikethrough>                                                          </strikethrough></gradient>";
+        String div = "<gradient:#6B8DAE:#8BADC4><strikethrough>                                                          </strikethrough>";
 
         Component accept = MINI.deserialize("<click:run_command:'/tpaccept " + senderName + "'><hover:show_text:'<#7ECFA0>Click to accept!'> <#7ECFA0><bold>✔ ACCEPT</bold> </hover></click>");
         Component decline = MINI.deserialize("<click:run_command:'/tpdecline " + senderName + "'><hover:show_text:'<#D4727A>Click to deny!'> <#D4727A><bold>✖ DECLINE</bold> </hover></click>");
@@ -24,7 +24,7 @@ public class TpaUIHelper {
                 .append(MINI.deserialize("\n"))
                 .append(MINI.deserialize(div))
                 .append(MINI.deserialize("\n"))
-                .append(MINI.deserialize(" <gradient:#6B8DAE:#8BADC4><bold>⚡ TELEPORT REQUEST</bold></gradient>"))
+                .append(MINI.deserialize(" <gradient:#6B8DAE:#8BADC4><bold>⚡ TELEPORT REQUEST</bold>"))
                 .append(MINI.deserialize("\n\n"))
                 .append(MINI.deserialize(" <white>" + senderName + "</white> <#8FA3BF>" + description + ".</#8FA3BF>"))
                 .append(MINI.deserialize("\n\n"))

@@ -23,7 +23,7 @@ public class CheckPunishmentCmd implements CommandExecutor, TabCompleter {
     public CheckPunishmentCmd(String category) { this.category = category; }
 
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/" + cmd.getName() + " <player|ID>"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/" + cmd.getName() + " <player|ID>"); return true; }
         ModerationManager mod = ModerationManager.getInstance();
 
         try { int id = Integer.parseInt(args[0]); showPunishment(sender, mod.getDatabase().getPunishmentById(id)); return true; } catch (NumberFormatException ignored) {}
@@ -34,7 +34,7 @@ public class CheckPunishmentCmd implements CommandExecutor, TabCompleter {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             Punishment p = mod.getDatabase().getActivePunishment(target.getUniqueId(), category);
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-                if (p == null) mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>No active " + category.toLowerCase() + " found for <white>" + target.getName());
+                if (p == null) mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>No active " + category.toLowerCase() + " found for <white>" + target.getName());
                 else showPunishment(sender, p);
             });
         });
@@ -42,9 +42,9 @@ public class CheckPunishmentCmd implements CommandExecutor, TabCompleter {
     }
 
     private void showPunishment(CommandSender sender, Punishment p) {
-        if (p == null) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Not found."); return; }
+        if (p == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Not found."); return; }
         mm.sendRaw(sender, "");
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>" + p.type().getDisplayName() + " Info");
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>" + p.type().getDisplayName() + " Info");
         mm.sendRaw(sender, "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         mm.sendRaw(sender, "  <#8FA3BF>Player: <white>" + p.getTargetDisplayName());
         mm.sendRaw(sender, "  <#8FA3BF>Reason: <white>" + p.reason());

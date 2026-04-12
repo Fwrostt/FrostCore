@@ -29,9 +29,9 @@ public class SocialSpyCmd implements CommandExecutor, TabCompleter {
 
         boolean enabled = Main.getPrivateMessageManager().toggleSocialSpy(player.getUniqueId());
         if (enabled) {
-            mm.sendRaw(player, "<gradient:#FF5555:#FF55FF>ADMIN</gradient> <#AAAAAA>» <#B0C4FF>SocialSpy <#55FF55><bold>ENABLED</bold></#55FF55>. You can now see all private messages.");
+            mm.sendRaw(player, "<gradient:#FF5555:#FF55FF>ADMIN <#AAAAAA>» <#B0C4FF>SocialSpy <#55FF55><bold>ENABLED</bold></#55FF55>. You can now see all private messages.");
         } else {
-            mm.sendRaw(player, "<gradient:#FF5555:#FF55FF>ADMIN</gradient> <#AAAAAA>» <#B0C4FF>SocialSpy <#FF5555><bold>DISABLED</bold></#FF5555>.");
+            mm.sendRaw(player, "<gradient:#FF5555:#FF55FF>ADMIN <#AAAAAA>» <#B0C4FF>SocialSpy <#FF5555><bold>DISABLED</bold></#FF5555>.");
         }
         return true;
     }

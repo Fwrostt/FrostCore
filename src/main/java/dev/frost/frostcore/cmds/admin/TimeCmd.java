@@ -41,7 +41,7 @@ public class TimeCmd implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2 || !args[0].equalsIgnoreCase("set")) {
-            mm.sendRaw(sender, "<#FF5555>Usage: /time set <value|day|night>");
+            mm.sendRaw(sender, "<#FF5555>/time set <value|day|night>");
             return true;
         }
 

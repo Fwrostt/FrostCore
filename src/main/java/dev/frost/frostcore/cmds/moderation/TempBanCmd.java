@@ -28,41 +28,41 @@ public class TempBanCmd implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         ModerationManager mod = ModerationManager.getInstance();
         if (args.length < 2) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/tempban <player> <duration> [reason] [-s]");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/tempban <player> <duration> [reason] [-s]");
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player not found.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Player not found.");
             return true;
         }
 
         if (target.isOnline() && !Main.getGroupLimitManager().canPunish(sender, target.getPlayer())) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot punish this player.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot punish this player.");
             return true;
         }
 
         if (mod.isBanned(target.getUniqueId())) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>This player is already banned.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>This player is already banned.");
             return true;
         }
 
         ParsedArgs parsed = ParsedArgs.parseRequired(args, 1);
         if (parsed.duration == -2) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Invalid duration. Use: 10s, 5m, 1h, 7d, 2w, 1M");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Invalid duration. Use: 10s, 5m, 1h, 7d, 2w, 1M");
             return true;
         }
 
         if (Main.getGroupLimitManager().exceedsMaxDuration(sender, "TEMPBAN", parsed.duration)) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Duration exceeds your group's maximum.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Duration exceeds your group's maximum.");
             return true;
         }
 
         String reason = parsed.reason.isEmpty() ? "Temporarily banned" : parsed.reason;
         mod.punish(PunishmentType.TEMPBAN, target.getUniqueId(), target.getName(), null, reason, sender, parsed.duration, parsed.silent);
 
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Banned <white>"
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Banned <white>"
                 + target.getName() + " <#8FA3BF>for " + Punishment.formatDuration(parsed.duration) + ".");
         return true;
     }

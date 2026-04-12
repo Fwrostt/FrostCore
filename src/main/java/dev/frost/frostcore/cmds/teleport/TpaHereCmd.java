@@ -36,7 +36,7 @@ public class TpaHereCmd implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            mm.sendRaw(player, "<#B0C4FF>Usage: <white>/tpahere <player>");
+            mm.sendRaw(player, "<#B0C4FF>/tpahere <player>");
             return true;
         }
 

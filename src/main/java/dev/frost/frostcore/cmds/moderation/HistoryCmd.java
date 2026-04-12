@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class HistoryCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/history <player> [type]"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/history <player> [type]"); return true; }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         String typeFilter = args.length >= 2 ? args[1].toUpperCase() : null;
@@ -33,7 +33,7 @@ public class HistoryCmd implements CommandExecutor, TabCompleter {
                     HistoryGui.open(p, target, history, false);
                 } else {
                     mm.sendRaw(sender, "");
-                    mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>History for <white>" + target.getName() + " <dark_gray>(" + history.size() + " records)");
+                    mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>History for <white>" + target.getName() + " <dark_gray>(" + history.size() + " records)");
                     mm.sendRaw(sender, "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
                     if (history.isEmpty()) {

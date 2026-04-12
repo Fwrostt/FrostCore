@@ -19,14 +19,14 @@ import java.util.stream.Collectors;
 public class IpHistoryCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/iphistory <player>"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/iphistory <player>"); return true; }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             ModerationDatabase modDb = ModerationManager.getInstance().getDatabase();
             Set<String> ips = modDb.getIpsByUuid(target.getUniqueId());
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                 mm.sendRaw(sender, "");
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>IP History for <white>" + target.getName());
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>IP History for <white>" + target.getName());
                 mm.sendRaw(sender, "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 if (ips.isEmpty()) mm.sendRaw(sender, "  <#707880>No IP records found.");
                 else for (String ip : ips) {

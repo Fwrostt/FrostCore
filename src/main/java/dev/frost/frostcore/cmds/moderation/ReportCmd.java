@@ -18,10 +18,10 @@ public class ReportCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) { sender.sendMessage("Only players can report."); return true; }
-        if (args.length < 2) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/report <player> <reason>"); return true; }
+        if (args.length < 2) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/report <player> <reason>"); return true; }
         Player target = Bukkit.getPlayer(args[0]);
-        if (target == null) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player not found."); return true; }
-        if (target.equals(player)) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot report yourself."); return true; }
+        if (target == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Player not found."); return true; }
+        if (target.equals(player)) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot report yourself."); return true; }
 
         String reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         Report report = new Report(0, player.getUniqueId(), player.getName(), target.getUniqueId(), target.getName(), reason, System.currentTimeMillis(), false, null, null, null);
@@ -32,10 +32,10 @@ public class ReportCmd implements CommandExecutor, TabCompleter {
             Report saved = new Report(id, report.reporterUuid(), report.reporterName(), report.targetUuid(), report.targetName(), report.reason(), report.createdAt(), false, null, null, null);
 
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-                mm.sendRaw(player, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Report submitted. <dark_gray>ID: #" + id);
+                mm.sendRaw(player, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Report submitted. <dark_gray>ID: #" + id);
 
                 // Notify staff
-                String msg = "<gradient:#D4727A:#A35560>REPORT</gradient> <dark_gray>» <#8FA3BF>" + player.getName() + " reported <white>" + target.getName() + " <dark_gray>| <#8FA3BF>" + reason + " <dark_gray>[#" + id + "]";
+                String msg = "<#D4727A>REPORT <dark_gray>» <#8FA3BF>" + player.getName() + " reported <white>" + target.getName() + " <dark_gray>| <#8FA3BF>" + reason + " <dark_gray>[#" + id + "]";
                 for (Player staff : Bukkit.getOnlinePlayers()) {
                     if (staff.hasPermission("frostcore.moderation.notify")) {
                         mm.sendRaw(staff, msg);

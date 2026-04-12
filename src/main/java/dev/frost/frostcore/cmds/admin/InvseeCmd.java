@@ -30,7 +30,7 @@ public class InvseeCmd implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length < 1) {
-            mm.sendRaw(player, "<#FF5555>Usage: /invsee <player>");
+            mm.sendRaw(player, "<#FF5555>/invsee <player>");
             return true;
         }
         Player target = Bukkit.getPlayer(args[0]);

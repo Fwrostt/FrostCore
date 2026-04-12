@@ -125,7 +125,7 @@ public class TeleportUtil {
         if (titleEnabled()) {
             player.showTitle(Title.title(
                     Component.empty(),
-                    miniMessage.deserialize("<gradient:#6B8DAE:#8BADC4>Teleported!</gradient>"),
+                    miniMessage.deserialize("<gradient:#6B8DAE:#8BADC4>Teleported!"),
                     Title.Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ofMillis(400))
             ));
         }

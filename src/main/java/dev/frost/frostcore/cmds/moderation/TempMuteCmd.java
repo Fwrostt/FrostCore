@@ -23,21 +23,21 @@ public class TempMuteCmd implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
         ModerationManager mod = ModerationManager.getInstance();
         if (args.length < 2) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/tempmute <player> <duration> [reason] [-s]");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/tempmute <player> <duration> [reason] [-s]");
             return true;
         }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-        if (!target.hasPlayedBefore() && !target.isOnline()) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player not found."); return true; }
-        if (target.isOnline() && !Main.getGroupLimitManager().canPunish(sender, target.getPlayer())) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot punish this player."); return true; }
-        if (mod.isMuted(target.getUniqueId())) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>This player is already muted."); return true; }
+        if (!target.hasPlayedBefore() && !target.isOnline()) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Player not found."); return true; }
+        if (target.isOnline() && !Main.getGroupLimitManager().canPunish(sender, target.getPlayer())) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot punish this player."); return true; }
+        if (mod.isMuted(target.getUniqueId())) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>This player is already muted."); return true; }
 
         ParsedArgs parsed = ParsedArgs.parseRequired(args, 1);
-        if (parsed.duration == -2) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Invalid duration. Use: 10s, 5m, 1h, 7d"); return true; }
-        if (Main.getGroupLimitManager().exceedsMaxDuration(sender, "TEMPMUTE", parsed.duration)) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Duration exceeds your group's maximum."); return true; }
+        if (parsed.duration == -2) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Invalid duration. Use: 10s, 5m, 1h, 7d"); return true; }
+        if (Main.getGroupLimitManager().exceedsMaxDuration(sender, "TEMPMUTE", parsed.duration)) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Duration exceeds your group's maximum."); return true; }
 
         String reason = parsed.reason.isEmpty() ? "Temporarily muted" : parsed.reason;
         mod.punish(PunishmentType.TEMPMUTE, target.getUniqueId(), target.getName(), null, reason, sender, parsed.duration, parsed.silent);
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Muted <white>" + target.getName() + " <#8FA3BF>for " + Punishment.formatDuration(parsed.duration) + ".");
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Muted <white>" + target.getName() + " <#8FA3BF>for " + Punishment.formatDuration(parsed.duration) + ".");
         return true;
     }
 

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class AltsCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/alts <player>"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/alts <player>"); return true; }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
@@ -32,7 +32,7 @@ public class AltsCmd implements CommandExecutor, TabCompleter {
                     AltsGui.open(p, target, alts);
                 } else {
                     mm.sendRaw(sender, "");
-                    mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Alt accounts for <white>" + target.getName() + " <dark_gray>(" + alts.size() + ")");
+                    mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>Alt accounts for <white>" + target.getName() + " <dark_gray>(" + alts.size() + ")");
                     mm.sendRaw(sender, "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                     if (alts.isEmpty()) mm.sendRaw(sender, "  <#707880>No known alt accounts.");
                     else for (UUID altUuid : alts) {

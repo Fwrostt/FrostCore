@@ -80,11 +80,11 @@ public class WarpCmd implements CommandExecutor, TabCompleter {
             return;
         }
 
-        String div = "<gradient:#6B8DAE:#8BADC4><strikethrough>                                                          </strikethrough></gradient>";
+        String div = "<gradient:#6B8DAE:#8BADC4><strikethrough>                                                          </strikethrough>";
 
         mm.sendRaw(player, "");
         mm.sendRaw(player, div);
-        mm.sendRaw(player, " <gradient:#6B8DAE:#8BADC4><bold>✦ Server Warps</bold></gradient>");
+        mm.sendRaw(player, " <gradient:#6B8DAE:#8BADC4><bold>✦ Server Warps</bold>");
         mm.sendRaw(player, "");
 
         Component warpLine = Component.empty().append(miniMessage.deserialize(" "));

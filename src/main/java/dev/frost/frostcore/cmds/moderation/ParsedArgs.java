@@ -68,6 +68,32 @@ public class ParsedArgs {
     }
 
     /**
+     * Parse args starting from a given index, skipping duration parsing entirely.
+     * Use this for commands like /warn and /kick where duration is not expected.
+     */
+    public static ParsedArgs parseReasonOnly(String[] args, int startIndex) {
+        boolean silent = false;
+        String template = null;
+        StringBuilder reason = new StringBuilder();
+
+        for (int i = startIndex; i < args.length; i++) {
+            String arg = args[i];
+            if (arg.equalsIgnoreCase("-s")) {
+                silent = true;
+                continue;
+            }
+            if (arg.equalsIgnoreCase("-t") && i + 1 < args.length) {
+                template = args[++i];
+                continue;
+            }
+            if (!reason.isEmpty()) reason.append(" ");
+            reason.append(arg);
+        }
+
+        return new ParsedArgs(-1, reason.toString(), silent, template);
+    }
+
+    /**
      * Parse with a required duration (for /tempban, /tempmute).
      * Returns ParsedArgs with duration = -2 if not found (caller should error).
      */

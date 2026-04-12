@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class PruneHistoryCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/prunehistory <player> [duration]"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/prunehistory <player> [duration]"); return true; }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         Long sinceMs = null;
         if (args.length >= 2) {
@@ -30,7 +30,7 @@ public class PruneHistoryCmd implements CommandExecutor, TabCompleter {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             int count = ModerationManager.getInstance().getDatabase().pruneHistory(target.getUniqueId(), since);
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Pruned <white>" + count + " <#7ECFA0>inactive records for <white>" + target.getName() + ".");
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Pruned <white>" + count + " <#7ECFA0>inactive records for <white>" + target.getName() + ".");
                 if (ModerationManager.getInstance().getWebhookManager() != null) {
                     ModerationManager.getInstance().getWebhookManager().sendStaffActivityAsync("History Prune", sender.getName(), "Pruned " + count + " records for " + target.getName());
                 }

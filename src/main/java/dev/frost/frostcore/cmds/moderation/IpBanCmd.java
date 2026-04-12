@@ -23,17 +23,17 @@ public class IpBanCmd implements CommandExecutor, TabCompleter {
 
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
         ModerationManager mod = ModerationManager.getInstance();
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/ipban <player> [duration] [reason] [-s]"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/ipban <player> [duration] [reason] [-s]"); return true; }
 
         Player target = Bukkit.getPlayer(args[0]);
-        if (target == null) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player must be online for IP ban."); return true; }
-        if (!Main.getGroupLimitManager().canPunish(sender, target)) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot punish this player."); return true; }
+        if (target == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Player must be online for IP ban."); return true; }
+        if (!Main.getGroupLimitManager().canPunish(sender, target)) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot punish this player."); return true; }
 
         String ip = target.getAddress() != null ? target.getAddress().getAddress().getHostAddress() : null;
-        if (ip == null) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Could not resolve player's IP."); return true; }
+        if (ip == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Could not resolve player's IP."); return true; }
 
         ParsedArgs parsed = ParsedArgs.parse(args, 1);
-        if (Main.getGroupLimitManager().exceedsMaxDuration(sender, "IPBAN", parsed.duration)) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Duration exceeds your group's maximum."); return true; }
+        if (Main.getGroupLimitManager().exceedsMaxDuration(sender, "IPBAN", parsed.duration)) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Duration exceeds your group's maximum."); return true; }
 
         String reason = parsed.reason.isEmpty() ? "IP Banned by an administrator" : parsed.reason;
         Punishment p = mod.punish(PunishmentType.IPBAN, target.getUniqueId(), target.getName(), ip, reason, sender, parsed.duration, parsed.silent);
@@ -44,7 +44,7 @@ public class IpBanCmd implements CommandExecutor, TabCompleter {
         }
 
         String durationStr = parsed.duration == -1 ? "permanently" : "for " + Punishment.formatDuration(parsed.duration);
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>IP Banned <white>" + target.getName() + " <#8FA3BF>" + durationStr + " <dark_gray>(IP: " + ip + ")");
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>IP Banned <white>" + target.getName() + " <#8FA3BF>" + durationStr + " <dark_gray>(IP: " + ip + ")");
         return true;
     }
 

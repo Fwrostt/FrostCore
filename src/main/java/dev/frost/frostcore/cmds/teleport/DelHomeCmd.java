@@ -30,7 +30,7 @@ public class DelHomeCmd implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            mm.sendRaw(player, "<red>Usage: /delhome <name>");
+            mm.sendRaw(player, "<red>/delhome <name>");
             return true;
         }
 

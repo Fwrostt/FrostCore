@@ -35,7 +35,7 @@ public class SetWarpCmd implements CommandExecutor, TabCompleter {
 
         if (cmdName.equals("setwarp")) {
             if (args.length < 1) {
-                mm.sendRaw(player, "<#B0C4FF>Usage: <white>/setwarp <name>");
+                mm.sendRaw(player, "<#B0C4FF>/setwarp <name>");
                 return true;
             }
 
@@ -45,7 +45,7 @@ public class SetWarpCmd implements CommandExecutor, TabCompleter {
             return true;
         } else if (cmdName.equals("delwarp")) {
             if (args.length < 1) {
-                mm.sendRaw(player, "<#B0C4FF>Usage: <white>/delwarp <name>");
+                mm.sendRaw(player, "<#B0C4FF>/delwarp <name>");
                 return true;
             }
 

@@ -28,13 +28,13 @@ public class BanCmd implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         ModerationManager mod = ModerationManager.getInstance();
         if (args.length < 1) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/ban <player> [duration] [reason] [-s] [-t template]");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/ban <player> [duration] [reason] [-s] [-t template]");
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player not found.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Player not found.");
             return true;
         }
 
@@ -42,14 +42,14 @@ public class BanCmd implements CommandExecutor, TabCompleter {
         if (target.isOnline()) {
             GroupLimitManager glm = Main.getGroupLimitManager();
             if (!glm.canPunish(sender, target.getPlayer())) {
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot punish this player.");
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot punish this player.");
                 return true;
             }
         }
 
         // Check if already banned
         if (mod.isBanned(target.getUniqueId())) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>This player is already banned.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>This player is already banned.");
             return true;
         }
 
@@ -61,7 +61,7 @@ public class BanCmd implements CommandExecutor, TabCompleter {
             TemplateManager tm = Main.getTemplateManager();
             TemplateManager.PunishmentTemplate template = tm.getTemplate(parsed.template);
             if (template == null) {
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Template not found: <white>" + parsed.template);
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Template not found: <white>" + parsed.template);
                 return true;
             }
             int offenseCount = mod.getDatabase().countPlayerWarnings(target.getUniqueId()) + 1;
@@ -71,7 +71,7 @@ public class BanCmd implements CommandExecutor, TabCompleter {
             mod.punish(type, target.getUniqueId(), target.getName(), null,
                     template.reason(), sender, duration, parsed.silent);
 
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Banned <white>" + target.getName()
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Banned <white>" + target.getName()
                     + " <#8FA3BF>using template <white>" + parsed.template);
             return true;
         }
@@ -79,13 +79,13 @@ public class BanCmd implements CommandExecutor, TabCompleter {
         // Check group limits
         GroupLimitManager glm = Main.getGroupLimitManager();
         if (glm.requiresTemplate(sender)) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Your group requires a template. Use <white>-t <template>");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Your group requires a template. Use <white>-t <template>");
             return true;
         }
 
         long duration = parsed.duration;
         if (glm.exceedsMaxDuration(sender, "BAN", duration)) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Duration exceeds your group's maximum.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Duration exceeds your group's maximum.");
             return true;
         }
 
@@ -95,7 +95,7 @@ public class BanCmd implements CommandExecutor, TabCompleter {
         mod.punish(type, target.getUniqueId(), target.getName(), null, reason, sender, duration, parsed.silent);
 
         String durationStr = duration == -1 ? "permanently" : "for " + Punishment.formatDuration(duration);
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Banned <white>"
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Banned <white>"
                 + target.getName() + " <#8FA3BF>" + durationStr + ".");
         return true;
     }

@@ -32,7 +32,7 @@ public class ReportsCmd implements CommandExecutor, TabCompleter {
                     int total = modDb.countOpenReports();
                     int totalPages = Math.max(1, (int) Math.ceil(total / 10.0));
                     mm.sendRaw(sender, "");
-                    mm.sendRaw(sender, "<gradient:#D4727A:#A35560>REPORTS</gradient> <dark_gray>» <#8FA3BF>Open Reports <dark_gray>(Page " + (pNum + 1) + "/" + totalPages + ", " + total + " total)");
+                    mm.sendRaw(sender, "<#D4727A>REPORTS <dark_gray>» <#8FA3BF>Open Reports <dark_gray>(Page " + (pNum + 1) + "/" + totalPages + ", " + total + " total)");
                     mm.sendRaw(sender, "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                     if (reports.isEmpty()) mm.sendRaw(sender, "  <#707880>No open reports.");
                     else for (Report r : reports) {

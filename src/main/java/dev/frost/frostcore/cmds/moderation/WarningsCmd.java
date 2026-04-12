@@ -25,14 +25,14 @@ public class WarningsCmd implements CommandExecutor, TabCompleter {
             OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]); targetUuid = target.getUniqueId(); targetName = target.getName();
         } else if (sender instanceof Player p) {
             targetUuid = p.getUniqueId(); targetName = p.getName();
-        } else { sender.sendMessage("Usage: /warnings <player>"); return true; }
+        } else { sender.sendMessage("/warnings <player>"); return true; }
 
         final String name = targetName;
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             List<Punishment> warnings = ModerationManager.getInstance().getDatabase().getActiveWarnings(targetUuid);
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                 mm.sendRaw(sender, "");
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Warnings for <white>" + name + " <dark_gray>(" + warnings.size() + ")");
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>Warnings for <white>" + name + " <dark_gray>(" + warnings.size() + ")");
                 mm.sendRaw(sender, "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 if (warnings.isEmpty()) mm.sendRaw(sender, "  <#707880>No active warnings.");
                 else for (Punishment w : warnings) {

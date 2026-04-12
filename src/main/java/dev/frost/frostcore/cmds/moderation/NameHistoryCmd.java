@@ -24,7 +24,7 @@ public class NameHistoryCmd implements CommandExecutor {
         }
 
         if (args.length < 1) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/namehistory <player>");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/namehistory <player>");
             return true;
         }
 
@@ -35,7 +35,7 @@ public class NameHistoryCmd implements CommandExecutor {
 
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                 mm.sendRaw(sender, "");
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Name history for " + target.getName());
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>Name history for " + target.getName());
                 mm.sendRaw(sender, "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
                 if (names.isEmpty()) {

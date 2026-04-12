@@ -23,21 +23,21 @@ public class MuteCmd implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
         ModerationManager mod = ModerationManager.getInstance();
         if (args.length < 1) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/mute <player> [duration] [reason] [-s] [-t template]");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/mute <player> [duration] [reason] [-s] [-t template]");
             return true;
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (!target.hasPlayedBefore() && !target.isOnline()) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player not found.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Player not found.");
             return true;
         }
         if (target.isOnline() && !Main.getGroupLimitManager().canPunish(sender, target.getPlayer())) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot punish this player.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot punish this player.");
             return true;
         }
         if (mod.isMuted(target.getUniqueId())) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>This player is already muted.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>This player is already muted.");
             return true;
         }
 
@@ -47,24 +47,24 @@ public class MuteCmd implements CommandExecutor, TabCompleter {
             TemplateManager tm = Main.getTemplateManager();
             TemplateManager.PunishmentTemplate template = tm.getTemplate(parsed.template);
             if (template == null) {
-                mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Template not found: <white>" + parsed.template);
+                mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Template not found: <white>" + parsed.template);
                 return true;
             }
             int offenseCount = mod.getDatabase().countPlayerWarnings(target.getUniqueId()) + 1;
             long duration = tm.resolveDuration(template, offenseCount);
             PunishmentType type = duration == -1 ? PunishmentType.MUTE : PunishmentType.TEMPMUTE;
             mod.punish(type, target.getUniqueId(), target.getName(), null, template.reason(), sender, duration, parsed.silent);
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Muted <white>" + target.getName() + " <#8FA3BF>using template <white>" + parsed.template);
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Muted <white>" + target.getName() + " <#8FA3BF>using template <white>" + parsed.template);
             return true;
         }
 
         GroupLimitManager glm = Main.getGroupLimitManager();
         if (glm.requiresTemplate(sender)) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Your group requires a template. Use <white>-t <template>");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Your group requires a template. Use <white>-t <template>");
             return true;
         }
         if (glm.exceedsMaxDuration(sender, "MUTE", parsed.duration)) {
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Duration exceeds your group's maximum.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Duration exceeds your group's maximum.");
             return true;
         }
 
@@ -73,7 +73,7 @@ public class MuteCmd implements CommandExecutor, TabCompleter {
         mod.punish(type, target.getUniqueId(), target.getName(), null, reason, sender, parsed.duration, parsed.silent);
 
         String durationStr = parsed.duration == -1 ? "permanently" : "for " + Punishment.formatDuration(parsed.duration);
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Muted <white>" + target.getName() + " <#8FA3BF>" + durationStr + ".");
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Muted <white>" + target.getName() + " <#8FA3BF>" + durationStr + ".");
         return true;
     }
 

@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 public class UnjailCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 1) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/unjail <player>"); return true; }
+        if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/unjail <player>"); return true; }
         Player target = Bukkit.getPlayer(args[0]);
-        if (target == null) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player must be online."); return true; }
+        if (target == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Player must be online."); return true; }
         ModerationManager mod = ModerationManager.getInstance();
-        if (!mod.isJailed(target.getUniqueId())) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>This player is not jailed."); return true; }
+        if (!mod.isJailed(target.getUniqueId())) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>This player is not jailed."); return true; }
         mod.unjailPlayer(target.getUniqueId());
-        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Unjailed <white>" + target.getName() + ".");
-        mm.sendRaw(target, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>You have been released from jail.");
+        mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Unjailed <white>" + target.getName() + ".");
+        mm.sendRaw(target, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>You have been released from jail.");
         return true;
     }
     @Override public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {

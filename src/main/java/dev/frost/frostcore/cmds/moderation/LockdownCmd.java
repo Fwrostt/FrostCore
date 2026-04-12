@@ -20,20 +20,20 @@ public class LockdownCmd implements CommandExecutor, TabCompleter {
         ModerationManager mod = ModerationManager.getInstance();
         if (mod.isLockdown()) {
             mod.setLockdown(false, null);
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Server lockdown <white>disabled.");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Server lockdown <white>disabled.");
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p.hasPermission("frostcore.moderation.notify")) {
-                    mm.sendRaw(p, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Server lockdown has been disabled by <white>" + sender.getName());
+                    mm.sendRaw(p, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Server lockdown has been disabled by <white>" + sender.getName());
                 }
             }
             if (mod.getWebhookManager() != null) mod.getWebhookManager().sendStaffActivityAsync("Lockdown Disabled", sender.getName(), "Server is now open.");
         } else {
             String reason = args.length > 0 ? String.join(" ", args) : "Maintenance";
             mod.setLockdown(true, reason);
-            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Server lockdown <white>enabled. <dark_gray>(" + reason + ")");
+            mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Server lockdown <white>enabled. <dark_gray>(" + reason + ")");
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p.hasPermission("frostcore.moderation.notify")) {
-                    mm.sendRaw(p, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Server lockdown enabled by <white>" + sender.getName() + " <dark_gray>— " + reason);
+                    mm.sendRaw(p, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Server lockdown enabled by <white>" + sender.getName() + " <dark_gray>— " + reason);
                 }
             }
             if (mod.getWebhookManager() != null) mod.getWebhookManager().sendStaffActivityAsync("Lockdown Enabled", sender.getName(), reason);

@@ -433,12 +433,12 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                 team = manager.getTeam(player.getUniqueId());
             }
 
-            String divider = "<gradient:#C8A87C:#A68B5B><strikethrough>                                          </strikethrough></gradient>";
+            String divider = "<gradient:#C8A87C:#A68B5B><strikethrough>                                          </strikethrough>";
 
             mm.sendRaw(player, "");
             mm.sendRaw(player, divider);
             mm.sendRaw(player, "  <gradient:#C8A87C:#A68B5B><bold>" + team.getDisplayName()
-                    + "</bold></gradient> <dark_gray>[<white>" + team.getTag() + "<dark_gray>]");
+                    + "</bold> <dark_gray>[<white>" + team.getTag() + "<dark_gray>]");
             mm.sendRaw(player, "");
 
             mm.sendRaw(player, "  <#D4C4A8>⬥ Owners   <dark_gray>» <white>" + formatPlayerList(team.getOwners()));
@@ -870,10 +870,10 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
     }
 
     private void sendHelp(Player player) {
-        String div = "<gradient:#C8A87C:#A68B5B><strikethrough>                                                            </strikethrough></gradient>";
+        String div = "<gradient:#C8A87C:#A68B5B><strikethrough>                                                            </strikethrough>";
         mm.sendRaw(player, "");
         mm.sendRaw(player, div);
-        mm.sendRaw(player, "  <gradient:#C8A87C:#A68B5B><bold>Team Commands</bold></gradient>");
+        mm.sendRaw(player, "  <gradient:#C8A87C:#A68B5B><bold>Team Commands</bold>");
         mm.sendRaw(player, "");
         mm.sendRaw(player, "  <#D4C4A8>/team create <dark_gray><name> <tag>   <#D4C4A8>/team disband");
         mm.sendRaw(player, "  <#D4C4A8>/team info <dark_gray>[team]          <#D4C4A8>/team list <dark_gray>[page]");

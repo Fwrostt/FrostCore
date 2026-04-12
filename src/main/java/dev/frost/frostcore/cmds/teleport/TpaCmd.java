@@ -37,7 +37,7 @@ public class TpaCmd implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 1) {
-            mm.sendRaw(player, "<#B0C4FF>Usage: <white>/tpa <player>");
+            mm.sendRaw(player, "<#B0C4FF>/tpa <player>");
             return true;
         }
 

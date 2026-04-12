@@ -90,11 +90,11 @@ public class HomeCmd implements CommandExecutor, TabCompleter {
             return;
         }
 
-        String div = "<gradient:#FF99AA:#CC77FF><strikethrough>                                                          </strikethrough></gradient>";
+        String div = "<gradient:#FF99AA:#CC77FF><strikethrough>                                                          </strikethrough>";
 
         mm.sendRaw(player, "");
         mm.sendRaw(player, div);
-        mm.sendRaw(player, " <gradient:#FF99AA:#CC77FF><bold>Personal Homes</bold></gradient>");
+        mm.sendRaw(player, " <gradient:#FF99AA:#CC77FF><bold>Personal Homes</bold>");
         mm.sendRaw(player, "");
 
         Component homeLine = Component.empty().append(miniMessage.deserialize(" "));
