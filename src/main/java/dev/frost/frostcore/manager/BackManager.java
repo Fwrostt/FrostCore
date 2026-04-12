@@ -5,10 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Manages the "last location" history for players.
- * This is stored strictly in-memory and will not persist across restarts.
- */
+
 public class BackManager {
 
     private static BackManager instance;

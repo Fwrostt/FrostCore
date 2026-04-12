@@ -6,12 +6,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Stores the GUI display configuration for a single server warp.
- * <p>
- * Values are persisted to {@code warps.yml} and loaded on startup.
- * A default configuration is auto-generated for every new warp created via {@code /setwarp}.
- */
+
 public class WarpItemConfig {
 
     private String displayName;
@@ -29,10 +24,7 @@ public class WarpItemConfig {
         this.permission  = permission == null ? "" : permission;
     }
 
-    /**
-     * Build a sensible default config for a warp that doesn't yet have one.
-     * Called automatically when {@code /setwarp <name>} is run.
-     */
+    
     public static WarpItemConfig defaultFor(String warpName) {
         String capitalized = warpName.substring(0, 1).toUpperCase() + warpName.substring(1);
         List<String> lore = new ArrayList<>();
@@ -48,9 +40,7 @@ public class WarpItemConfig {
         );
     }
 
-    /**
-     * Write this config into a {@link ConfigurationSection} (a key under {@code warps.<name>}).
-     */
+    
     public void saveTo(ConfigurationSection section) {
         section.set("display-name", displayName);
         section.set("material", material.name());
@@ -59,10 +49,7 @@ public class WarpItemConfig {
         section.set("permission", permission);
     }
 
-    /**
-     * Load a {@link WarpItemConfig} from a {@link ConfigurationSection}.
-     * Falls back to {@link #defaultFor(String)} for any missing fields.
-     */
+    
     public static WarpItemConfig loadFrom(ConfigurationSection section, String warpName) {
         String displayName = section.getString("display-name",
                 "<gradient:#6B8DAE:#8BADC4><bold>⬡ " + warpName + "</bold>");
@@ -101,7 +88,7 @@ public class WarpItemConfig {
     public String       getPermission()               { return permission; }
     public void         setPermission(String p)       { this.permission = p == null ? "" : p; }
 
-    /** Returns true if this warp requires a specific permission. */
+    
     public boolean requiresPermission()               { return !permission.isEmpty(); }
 }
 

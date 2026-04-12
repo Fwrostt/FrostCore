@@ -52,10 +52,7 @@ public class TeleportUtil {
         return config().getBoolean("teleport.particles", true);
     }
 
-    /**
-     * Cooldown is applied ONLY when the teleport SUCCESSFULLY completes.
-     * If cancelled due to movement → no cooldown is given.
-     */
+    
     public boolean teleportWithCooldownAndDelay(Player player, Location target,
                                                 String cooldownId, String cooldownPath,
                                                 String cooldownMsgPath,
@@ -114,10 +111,7 @@ public class TeleportUtil {
         });
     }
 
-    /**
-     * Play all configured arrival effects (sound, particles, title, action-bar clear).
-     * Called after every successful teleport, both instant and delayed.
-     */
+    
     private void playArrivalEffects(Player player) {
         if (soundEnabled())     playTeleportSuccessSound(player);
         if (particlesEnabled()) playTeleportParticles(player);

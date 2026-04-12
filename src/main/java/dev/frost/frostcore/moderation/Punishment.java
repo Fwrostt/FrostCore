@@ -29,9 +29,7 @@ public record Punishment(
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final String HEX_CHARS = "0123456789ABCDEF";
 
-    /**
-     * Generate a 6-character randomized hex ID for privacy.
-     */
+    
     public static String generateRandomId() {
         StringBuilder sb = new StringBuilder(6);
         for (int i = 0; i < 6; i++) {
@@ -40,28 +38,28 @@ public record Punishment(
         return sb.toString();
     }
 
-    /** Check if this punishment has expired naturally. */
+    
     public boolean isExpired() {
         return expiresAt != -1 && expiresAt < System.currentTimeMillis();
     }
 
-    /** Whether this punishment is currently in effect (active and not expired). */
+    
     public boolean isInEffect() {
         return active && !isExpired();
     }
 
-    /** Whether this is a permanent punishment. */
+    
     public boolean isPermanent() {
         return expiresAt == -1;
     }
 
-    /** Get remaining time in milliseconds, or -1 if permanent. */
+    
     public long getRemainingMs() {
         if (isPermanent()) return -1;
         return Math.max(0, expiresAt - System.currentTimeMillis());
     }
 
-    /** Format the remaining duration as a human-readable string. */
+    
     public String getFormattedRemaining() {
         if (isPermanent()) return "Permanent";
         long remaining = getRemainingMs();
@@ -69,26 +67,23 @@ public record Punishment(
         return formatDuration(remaining);
     }
 
-    /** Format the original duration as a human-readable string. */
+    
     public String getFormattedDuration() {
         if (duration == -1) return "Permanent";
         return formatDuration(duration);
     }
 
-    /** Get the staff display name (CONSOLE if null). */
+    
     public String getStaffDisplayName() {
         return staffName != null ? staffName : "CONSOLE";
     }
 
-    /** Get the target display name. */
+    
     public String getTargetDisplayName() {
         return targetName != null ? targetName : (targetUuid != null ? targetUuid.toString().substring(0, 8) : "Unknown");
     }
 
-    /**
-     * Format milliseconds into a human-readable duration string.
-     * e.g., "7d 3h 25m" or "2h 10m" or "45s"
-     */
+    
     public static String formatDuration(long millis) {
         if (millis <= 0) return "0s";
         long totalSeconds = millis / 1000;
@@ -105,11 +100,7 @@ public record Punishment(
         return sb.toString().trim();
     }
 
-    /**
-     * Parses a human-readable time string like "1d2h30m" into milliseconds.
-     *
-     * @return milliseconds if valid, -1 for permanent, -2 for invalid input
-     */
+    
     public static long parseTime(String input) {
         if (input == null || input.isEmpty() || input.equalsIgnoreCase("permanent")
                 || input.equalsIgnoreCase("perm") || input.equalsIgnoreCase("p")) {
@@ -133,8 +124,8 @@ public record Punishment(
                 case "h" -> val * 3_600_000L;
                 case "d" -> val * 86_400_000L;
                 case "w" -> val * 604_800_000L;
-                case "M" -> val * 2_592_000_000L;  // 30 days
-                case "y" -> val * 31_536_000_000L;  // 365 days
+                case "M" -> val * 2_592_000_000L;  
+                case "y" -> val * 31_536_000_000L;  
                 default -> 0;
             };
         }

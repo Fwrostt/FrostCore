@@ -11,12 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
-/**
- * Handles echest inventory events:
- * - Saves contents on close
- * - Blocks interaction for players who are no longer in the team (anti-dupe)
- * - Blocks drag events from non-members (anti-dupe)
- */
+
 public class InventoryCloseListener implements Listener {
 
     private final TeamEchestManager echestManager = Main.getEchestManager();
@@ -31,10 +26,7 @@ public class InventoryCloseListener implements Listener {
         }
     }
 
-    /**
-     * Anti-dupe: Block clicks in the echest if the player is no longer in a team.
-     * This catches the edge case where a player is kicked/leaves while the echest is still open.
-     */
+    
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
@@ -47,9 +39,7 @@ public class InventoryCloseListener implements Listener {
         }
     }
 
-    /**
-     * Anti-dupe: Block drag events in the echest if the player is no longer in a team.
-     */
+    
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryDrag(InventoryDragEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;

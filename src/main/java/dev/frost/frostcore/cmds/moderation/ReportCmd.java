@@ -34,7 +34,7 @@ public class ReportCmd implements CommandExecutor, TabCompleter {
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                 mm.sendRaw(player, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Report submitted. <dark_gray>ID: #" + id);
 
-                // Notify staff
+                
                 String msg = "<#D4727A>REPORT <dark_gray>» <#8FA3BF>" + player.getName() + " reported <white>" + target.getName() + " <dark_gray>| <#8FA3BF>" + reason + " <dark_gray>[#" + id + "]";
                 for (Player staff : Bukkit.getOnlinePlayers()) {
                     if (staff.hasPermission("frostcore.moderation.notify")) {
@@ -43,7 +43,7 @@ public class ReportCmd implements CommandExecutor, TabCompleter {
                 }
             });
 
-            // Webhook
+            
             if (mod.getWebhookManager() != null) {
                 mod.getWebhookManager().sendReportWebhookAsync(saved);
             }

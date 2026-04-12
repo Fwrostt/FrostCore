@@ -15,14 +15,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/** /checkban <player|ID> */
+
 public class CheckBanCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
         if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/checkban <player|ID>"); return true; }
         ModerationManager mod = ModerationManager.getInstance();
 
-        // Try ID
+        
         try { int id = Integer.parseInt(args[0]); showPunishment(sender, mod.getDatabase().getPunishmentById(id)); return true; } catch (NumberFormatException ignored) {}
         Punishment byRandom = mod.getDatabase().getPunishmentByRandomId(args[0].toUpperCase());
         if (byRandom != null) { showPunishment(sender, byRandom); return true; }

@@ -9,10 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-/**
- * Ensures vanished players remain invisible to newly joining players,
- * suppresses their join/quit messages, and cleans up vanish state on quit.
- */
+
 public class VanishListener implements Listener {
 
     private final VanishManager vm = VanishManager.getInstance();
@@ -21,12 +18,12 @@ public class VanishListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player joiner = event.getPlayer();
 
-        // Suppress join message if the player was vanished (edge case: quick relog)
+        
         if (vm.isVanished(joiner.getUniqueId())) {
             event.joinMessage(null);
         }
 
-        // Hide all currently vanished players from this new joiner
+        
         vm.hideVanishedFrom(joiner);
     }
 
@@ -34,12 +31,12 @@ public class VanishListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         Player quitter = event.getPlayer();
 
-        // Suppress quit message if vanished
+        
         if (vm.isVanished(quitter.getUniqueId())) {
             event.quitMessage(null);
         }
 
-        // Remove vanish state when the vanished player leaves
+        
         vm.cleanup(quitter.getUniqueId());
     }
 }

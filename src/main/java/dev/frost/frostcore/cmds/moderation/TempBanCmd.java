@@ -16,10 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * /tempban <player> <duration> [reason] [-s]
- * Temporarily bans a player (duration is required).
- */
+
 public class TempBanCmd implements CommandExecutor, TabCompleter {
 
     private final MessageManager mm = Main.getMessageManager();

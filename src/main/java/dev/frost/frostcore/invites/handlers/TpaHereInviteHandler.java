@@ -11,10 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-/**
- * Handles all lifecycle events for {@link InviteType#TPA_HERE} invites.
- * The invite sender requests that the target teleport TO them.
- */
+
 public class TpaHereInviteHandler implements InviteHandler {
 
     private final MessageManager mm;

@@ -16,13 +16,7 @@ public class CmdUtil {
     private int registeredCount = 0;
     private int failedCount = 0;
 
-    /**
-     * Register a command with its executor and optional tab completer.
-     *
-     * @param commandName The name of the command (must match plugin.yml)
-     * @param executor    The command executor
-     * @param tabCompleter The tab completer (can be null)
-     */
+    
     public void registerCommand(String commandName, CommandExecutor executor, TabCompleter tabCompleter) {
         PluginCommand command = plugin.getCommand(commandName);
 
@@ -45,10 +39,7 @@ public class CmdUtil {
         registerCommand(commandName, executor, null);
     }
 
-    /**
-     * Print a single summary line with the registration results.
-     * Call this once after all commands have been registered.
-     */
+    
     public void printSummary() {
         if (failedCount > 0) {
             FrostLogger.warn("Registered " + registeredCount + " commands (" + failedCount + " failed).");

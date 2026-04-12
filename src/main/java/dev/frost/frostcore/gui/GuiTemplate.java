@@ -6,57 +6,35 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-/**
- * Design library for the FrostCore GUI API.
- * <p>
- * Provides pre-styled filler items, navigation buttons, and factory methods
- * for common GUI patterns (e.g. confirm dialogs) to keep your GUIs
- * visually consistent.
- *
- * <h3>Style guide applied here</h3>
- * <ul>
- *   <li>Filler — gray stained glass pane, no name</li>
- *   <li>Prev — arrow (spectral arrow) pointing left</li>
- *   <li>Next — arrow (arrow) pointing right</li>
- *   <li>Close — barrier block, red name</li>
- *   <li>Confirm (✔) — lime dye, green name</li>
- *   <li>Cancel (✗) — red dye, red name</li>
- * </ul>
- */
+
 public final class GuiTemplate {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
 
     private GuiTemplate() {}
 
-    /** Gray stained glass pane with an empty name — the standard filler. */
+    
     public static GuiItem filler() {
         return Button.of(Material.GRAY_STAINED_GLASS_PANE)
                 .name("<gray> ")
                 .build();
     }
 
-    /** Filler using a custom material (no name, no action). */
+    
     public static GuiItem filler(Material material) {
         return Button.of(material)
                 .name("<gray> ")
                 .build();
     }
 
-    /** Black stained glass pane filler — useful for dark-themed GUIs. */
+    
     public static GuiItem blackFiller() {
         return Button.of(Material.BLACK_STAINED_GLASS_PANE)
                 .name("<gray> ")
                 .build();
     }
 
-    /**
-     * "Previous page" button for {@link PagedGui}.
-     *
-     * @param currentPage Current page (0-based)
-     * @param totalPages  Total page count
-     * @param onClick     Click action (typically {@code ctx -> gui.prevPage(ctx.getPlayer())})
-     */
+    
     public static GuiItem prevButton(int currentPage, int totalPages,
                                      GuiAction<ClickContext> onClick) {
         return Button.of(Material.SPECTRAL_ARROW)
@@ -70,13 +48,7 @@ public final class GuiTemplate {
                 .build();
     }
 
-    /**
-     * "Next page" button for {@link PagedGui}.
-     *
-     * @param currentPage Current page (0-based)
-     * @param totalPages  Total page count
-     * @param onClick     Click action (typically {@code ctx -> gui.nextPage(ctx.getPlayer())})
-     */
+    
     public static GuiItem nextButton(int currentPage, int totalPages,
                                      GuiAction<ClickContext> onClick) {
         return Button.of(Material.ARROW)
@@ -90,13 +62,7 @@ public final class GuiTemplate {
                 .build();
     }
 
-    /**
-     * "Previous frame" button for {@link SwitcherGui}.
-     *
-     * @param currentFrame Current frame index (0-based)
-     * @param totalFrames  Total number of frames
-     * @param onClick      Click action
-     */
+    
     public static GuiItem prevFrameButton(int currentFrame, int totalFrames,
                                           GuiAction<ClickContext> onClick) {
         return Button.of(Material.SPECTRAL_ARROW)
@@ -109,13 +75,7 @@ public final class GuiTemplate {
                 .build();
     }
 
-    /**
-     * "Next frame" button for {@link SwitcherGui}.
-     *
-     * @param currentFrame Current frame index (0-based)
-     * @param totalFrames  Total number of frames
-     * @param onClick      Click action
-     */
+    
     public static GuiItem nextFrameButton(int currentFrame, int totalFrames,
                                           GuiAction<ClickContext> onClick) {
         return Button.of(Material.ARROW)
@@ -128,10 +88,7 @@ public final class GuiTemplate {
                 .build();
     }
 
-    /**
-     * A close button that closes the viewer's GUI when clicked.
-     * Place anywhere in your GUI layout.
-     */
+    
     public static GuiItem closeButton() {
         return Button.of(Material.BARRIER)
                 .name("<red><bold>✗ Close")
@@ -140,25 +97,7 @@ public final class GuiTemplate {
                 .build();
     }
 
-    /**
-     * Build a 3-row confirm/cancel dialog.
-     *
-     * <pre>{@code
-     * GuiTemplate.confirm(
-     *     "<red>⚠ Disband Team?",
-     *     ctx -> {
-     *         teamManager.disbandTeam(teamName);
-     *         ctx.close();
-     *     },
-     *     ctx -> ctx.openGui(mainMenu)
-     * ).open(player);
-     * }</pre>
-     *
-     * @param title     MiniMessage title string
-     * @param onConfirm Action to execute when the player clicks "Yes"
-     * @param onCancel  Action to execute when the player clicks "No"
-     * @return A ready-to-open {@link SimpleGui}
-     */
+    
     public static SimpleGui confirm(String title,
                                     GuiAction<ClickContext> onConfirm,
                                     GuiAction<ClickContext> onCancel) {
@@ -186,31 +125,17 @@ public final class GuiTemplate {
                 .build();
     }
 
-    /**
-     * Create an informational display item with no click action.
-     *
-     * @param material  The icon material
-     * @param name      MiniMessage name string
-     * @param lore      MiniMessage lore lines
-     */
+    
     public static GuiItem info(Material material, String name, String... lore) {
         return Button.of(material).name(name).lore(lore).build();
     }
 
-    /**
-     * An invisible placeholder that occupies a slot but shows nothing.
-     * Uses AIR — clicking does nothing.
-     */
+    
     public static GuiItem empty() {
         return new GuiItem(new ItemStack(Material.AIR));
     }
 
-    /**
-     * Build a compact "page indicator" item (not clickable).
-     *
-     * @param current 0-based current page
-     * @param total   total pages
-     */
+    
     public static GuiItem pageIndicator(int current, int total) {
         return Button.of(Material.PAPER)
                 .name("<white>Page <gold>" + (current + 1) + "<white> / <gold>" + total)

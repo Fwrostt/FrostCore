@@ -16,10 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * /unban <player|ID>
- * Removes an active ban.
- */
+
 public class UnbanCmd implements CommandExecutor, TabCompleter {
 
     private final MessageManager mm = Main.getMessageManager();
@@ -32,7 +29,7 @@ public class UnbanCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Try by punishment ID first
+        
         try {
             int id = Integer.parseInt(args[0]);
             if (mod.removePunishment(id, sender, "Unbanned", false)) {
@@ -43,7 +40,7 @@ public class UnbanCmd implements CommandExecutor, TabCompleter {
             return true;
         } catch (NumberFormatException ignored) {}
 
-        // Try by random ID
+        
         Punishment byRandom = mod.getDatabase().getPunishmentByRandomId(args[0].toUpperCase());
         if (byRandom != null) {
             mod.removePunishment(byRandom.id(), sender, "Unbanned", false);
@@ -51,7 +48,7 @@ public class UnbanCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Try by player name
+        
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (mod.removePunishmentByPlayer(target.getUniqueId(), "BAN", sender, "Unbanned")) {
             mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Unbanned <white>" + target.getName() + ".");

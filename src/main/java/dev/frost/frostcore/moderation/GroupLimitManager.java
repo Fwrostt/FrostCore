@@ -10,9 +10,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.*;
 
-/**
- * Enforces staff group limits: max durations, cooldowns, template requirements, and exemption weights.
- */
+
 public class GroupLimitManager {
 
     private final List<StaffGroup> groups = new ArrayList<>();
@@ -53,18 +51,16 @@ public class GroupLimitManager {
             groups.add(new StaffGroup(key, permission, weight, maxBan, maxMute, requireTemplate, cooldowns));
         }
 
-        // Sort by weight descending so highest group is checked first
+        
         groups.sort((a, b) -> Integer.compare(b.weight(), a.weight()));
 
         FrostLogger.info("Loaded " + groups.size() + " staff groups.");
     }
 
-    /**
-     * Get the highest-weight group a player belongs to.
-     */
+    
     public StaffGroup getGroup(CommandSender sender) {
         if (!(sender instanceof Player player)) return null;
-        if (player.hasPermission("frostcore.moderation.group.unlimited")) return null; // Unlimited
+        if (player.hasPermission("frostcore.moderation.group.unlimited")) return null; 
 
         for (StaffGroup group : groups) {
             if (group.permission().equals("none") || player.hasPermission(group.permission())) {
@@ -74,11 +70,9 @@ public class GroupLimitManager {
         return null;
     }
 
-    /**
-     * Get the weight of a player for exemption comparison.
-     */
+    
     public int getWeight(CommandSender sender) {
-        if (!(sender instanceof Player player)) return Integer.MAX_VALUE; // Console always highest
+        if (!(sender instanceof Player player)) return Integer.MAX_VALUE; 
         if (player.hasPermission("frostcore.moderation.group.unlimited")) return Integer.MAX_VALUE;
 
         for (StaffGroup group : groups) {
@@ -89,9 +83,7 @@ public class GroupLimitManager {
         return 0;
     }
 
-    /**
-     * Check if staff can punish a target (group weight exemption).
-     */
+    
     public boolean canPunish(CommandSender staff, Player target) {
         if (target == null) return true;
         if (!target.hasPermission("frostcore.moderation.exempt")) return true;
@@ -104,11 +96,7 @@ public class GroupLimitManager {
         return staffWeight > targetWeight;
     }
 
-    /**
-     * Get the max allowed duration for a punishment type.
-     *
-     * @return max duration in ms, or -1 for unlimited/permanent
-     */
+    
     public long getMaxDuration(CommandSender sender, String type) {
         if (!(sender instanceof Player player)) return -1;
         if (player.hasPermission("frostcore.moderation.group.unlimited")) return -1;
@@ -127,19 +115,15 @@ public class GroupLimitManager {
         return parsed == -2 ? -1 : parsed;
     }
 
-    /**
-     * Check if the duration exceeds the staff member's max.
-     */
+    
     public boolean exceedsMaxDuration(CommandSender sender, String type, long durationMs) {
         long maxMs = getMaxDuration(sender, type);
-        if (maxMs == -1) return false; // Unlimited
-        if (durationMs == -1) return true; // Permanent but max is limited
+        if (maxMs == -1) return false; 
+        if (durationMs == -1) return true; 
         return durationMs > maxMs;
     }
 
-    /**
-     * Get cooldown in ms for a specific action.
-     */
+    
     public long getCooldown(CommandSender sender, String action) {
         if (!(sender instanceof Player player)) return 0;
         if (player.hasPermission("frostcore.moderation.cooldown.bypass")) return 0;
@@ -149,9 +133,7 @@ public class GroupLimitManager {
         return group.cooldowns().getOrDefault(action.toLowerCase(), 0L);
     }
 
-    /**
-     * Check if a staff member requires templates.
-     */
+    
     public boolean requiresTemplate(CommandSender sender) {
         if (!(sender instanceof Player player)) return false;
         if (player.hasPermission("frostcore.moderation.group.unlimited")) return false;

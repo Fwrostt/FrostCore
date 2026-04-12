@@ -80,7 +80,7 @@ public class DW {
                         jsonEmbed.put("color", rgb);
                     }
 
-                    // Footer
+                    
                     if (embed.getFooter() != null) {
                         JSONObject footerObj = new JSONObject();
                         footerObj.put("text", embed.getFooter().getText());
@@ -88,7 +88,7 @@ public class DW {
                         jsonEmbed.put("footer", footerObj);
                     }
 
-                    // Author
+                    
                     if (embed.getAuthor() != null) {
                         JSONObject authorObj = new JSONObject();
                         authorObj.put("name", embed.getAuthor().getName());
@@ -97,21 +97,21 @@ public class DW {
                         jsonEmbed.put("author", authorObj);
                     }
 
-                    // Thumbnail
+                    
                     if (embed.getThumbnail() != null) {
                         JSONObject thumbObj = new JSONObject();
                         thumbObj.put("url", embed.getThumbnail().getUrl());
                         jsonEmbed.put("thumbnail", thumbObj);
                     }
 
-                    // Image
+                    
                     if (embed.getImage() != null) {
                         JSONObject imageObj = new JSONObject();
                         imageObj.put("url", embed.getImage().getUrl());
                         jsonEmbed.put("image", imageObj);
                     }
 
-                    // Fields
+                    
                     if (!embed.getFields().isEmpty()) {
                         ArrayList<JSONObject> fieldArray = new ArrayList<>();
                         for (EmbedObject.Field field : embed.getFields()) {
@@ -154,7 +154,7 @@ public class DW {
         writer.flush();
         writer.close();
         int responseCode = connection.getResponseCode();
-        // Discord API can sometimes return 204 No Content for success
+        
         if (responseCode < 200 || responseCode >= 300) {
             String line;
             InputStream errorStream = connection.getErrorStream();

@@ -72,18 +72,14 @@ public class TeamExpansion extends PlaceholderExpansion {
         }
     }
 
-    /**
-     * Get the player's role display name.
-     */
+    
     private String getRole(Team team, UUID uuid) {
         if (team.isOwner(uuid)) return "Owner";
         if (team.isAdmin(uuid)) return "Admin";
         return "Member";
     }
 
-    /**
-     * Count how many team members are currently online.
-     */
+    
     private int countOnline(Team team) {
         int count = 0;
         for (UUID uuid : team.getOwners()) {
@@ -101,9 +97,7 @@ public class TeamExpansion extends PlaceholderExpansion {
         return count;
     }
 
-    /**
-     * Format a set of UUIDs into a comma-separated list of player names.
-     */
+    
     private String formatPlayerNames(Set<UUID> uuids) {
         StringBuilder sb = new StringBuilder();
         for (UUID uuid : uuids) {

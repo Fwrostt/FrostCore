@@ -13,12 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Handles the /frostcore command, providing administrative utilities:
- * <ul>
- *   <li>/frostcore reload — hot-reload config.yml and messages.yml</li>
- * </ul>
- */
+
 public class FrostCoreCmd implements CommandExecutor, TabCompleter {
 
     private static final String PERMISSION = "frostcore.admin";

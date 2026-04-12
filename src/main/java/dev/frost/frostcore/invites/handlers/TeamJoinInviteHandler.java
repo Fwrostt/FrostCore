@@ -15,9 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Handles all lifecycle events for {@link InviteType#TEAM_JOIN} invites.
- */
+
 public class TeamJoinInviteHandler implements InviteHandler {
 
     private final MessageManager mm;

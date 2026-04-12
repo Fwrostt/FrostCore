@@ -12,14 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-/**
- * Handles automatic spawn teleportation:
- * <ul>
- *   <li><b>teleport-on-join</b>  — teleports players to spawn on their first join.</li>
- *   <li><b>teleport-on-respawn</b> — teleports players to spawn after death/respawn.</li>
- * </ul>
- * Both behaviours are independently togglable in {@code config.yml} under {@code spawn.*}.
- */
+
 public class SpawnListener implements Listener {
 
     private final ConfigManager config;
@@ -39,7 +32,7 @@ public class SpawnListener implements Listener {
 
         Player player = event.getPlayer();
 
-        // Only teleport on first join — not every login
+        
         if (player.hasPlayedBefore()) return;
 
         Location spawn = warpManager.getSpawn();

@@ -46,14 +46,14 @@ public class AltsGui extends Gui {
         ModerationDatabase modDb = ModerationManager.getInstance().getDatabase();
         ModerationManager mod = ModerationManager.getInstance();
 
-        // Header
+        
         setItem(0, 4, Button.of(Material.PLAYER_HEAD)
                 .skull(target.getUniqueId())
                 .name("<!italic><white>" + target.getName() + "'s Alts")
                 .lore("<!italic><dark_gray>" + total + " alt" + (total == 1 ? "" : "s") + " found")
                 .build());
 
-        // Content
+        
         int start = currentPage * pageSize;
         int itemsOnPage = Math.min(pageSize, total - start);
 
@@ -90,7 +90,7 @@ public class AltsGui extends Gui {
                     .build());
         }
 
-        // Bottom nav row
+        
         int navRow = getRows() - 1;
         setItem(navRow, 4, Button.of(Material.PAPER)
                 .name("<!italic><gray>Page <white>" + (currentPage + 1) + " <dark_gray>/ <gray>" + totalPages)

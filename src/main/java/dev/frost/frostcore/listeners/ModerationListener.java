@@ -22,10 +22,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Enforces all moderation restrictions: bans, IP bans, mutes, freezes,
- * jails, chat lock, lockdown, and command blocking.
- */
+
 public class ModerationListener implements Listener {
 
     private final MiniMessage mini = MiniMessage.miniMessage();
@@ -38,7 +35,7 @@ public class ModerationListener implements Listener {
         return Main.getMessageManager();
     }
 
-    // ━━━━━━━━━━━━━━━━━━ PRE-LOGIN: Ban + IP Ban + Lockdown ━━━━━━━━━━━━━━━━━━
+    
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPreLogin(AsyncPlayerPreLoginEvent event) {
@@ -57,7 +54,7 @@ public class ModerationListener implements Listener {
             }
         }
 
-        // UUID ban check
+        
         if (mod.isBanned(uuid)) {
             Punishment ban = mod.getActiveBan(uuid);
             if (ban != null && ban.isInEffect()) {
@@ -67,7 +64,7 @@ public class ModerationListener implements Listener {
             }
         }
 
-        // IP ban check (skip if player is on allowed list)
+        
         if (!mod.isAllowed(uuid) && mod.isIpBanned(ip)) {
             Punishment ipBan = mod.getActiveIpBan(ip);
             if (ipBan != null && ipBan.isInEffect()) {
@@ -91,7 +88,7 @@ public class ModerationListener implements Listener {
         return sb.toString();
     }
 
-    // ━━━━━━━━━━━━━━━━━━ CHAT: Mute + IP Mute + Chat Lock ━━━━━━━━━━━━━━━━━━
+    
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncChatEvent event) {
@@ -99,7 +96,7 @@ public class ModerationListener implements Listener {
         ModerationManager mod = mod();
         if (mod == null) return;
 
-        // Mute check
+        
         if (mod.isMuted(player.getUniqueId())) {
             Punishment mute = mod.getActiveMute(player.getUniqueId());
             if (mute != null) {
@@ -112,7 +109,7 @@ public class ModerationListener implements Listener {
             return;
         }
 
-        // IP mute check
+        
         String ip = player.getAddress() != null ? player.getAddress().getAddress().getHostAddress() : null;
         if (ip != null && mod.isIpMuted(ip)) {
             mm().sendRaw(player, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You are IP muted.");
@@ -120,14 +117,14 @@ public class ModerationListener implements Listener {
             return;
         }
 
-        // Chat lock
+        
         if (mod.isChatLocked() && !player.hasPermission("frostcore.moderation.bypass.lockchat")) {
             mm().send(player, "moderation.chat-locked-message");
             event.setCancelled(true);
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━ MOVEMENT: Freeze + Jail ━━━━━━━━━━━━━━━━━━━
+    
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onMove(PlayerMoveEvent event) {
@@ -143,7 +140,7 @@ public class ModerationListener implements Listener {
         }
 
         if (mod.isJailed(player.getUniqueId())) {
-            // Allow movement within jail radius (3 blocks)
+            
             var entry = mod.getJailedEntry(player.getUniqueId());
             if (entry != null) {
                 var jail = mod.getJailLocation(entry.jailName());
@@ -158,7 +155,7 @@ public class ModerationListener implements Listener {
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━ BLOCKS: Freeze + Jail ━━━━━━━━━━━━━━━━━━━
+    
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
@@ -192,7 +189,7 @@ public class ModerationListener implements Listener {
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━ COMMANDS: Freeze + Mute + Jail ━━━━━━━━━━━━━━━━━━
+    
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent event) {
@@ -201,7 +198,7 @@ public class ModerationListener implements Listener {
         if (mod == null) return;
         String cmd = event.getMessage().split(" ")[0].toLowerCase();
 
-        // Frozen players: deny all commands except messaging
+        
         if (mod.isFrozen(player.getUniqueId())) {
             if (cmd.equals("/msg") || cmd.equals("/tell") || cmd.equals("/w") || cmd.equals("/reply") || cmd.equals("/r")) {
                 return;
@@ -211,7 +208,7 @@ public class ModerationListener implements Listener {
             return;
         }
 
-        // Jailed players: allow chat commands only
+        
         if (mod.isJailed(player.getUniqueId())) {
             if (cmd.equals("/msg") || cmd.equals("/tell") || cmd.equals("/w") || cmd.equals("/reply") || cmd.equals("/r")
                     || cmd.equals("/team") || cmd.equals("/t")) {
@@ -222,7 +219,7 @@ public class ModerationListener implements Listener {
             return;
         }
 
-        // Muted players: block configured commands
+        
         if (mod.isMuted(player.getUniqueId())) {
             List<String> blockedCmds = Main.getConfigManager().getStringList("moderation.muted-blocked-commands");
             for (String blocked : blockedCmds) {

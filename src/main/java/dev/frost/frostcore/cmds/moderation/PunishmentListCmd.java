@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/** /banlist, /mutelist, /warnlist — paginated active punishment lists */
+
 public class PunishmentListCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     private final String category;

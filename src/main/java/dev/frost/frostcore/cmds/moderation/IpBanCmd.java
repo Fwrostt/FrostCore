@@ -14,10 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * /ipban <player> [duration] [reason] [-s]
- * Bans by account and IP. Auto-bans alt accounts.
- */
+
 public class IpBanCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
 
@@ -38,7 +35,7 @@ public class IpBanCmd implements CommandExecutor, TabCompleter {
         String reason = parsed.reason.isEmpty() ? "IP Banned by an administrator" : parsed.reason;
         Punishment p = mod.punish(PunishmentType.IPBAN, target.getUniqueId(), target.getName(), ip, reason, sender, parsed.duration, parsed.silent);
 
-        // Auto-ban alts
+        
         if (p != null) {
             Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> mod.autoBanAlts(ip, p, sender));
         }

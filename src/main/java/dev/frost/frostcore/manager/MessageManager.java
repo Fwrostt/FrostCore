@@ -58,11 +58,7 @@ public class MessageManager {
         return msg != null ? msg : "<red>Missing message: " + path + "</red>";
     }
 
-    /**
-     * Resolve nested message references like {teams.prefix} by looking them up in messages.yml.
-     * ONLY resolves keys that exist in the config. Unknown keys like {player}, {team}, etc.
-     * are left untouched for applyPlaceholders() to handle later.
-     */
+    
     private String resolveNested(String message) {
         if (message == null || !message.contains("{")) return message;
 

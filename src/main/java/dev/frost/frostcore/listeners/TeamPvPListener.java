@@ -12,13 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-/**
- * Prevents teammates and allies from damaging each other when PvP is disabled.
- * <p>
- * Handles:
- * - Direct melee hits
- * - Projectiles (arrows, tridents, etc.)
- */
+
 public class TeamPvPListener implements Listener {
 
     private final TeamManager teamManager = TeamManager.getInstance();
@@ -59,9 +53,7 @@ public class TeamPvPListener implements Listener {
         }
     }
 
-    /**
-     * Resolve the actual attacking player, including projectile sources.
-     */
+    
     private Player resolveAttacker(Entity damager) {
         if (damager instanceof Player player) {
             return player;

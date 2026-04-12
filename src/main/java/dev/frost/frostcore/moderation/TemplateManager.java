@@ -8,10 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.*;
 
-/**
- * Manages punishment templates loaded from punishments.yml.
- * Supports escalation (increasing severity per repeat offense).
- */
+
 public class TemplateManager {
 
     private final Map<String, PunishmentTemplate> templates = new LinkedHashMap<>();
@@ -47,7 +44,7 @@ public class TemplateManager {
             String reason = ts.getString("reason", "No reason");
             String defaultDuration = ts.getString("duration", "permanent");
 
-            // Parse escalation tiers
+            
             Map<Integer, String> escalation = new LinkedHashMap<>();
             ConfigurationSection escSection = ts.getConfigurationSection("escalation");
             if (escSection != null) {
@@ -65,31 +62,21 @@ public class TemplateManager {
         FrostLogger.info("Loaded " + templates.size() + " punishment templates.");
     }
 
-    /**
-     * Get a template by name.
-     */
+    
     public PunishmentTemplate getTemplate(String name) {
         return templates.get(name.toLowerCase());
     }
 
-    /**
-     * Get all template names for tab completion.
-     */
+    
     public Set<String> getTemplateNames() {
         return Collections.unmodifiableSet(templates.keySet());
     }
 
-    /**
-     * Resolve the duration for a template given the player's offense count.
-     *
-     * @param template the template
-     * @param offenseCount the number of times this player has been punished with this template type
-     * @return duration in ms, or -1 for permanent
-     */
+    
     public long resolveDuration(PunishmentTemplate template, int offenseCount) {
         String durationStr;
         if (!template.escalation().isEmpty()) {
-            // Find the highest tier that matches
+            
             durationStr = template.defaultDuration();
             for (Map.Entry<Integer, String> entry : template.escalation().entrySet()) {
                 if (offenseCount >= entry.getKey()) {
@@ -107,9 +94,7 @@ public class TemplateManager {
         return parsed == -2 ? -1 : parsed;
     }
 
-    /**
-     * Immutable template definition.
-     */
+    
     public record PunishmentTemplate(
             String name,
             PunishmentType type,

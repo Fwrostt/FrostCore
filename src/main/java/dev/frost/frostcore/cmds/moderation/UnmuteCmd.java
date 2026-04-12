@@ -24,7 +24,7 @@ public class UnmuteCmd implements CommandExecutor, TabCompleter {
         ModerationManager mod = ModerationManager.getInstance();
         if (args.length < 1) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>/unmute <player|ID>"); return true; }
 
-        // Try by ID
+        
         try {
             int id = Integer.parseInt(args[0]);
             if (mod.removePunishment(id, sender, "Unmuted", false)) {
@@ -35,7 +35,7 @@ public class UnmuteCmd implements CommandExecutor, TabCompleter {
             return true;
         } catch (NumberFormatException ignored) {}
 
-        // Try random ID
+        
         Punishment byRandom = mod.getDatabase().getPunishmentByRandomId(args[0].toUpperCase());
         if (byRandom != null) { mod.removePunishment(byRandom.id(), sender, "Unmuted", false); mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>Unmuted <white>" + byRandom.getTargetDisplayName() + "."); return true; }
 

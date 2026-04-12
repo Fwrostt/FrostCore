@@ -16,26 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A premium paginated warp browser opened via {@code /warps}.
- * <p>
- * <h3>Layout (5-row default)</h3>
- * <pre>
- *  Row 0  ◾ ◾ ◾ ◾  [✦ Server Warps]  ◾ ◾ ◾ ◾
- *  Row 1  ◾ W  W  W  W  W  W  W  ◾
- *  Row 2  ◾ W  W  W  W  W  W  W  ◾
- *  Row 3  ◾ W  W  W  W  W  W  W  ◾
- *  Row 4  ◀  ◾  ◾  ◾  [Page X/Y]  ◾  ◾  ▶
- * </pre>
- *
- * Content area (rows 1–3, cols 1–7) = 21 warp slots per page.
- * The content area is configurable via {@code config.yml → warps.gui.*}.
- * <p>
- * Each warp item is styled according to its {@link WarpItemConfig} entry in
- * {@code warps.yml}.  Locked warps (player lacks the required permission)
- * still appear but are decorated with a red "✘ No access" lore suffix and
- * cannot teleport.
- */
+
 public class WarpsGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
@@ -46,7 +27,7 @@ public class WarpsGui extends Gui {
     private final ConfigManager config;
     private final MessageManager mm;
 
-    /** Slots that contain warp items (derived from config). */
+    
     private final int[] contentSlots;
 
     private int currentPage = 0;
@@ -197,7 +178,7 @@ public class WarpsGui extends Gui {
         }).build();
     }
 
-    /** Jump directly to a page (0-based). Rebuilds the GUI in place. */
+    
     public void setPage(int page) {
         List<String> allWarps = new ArrayList<>(warpManager.getWarpNames());
         int totalPages = Math.max(1, (int) Math.ceil(

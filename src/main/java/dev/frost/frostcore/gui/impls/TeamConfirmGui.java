@@ -8,18 +8,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A reusable confirmation popup for destructive or significant team actions.
- *
- * <h3>3-row layout</h3>
- * <pre>
- *  Row 0  ◾ ◾ ◾ ◾  [ℹ Info item]  ◾ ◾ ◾ ◾
- *  Row 1  ◾ ◾ [✔] [✔]  ─  [✗] [✗] ◾ ◾
- *  Row 2  ◾ ◾ ◾ ◾  ◾  ◾ ◾ ◾ ◾
- * </pre>
- *
- * Use the static {@code open()} factory — never instantiate directly.
- */
+
 public class TeamConfirmGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
@@ -79,13 +68,7 @@ public class TeamConfirmGui extends Gui {
         setItem(1, 6, cancelBtn);
     }
 
-    /**
-     * Open a <b>disband</b> confirmation for the given team.
-     *
-     * @param player   the player who ran the command
-     * @param teamName the display name of their team
-     * @param onConfirm action executed when they click confirm
-     */
+    
     public static void openDisband(Player player, String teamName,
                                    GuiAction<ClickContext> onConfirm) {
         List<String> lore = new ArrayList<>();
@@ -106,13 +89,7 @@ public class TeamConfirmGui extends Gui {
         ).open(player);
     }
 
-    /**
-     * Open a <b>leave</b> confirmation for the given team.
-     *
-     * @param player   the player who ran the command
-     * @param teamName the display name of the team they'd be leaving
-     * @param onConfirm action executed when they click confirm
-     */
+    
     public static void openLeave(Player player, String teamName,
                                  GuiAction<ClickContext> onConfirm) {
         List<String> lore = new ArrayList<>();
@@ -132,14 +109,7 @@ public class TeamConfirmGui extends Gui {
         ).open(player);
     }
 
-    /**
-     * Open a <b>join</b> confirmation (accept a team invite).
-     *
-     * @param player      the player who ran the command
-     * @param teamName    the display name of the team they'd be joining
-     * @param senderName  the name of the player who sent the invite
-     * @param onConfirm   action executed when they click confirm
-     */
+    
     public static void openJoin(Player player, String teamName, String senderName,
                                 GuiAction<ClickContext> onConfirm) {
         List<String> lore = new ArrayList<>();

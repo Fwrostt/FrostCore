@@ -489,9 +489,7 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         gui.open(player);
     }
 
-    /**
-     * Format a set of UUIDs into a comma-separated player name list with online/offline coloring.
-     */
+    
     private String formatPlayerList(Set<UUID> uuids) {
         return uuids.stream()
                 .map(uuid -> {

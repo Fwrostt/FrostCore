@@ -87,7 +87,7 @@ public final class Main extends JavaPlugin {
         homeManager = new HomeManager(this, configManager);
         utilityManager = new UtilityManager(databaseManager);
 
-        // Moderation system
+        
         webhookManager = new WebhookManager();
         ModerationDatabase modDb = new ModerationDatabase(databaseManager, this);
         modDb.createTables();
@@ -226,7 +226,7 @@ public final class Main extends JavaPlugin {
         RepairCmd repairCmd = new RepairCmd();
         cmdUtil.registerCommand("repair", repairCmd, repairCmd);
 
-        // ── Moderation Commands ──
+        
         MuteCmd muteCmd = new MuteCmd();
         cmdUtil.registerCommand("mute", muteCmd, muteCmd);
         TempMuteCmd tempMuteCmd = new TempMuteCmd();
@@ -263,7 +263,7 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("ipmute", ipMuteCmd, ipMuteCmd);
         cmdUtil.registerCommand("muteip", ipMuteCmd, ipMuteCmd);
 
-        // Jail
+        
         JailCmd jailCmd = new JailCmd();
         cmdUtil.registerCommand("jail", jailCmd, jailCmd);
         UnjailCmd unjailCmd = new UnjailCmd();
@@ -273,11 +273,11 @@ public final class Main extends JavaPlugin {
         DelJailCmd delJailCmd = new DelJailCmd();
         cmdUtil.registerCommand("deljail", delJailCmd, delJailCmd);
 
-        // Report
+        
         ReportCmd reportCmd = new ReportCmd();
         cmdUtil.registerCommand("report", reportCmd, reportCmd);
 
-        // History & Check commands
+        
         CheckBanCmd checkBanCmd = new CheckBanCmd();
         cmdUtil.registerCommand("checkban", checkBanCmd, checkBanCmd);
         CheckPunishmentCmd checkMuteCmd = new CheckPunishmentCmd("MUTE");
@@ -291,7 +291,7 @@ public final class Main extends JavaPlugin {
         WarningsCmd warningsCmd = new WarningsCmd();
         cmdUtil.registerCommand("warnings", warningsCmd, warningsCmd);
 
-        // Lists
+        
         PunishmentListCmd banListCmd = new PunishmentListCmd("BAN", "Active Bans");
         cmdUtil.registerCommand("banlist", banListCmd, banListCmd);
         PunishmentListCmd muteListCmd = new PunishmentListCmd("MUTE", "Active Mutes");
@@ -299,7 +299,7 @@ public final class Main extends JavaPlugin {
         PunishmentListCmd warnListCmd = new PunishmentListCmd("WARN", "Active Warnings");
         cmdUtil.registerCommand("warnlist", warnListCmd, warnListCmd);
 
-        // Alts & IP
+        
         AltsCmd altsCmd = new AltsCmd();
         cmdUtil.registerCommand("alts", altsCmd, altsCmd);
         
@@ -308,11 +308,11 @@ public final class Main extends JavaPlugin {
         IpHistoryCmd ipHistoryCmd = new IpHistoryCmd();
         cmdUtil.registerCommand("iphistory", ipHistoryCmd, ipHistoryCmd);
 
-        // Reports
+        
         ReportsCmd reportsCmd = new ReportsCmd();
         cmdUtil.registerCommand("reports", reportsCmd, reportsCmd);
 
-        // Admin moderation
+        
         LockdownCmd lockdownCmd = new LockdownCmd();
         cmdUtil.registerCommand("lockdown", lockdownCmd, lockdownCmd);
         PruneHistoryCmd pruneHistoryCmd = new PruneHistoryCmd();

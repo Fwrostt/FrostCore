@@ -98,7 +98,7 @@ public class WebhookManager {
         return TIMESTAMP_FMT.format(Instant.ofEpochMilli(epochMs));
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ PUNISHMENT WEBHOOK ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void sendPunishmentWebhookAsync(Punishment p) {
         if (!punishmentEnabled) return;
@@ -121,12 +121,12 @@ public class WebhookManager {
             };
 
             String emoji = switch (p.type().getCategory()) {
-                case "BAN"  -> "\uD83D\uDD28";  // 🔨
-                case "MUTE" -> "\uD83D\uDD07";  // 🔇
-                case "WARN" -> "⚠\uFE0F";       // ⚠️
-                case "KICK" -> "\uD83D\uDC62";  // 👢
-                case "JAIL" -> "⛓\uFE0F";       // ⛓️
-                default     -> "\uD83D\uDEA8";  // 🚨
+                case "BAN"  -> "\uD83D\uDD28";  
+                case "MUTE" -> "\uD83D\uDD07";  
+                case "WARN" -> "⚠\uFE0F";       
+                case "KICK" -> "\uD83D\uDC62";  
+                case "JAIL" -> "⛓\uFE0F";       
+                default     -> "\uD83D\uDEA8";  
             };
 
             String silentTag = p.silent() ? "  `[SILENT]`" : "";
@@ -151,7 +151,7 @@ public class WebhookManager {
             Player targetPlayer = Bukkit.getPlayer(p.targetUuid());
             String gamemode = targetPlayer != null ? targetPlayer.getGameMode().name() : "Offline";
             gamemode = gamemode.substring(0, 1).toUpperCase() + gamemode.substring(1).toLowerCase();
-            desc.append("\uD83D\uDCAE **Gamemode:** `").append(gamemode).append("`");// 🎮
+            desc.append("\uD83D\uDCAE **Gamemode:** `").append(gamemode).append("`");
 
             DW.EmbedObject embed = new DW.EmbedObject()
                     .setTitle(emoji + "  " + p.type().getDisplayName() + silentTag)
@@ -175,7 +175,7 @@ public class WebhookManager {
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ UNPUNISH WEBHOOK ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void sendUnpunishWebhookAsync(Punishment p, String removedBy) {
         if (!punishmentEnabled) return;
@@ -198,10 +198,10 @@ public class WebhookManager {
 
             String emoji = switch (p.type().getCategory()) {
                 case "BAN"  -> "✅";
-                case "MUTE" -> "\uD83D\uDD0A";  // 🔊
-                case "WARN" -> "\uD83D\uDDD1\uFE0F";  // 🗑️
-                case "JAIL" -> "\uD83D\uDD13";  // 🔓
-                default     -> "↩\uFE0F";       // ↩️
+                case "MUTE" -> "\uD83D\uDD0A";  
+                case "WARN" -> "\uD83D\uDDD1\uFE0F";  
+                case "JAIL" -> "\uD83D\uDD13";  
+                default     -> "↩\uFE0F";       
             };
 
             StringBuilder desc = new StringBuilder();
@@ -212,8 +212,8 @@ public class WebhookManager {
             desc.append("> **Original Reason**\n");
             desc.append("> ```").append(p.reason()).append("```\n\n");
 
-            desc.append("\uD83D\uDD52 **Original Duration:** `").append(p.getFormattedDuration()).append("`\n");  // 🕒
-            desc.append("\uD83D\uDCC5 **Issued:** `").append(timestamp(p.createdAt())).append("`");  // 📅
+            desc.append("\uD83D\uDD52 **Original Duration:** `").append(p.getFormattedDuration()).append("`\n");  
+            desc.append("\uD83D\uDCC5 **Issued:** `").append(timestamp(p.createdAt())).append("`");  
 
             DW.EmbedObject embed = new DW.EmbedObject()
                     .setTitle(emoji + "  " + action)
@@ -232,7 +232,7 @@ public class WebhookManager {
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ REPORT WEBHOOK ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void sendReportWebhookAsync(Report r) {
         if (!reportEnabled) return;
@@ -252,10 +252,10 @@ public class WebhookManager {
             desc.append("> **Reason**\n");
             desc.append("> ```").append(r.reason()).append("```\n\n");
 
-            desc.append("\uD83D\uDD52 **Submitted:** `").append(timestamp(r.createdAt())).append("`");  // 🕒
+            desc.append("\uD83D\uDD52 **Submitted:** `").append(timestamp(r.createdAt())).append("`");  
 
             DW.EmbedObject embed = new DW.EmbedObject()
-                    .setTitle("\uD83D\uDCE8  Player Report #" + r.id())  // 📨
+                    .setTitle("\uD83D\uDCE8  Player Report #" + r.id())  
                     .setDescription(desc.toString())
                     .setColor(COLOR_REPORT)
                     .setThumbnail(headUrl(r.targetUuid()))
@@ -276,7 +276,7 @@ public class WebhookManager {
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ STAFF ACTIVITY ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void sendStaffActivityAsync(String action, String staffName, String details) {
         if (!staffEnabled) return;
@@ -291,7 +291,7 @@ public class WebhookManager {
                 desc.append("> ```").append(details).append("```");
 
                 DW.EmbedObject embed = new DW.EmbedObject()
-                        .setTitle("\uD83D\uDC6E  " + action)  // 👮
+                        .setTitle("\uD83D\uDC6E  " + action)  
                         .setDescription(desc.toString())
                         .setColor(COLOR_STAFF)
                         .setFooter(
@@ -307,7 +307,7 @@ public class WebhookManager {
         });
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ STAFF CHAT WEBHOOK ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void sendStaffChatWebhookAsync(String staffName, String message) {
         if (!staffChatEnabled) return;

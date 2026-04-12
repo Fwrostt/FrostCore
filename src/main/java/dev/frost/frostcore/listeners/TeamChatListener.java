@@ -18,14 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Routes chat messages to team-only when a player has team chat enabled.
- * <p>
- * When team chat is ON for a player:
- * - The global chat message is cancelled
- * - The message is sent only to online teammates
- * - Uses the configurable teams.chat-format from messages.yml
- */
+
 public class TeamChatListener implements Listener {
 
     private final TeamManager teamManager = TeamManager.getInstance();

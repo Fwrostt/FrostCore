@@ -15,13 +15,7 @@ import java.util.*;
 import java.util.logging.Level;
 import dev.frost.frostcore.utils.FrostLogger;
 
-/**
- * Manages the HikariCP connection pool and all database CRUD operations.
- * Supports SQLite (default) and MySQL, switchable via config.
- * <p>
- * All public write methods have an async variant that runs on the
- * Bukkit async scheduler. Reads are always synchronous (called on startup).
- */
+
 public class DatabaseManager {
 
     private final Main plugin;
@@ -32,10 +26,7 @@ public class DatabaseManager {
         this.plugin = plugin;
     }
 
-    /**
-     * Initialize the connection pool and create tables.
-     * Call this during onEnable, before loading data.
-     */
+    
     public void init() {
 
         try {
@@ -95,9 +86,7 @@ public class DatabaseManager {
         createTables();
     }
 
-    /**
-     * Shut down the connection pool. Call during onDisable, after saving.
-     */
+    
     public void shutdown() {
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
@@ -252,11 +241,7 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Load all teams from the database. Called synchronously on startup.
-     *
-     * @return list of fully-populated Team objects
-     */
+    
     public List<Team> loadAllTeams() {
         Map<String, Team> teamMap = new LinkedHashMap<>();
 
@@ -367,10 +352,7 @@ public class DatabaseManager {
         return new ArrayList<>(teamMap.values());
     }
 
-    /**
-     * Save an entire team to the database (upsert all tables).
-     * Use for initial creation or full sync.
-     */
+    
     public void saveTeam(Team team) {
         saveTeamBase(team);
         saveMembers(team);
@@ -378,16 +360,12 @@ public class DatabaseManager {
         saveRelations(team);
     }
 
-    /**
-     * Async variant — runs on Bukkit async scheduler.
-     */
+    
     public void saveTeamAsync(Team team) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveTeam(team));
     }
 
-    /**
-     * Save/update the base team row (name, tag, color, pvp, home).
-     */
+    
     public void saveTeamBase(Team team) {
         String sql = type == DatabaseType.MYSQL
                 ? """
@@ -436,9 +414,7 @@ public class DatabaseManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveTeamBase(team));
     }
 
-    /**
-     * Replace all members for a team (delete + re-insert).
-     */
+    
     public void saveMembers(Team team) {
         try (Connection conn = getConnection()) {
 
@@ -481,9 +457,7 @@ public class DatabaseManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveMembers(team));
     }
 
-    /**
-     * Replace all warps for a team (delete + re-insert).
-     */
+    
     public void saveWarps(Team team) {
         try (Connection conn = getConnection()) {
             try (PreparedStatement del = conn.prepareStatement("DELETE FROM team_warps WHERE team_name = ?")) {
@@ -518,9 +492,7 @@ public class DatabaseManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveWarps(team));
     }
 
-    /**
-     * Replace all relations for a team (delete + re-insert).
-     */
+    
     public void saveRelations(Team team) {
         try (Connection conn = getConnection()) {
             try (PreparedStatement del = conn.prepareStatement("DELETE FROM team_relations WHERE team_name = ?")) {
@@ -553,9 +525,7 @@ public class DatabaseManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveRelations(team));
     }
 
-    /**
-     * Delete a team and all associated data from the database.
-     */
+    
     public void deleteTeam(String teamName) {
         try (Connection conn = getConnection()) {
 
@@ -578,9 +548,7 @@ public class DatabaseManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> deleteTeam(teamName));
     }
 
-    /**
-     * Synchronously save all provided teams. Called during onDisable.
-     */
+    
     public void saveAllTeams(Collection<Team> teams) {
         for (Team team : teams) {
             saveTeam(team);
@@ -588,10 +556,7 @@ public class DatabaseManager {
         FrostLogger.info("Saved " + teams.size() + " teams to database.");
     }
 
-    /**
-     * Load a team's echest contents from the database.
-     * @return Base64-encoded string, or null if no data exists
-     */
+    
     public String loadEchest(String teamName) {
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(
@@ -607,11 +572,7 @@ public class DatabaseManager {
         return null;
     }
 
-    /**
-     * Save a team's echest contents to the database.
-     * @param teamName the team name (lowercase)
-     * @param base64 Base64-encoded inventory contents
-     */
+    
     public void saveEchest(String teamName, String base64) {
         String sql = type == DatabaseType.MYSQL
                 ? "INSERT INTO team_echests (team_name, contents) VALUES (?, ?) ON DUPLICATE KEY UPDATE contents=VALUES(contents)"
@@ -627,9 +588,7 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Delete a team's echest data from the database.
-     */
+    
     public void deleteEchest(String teamName) {
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(
@@ -641,14 +600,7 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Atomically rename a team across all tables.
-     * Uses a transaction to ensure all-or-nothing consistency.
-     *
-     * @param oldName current team name (lowercase)
-     * @param newName new team name (lowercase)
-     * @return true if successful
-     */
+    
     public boolean renameTeam(String oldName, String newName) {
         oldName = oldName.toLowerCase();
         newName = newName.toLowerCase();
@@ -812,10 +764,7 @@ public class DatabaseManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveSpawn(loc));
     }
 
-    /**
-     * Load all stored (non-expired) cooldowns, keyed by player UUID.
-     * Called synchronously on startup.
-     */
+    
     public Map<UUID, Map<String, Long>> loadAllCooldowns() {
         Map<UUID, Map<String, Long>> result = new java.util.LinkedHashMap<>();
         try (Connection conn = getConnection();
@@ -833,9 +782,7 @@ public class DatabaseManager {
         return result;
     }
 
-    /**
-     * Upsert a single cooldown entry.
-     */
+    
     public void saveCooldown(UUID uuid, String cooldownId, long expiresAt) {
         String sql = type == DatabaseType.MYSQL
                 ? "INSERT INTO player_cooldowns (uuid, cooldown_id, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE expires_at=VALUES(expires_at)"
@@ -851,9 +798,7 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Delete a single cooldown entry (expired or cleared).
-     */
+    
     public void deleteCooldown(UUID uuid, String cooldownId) {
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(
@@ -1030,7 +975,7 @@ public class DatabaseManager {
 
     public record PunishmentData(long muteExpires, boolean isFrozen) {}
 
-    // ━━━ BAN SYSTEM ━━━
+    
 
     public Map<UUID, BanEntry> loadPlayerBans() {
         Map<UUID, BanEntry> result = new LinkedHashMap<>();

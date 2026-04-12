@@ -15,7 +15,7 @@ public class BackListener implements Listener {
     public void onTeleport(PlayerTeleportEvent event) {
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
 
-        // Exclude portals and spectating as per requirements
+        
         if (cause == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL ||
             cause == PlayerTeleportEvent.TeleportCause.END_PORTAL ||
             cause == PlayerTeleportEvent.TeleportCause.END_GATEWAY ||

@@ -15,19 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Manages server warps (locations) and their GUI display configurations.
- * <p>
- * <strong>Two data sources, one manager:</strong>
- * <ul>
- *   <li><b>Database</b> — stores warp {@link Location}s (unchanged from before).</li>
- *   <li><b>warps.yml</b> — stores each warp's GUI item config: material, display name,
- *       lore, glow flag, and optional permission node.</li>
- * </ul>
- * When a warp is created via {@code /setwarp}, a default {@link WarpItemConfig} is
- * written to {@code warps.yml} automatically. Admins can then customise it by hand.
- * When a warp is deleted via {@code /delwarp}, its entry is removed from both sources.
- */
+
 public class WarpManager {
 
     private final Map<String, Location> warps = new LinkedHashMap<>();
@@ -88,10 +76,7 @@ public class WarpManager {
         return warps.get(name.toLowerCase());
     }
 
-    /**
-     * Create or update a warp. If no {@link WarpItemConfig} exists for this warp yet,
-     * a default configuration is written to {@code warps.yml}.
-     */
+    
     public void setWarp(String name, Location loc) {
         String key = name.toLowerCase();
         warps.put(key, loc);
@@ -105,9 +90,7 @@ public class WarpManager {
         }
     }
 
-    /**
-     * Delete a warp from both the database and {@code warps.yml}.
-     */
+    
     public void deleteWarp(String name) {
         String key = name.toLowerCase();
         warps.remove(key);
@@ -139,17 +122,12 @@ public class WarpManager {
         db.saveSpawnAsync(loc);
     }
 
-    /**
-     * Get the GUI display config for a warp.
-     * If none exists (e.g. data inconsistency), returns a default config.
-     */
+    
     public WarpItemConfig getWarpConfig(String name) {
         return warpConfigs.getOrDefault(name.toLowerCase(), WarpItemConfig.defaultFor(name));
     }
 
-    /**
-     * Update and persist the GUI config for a warp.
-     */
+    
     public void setWarpConfig(String name, WarpItemConfig config) {
         String key = name.toLowerCase();
         warpConfigs.put(key, config);
@@ -157,9 +135,7 @@ public class WarpManager {
         saveWarpsYml();
     }
 
-    /**
-     * Reload {@code warps.yml} from disk (called by {@code /frostcore reload}).
-     */
+    
     public void reloadWarpsYml() {
         warpsYml = YamlConfiguration.loadConfiguration(warpsFile);
         warpConfigs.clear();

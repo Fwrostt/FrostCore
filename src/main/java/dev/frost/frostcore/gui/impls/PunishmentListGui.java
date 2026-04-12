@@ -43,7 +43,7 @@ public class PunishmentListGui extends Gui {
         int totalPages = Math.max(1, (int) Math.ceil((double) total / pageSize));
         currentPage = Math.min(currentPage, totalPages - 1);
 
-        // Header icon based on category
+        
         Material headerMat = switch (category.toUpperCase()) {
             case "BAN" -> Material.IRON_DOOR;
             case "MUTE" -> Material.PAPER;
@@ -56,7 +56,7 @@ public class PunishmentListGui extends Gui {
                 .lore("<!italic><dark_gray>" + total + " active punishment" + (total == 1 ? "" : "s"))
                 .build());
 
-        // Content
+        
         int start = currentPage * pageSize;
         int itemsOnPage = Math.min(pageSize, total - start);
 
@@ -65,7 +65,7 @@ public class PunishmentListGui extends Gui {
             setItem(contentSlots[i], buildPunishmentItem(p));
         }
 
-        // Bottom nav
+        
         int navRow = getRows() - 1;
         setItem(navRow, 4, Button.of(Material.PAPER)
                 .name("<!italic><gray>Page <white>" + (currentPage + 1) + " <dark_gray>/ <gray>" + totalPages)

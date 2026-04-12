@@ -45,7 +45,7 @@ public class HistoryGui extends Gui {
         int totalPages = Math.max(1, (int) Math.ceil((double) total / pageSize));
         currentPage = Math.min(currentPage, totalPages - 1);
 
-        // Header
+        
         String headerLabel = isStaffHistory ? "Staff Actions" : "Punishment History";
         setItem(0, 4, Button.of(Material.BOOK)
                 .name("<!italic><white>" + headerLabel)
@@ -55,7 +55,7 @@ public class HistoryGui extends Gui {
                 )
                 .build());
 
-        // Content
+        
         int start = currentPage * pageSize;
         int itemsOnPage = Math.min(pageSize, total - start);
 
@@ -64,7 +64,7 @@ public class HistoryGui extends Gui {
             setItem(contentSlots[i], buildPunishmentItem(p));
         }
 
-        // Bottom nav
+        
         int navRow = getRows() - 1;
         setItem(navRow, 4, Button.of(Material.PAPER)
                 .name("<!italic><gray>Page <white>" + (currentPage + 1) + " <dark_gray>/ <gray>" + totalPages)

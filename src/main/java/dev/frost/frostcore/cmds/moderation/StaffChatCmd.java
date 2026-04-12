@@ -28,7 +28,7 @@ public class StaffChatCmd implements CommandExecutor, TabCompleter {
                              @NotNull String label, @NotNull String[] args) {
 
         if (args.length == 0) {
-            // Toggle staff chat mode
+            
             if (!(sender instanceof Player player)) {
                 mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Only players can toggle staff chat. Use <white>/sc <message></white> to send.");
                 return true;
@@ -45,7 +45,7 @@ public class StaffChatCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Direct message: /sc <message>
+        
         String message = String.join(" ", args);
         broadcastStaffMessage(sender, message);
         return true;
@@ -60,7 +60,7 @@ public class StaffChatCmd implements CommandExecutor, TabCompleter {
                 "message", message
         ));
 
-        // Send to all online staff + console
+        
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (online.hasPermission("frostcore.staffchat") || online.isOp()) {
                 online.sendMessage(formatted);
@@ -71,7 +71,7 @@ public class StaffChatCmd implements CommandExecutor, TabCompleter {
                 Component.text("[StaffChat] ").append(formatted)
         );
 
-        // Discord webhook
+        
         if (Main.getWebhookManager() != null) {
             Main.getWebhookManager().sendStaffChatWebhookAsync(senderName, message);
         }

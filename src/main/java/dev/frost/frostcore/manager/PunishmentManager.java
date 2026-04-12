@@ -41,7 +41,7 @@ public class PunishmentManager {
             if (punData.isFrozen()) frozenPlayers.put(uuid, true);
         });
 
-        // Load bans
+        
         Map<UUID, DatabaseManager.BanEntry> bans = db.loadPlayerBans();
         bans.forEach((uuid, banEntry) -> {
             long now = System.currentTimeMillis();
@@ -105,7 +105,7 @@ public class PunishmentManager {
         this.chatLocked = locked;
     }
 
-    // ━━━ BAN SYSTEM ━━━
+    
 
     public record BanData(long expires, String reason) {}
 
@@ -147,12 +147,7 @@ public class PunishmentManager {
         db.savePlayerPunishmentAsync(uuid, mute, frozen);
     }
 
-    /**
-     * Parses a human-readable time string like "1h30m" into milliseconds.
-     *
-     * @return milliseconds if valid, -1 if input is explicitly "permanent" (null/empty), 
-     *         or -2 if the input is malformed/unparseable.
-     */
+    
     public long parseTime(String input) {
         if (input == null || input.isEmpty()) return -1;
         
@@ -174,7 +169,7 @@ public class PunishmentManager {
             }
         }
         
-        // Return -2 for invalid/unparseable input (NOT -1, which means permanent)
+        
         return found ? totalMs : -2;
     }
 }

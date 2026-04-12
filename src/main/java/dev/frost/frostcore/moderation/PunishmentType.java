@@ -1,9 +1,6 @@
 package dev.frost.frostcore.moderation;
 
-/**
- * All punishment types tracked by the moderation system.
- * Stored as the {@code type} column in the {@code punishments} table.
- */
+
 public enum PunishmentType {
 
     BAN("Ban", "banned", "frostcore.moderation.ban"),
@@ -30,22 +27,22 @@ public enum PunishmentType {
     public String getPastTense()   { return pastTense; }
     public String getPermission()  { return permission; }
 
-    /** Whether this type has a duration component. */
+    
     public boolean isTemporal() {
         return this == TEMPBAN || this == TEMPMUTE || this == JAIL;
     }
 
-    /** Whether this is an IP-based punishment. */
+    
     public boolean isIpBased() {
         return this == IPBAN || this == IPMUTE;
     }
 
-    /** Whether this type remains active until explicitly removed. */
+    
     public boolean isPersistent() {
         return this != KICK && this != WARN;
     }
 
-    /** Map BAN/TEMPBAN → BAN category, etc. for history filtering. */
+    
     public String getCategory() {
         return switch (this) {
             case BAN, TEMPBAN, IPBAN -> "BAN";

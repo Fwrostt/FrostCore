@@ -16,9 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Handles all lifecycle events for {@link InviteType#TEAM_ALLY} invites.
- */
+
 public class TeamAllyInviteHandler implements InviteHandler {
 
     private final MessageManager mm;

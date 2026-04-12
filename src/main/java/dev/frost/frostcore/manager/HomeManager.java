@@ -13,10 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Manages player personal homes.
- * Loads a player's homes into cache on join, and removes them on quit.
- */
+
 public class HomeManager implements Listener {
 
     private final Main plugin;
@@ -29,12 +26,7 @@ public class HomeManager implements Listener {
         this.config = config;
     }
 
-    /**
-     * Set or update a home for a player.
-     * Overwrites if it exists. Checks limits if creating a new one.
-     *
-     * @return true if successful, false if they hit max homes
-     */
+    
     public boolean setHome(Player player, String name, Location location) {
         UUID uuid = player.getUniqueId();
         String lowerName = name.toLowerCase();
@@ -117,8 +109,8 @@ public class HomeManager implements Listener {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             Map<String, Location> homes = Main.getDatabaseManager().loadPlayerHomes(uuid);
 
-            // Use ConcurrentHashMap to prevent race conditions between
-            // async load completion and main-thread commands like /sethome
+            
+            
             cache.put(uuid, new java.util.concurrent.ConcurrentHashMap<>(homes));
         });
     }

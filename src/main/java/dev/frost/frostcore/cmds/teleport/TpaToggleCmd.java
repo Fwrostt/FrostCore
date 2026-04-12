@@ -15,14 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Handles /tpatoggle, /tpaon, and /tpaoff.
- * <ul>
- *   <li>/tpatoggle — flips current state</li>
- *   <li>/tpaon     — force-enables TPA requests</li>
- *   <li>/tpaoff    — force-disables TPA requests</li>
- * </ul>
- */
+
 public class TpaToggleCmd implements CommandExecutor, TabCompleter {
 
     public static final NamespacedKey TPA_DISABLED_KEY = new NamespacedKey(Main.getInstance(), "tpa_disabled");

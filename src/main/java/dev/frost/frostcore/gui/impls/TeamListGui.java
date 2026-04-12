@@ -17,23 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Paginated team browser opened by {@code /team list}.
- *
- * <h3>Layout (6-row chest)</h3>
- * <pre>
- *  Row 0  ◾ ◾ ◾ ◾  [Teams icon]  ◾ ◾ ◾ ◾
- *  Row 1  ◾  [HEAD] [HEAD] [HEAD] [HEAD] [HEAD] [HEAD] [HEAD]  ◾
- *  Row 2  ◾  [HEAD] [HEAD] [HEAD] [HEAD] [HEAD] [HEAD] [HEAD]  ◾
- *  Row 3  ◾  [HEAD] [HEAD] [HEAD] [HEAD] [HEAD] [HEAD] [HEAD]  ◾
- *  Row 4  ◾  [HEAD] [HEAD] [HEAD] [HEAD] [HEAD] [HEAD] [HEAD]  ◾
- *  Row 5  ◀  ◾  ◾  ◾  [Page X/Y]  ◾  ◾  ▶
- * </pre>
- *
- * Clicking a team head opens {@link TeamInfoGui} — UNLESS the viewer's team
- * has declared that team as an enemy, in which case a denied tooltip appears
- * (the item still shows, they just can't view info).
- */
+
 public class TeamListGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
@@ -43,7 +27,7 @@ public class TeamListGui extends Gui {
     private final Player viewer;
     private final TeamManager teamManager;
 
-    /** The viewer's own team (null if not in a team). Used for enemy check. */
+    
     private final Team viewerTeam;
 
     private int currentPage = 0;

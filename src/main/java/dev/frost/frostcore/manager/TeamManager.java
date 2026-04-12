@@ -37,9 +37,7 @@ public class TeamManager {
 
     private TeamManager() {}
 
-    /**
-     * Thread-safe lazy singleton initialisation.
-     */
+    
     public static synchronized TeamManager getInstance() {
         if (instance == null) {
             instance = new TeamManager();
@@ -47,17 +45,12 @@ public class TeamManager {
         return instance;
     }
 
-    /**
-     * Set the database manager. Called from Main after DatabaseManager is initialised.
-     */
+    
     public void setDatabaseManager(DatabaseManager db) {
         this.db = db;
     }
 
-    /**
-     * Load all teams from the database into memory.
-     * Called synchronously during onEnable.
-     */
+    
     public void loadAll() {
         if (db == null) {
             FrostLogger.warn("DatabaseManager is null — cannot load teams!");
@@ -78,10 +71,7 @@ public class TeamManager {
         FrostLogger.info("Loaded " + teams.size() + " teams into memory.");
     }
 
-    /**
-     * Synchronously save all teams to the database.
-     * Called during onDisable.
-     */
+    
     public void saveAll() {
         if (db == null) return;
         db.saveAllTeams(teams.values());
@@ -103,10 +93,7 @@ public class TeamManager {
         return team;
     }
 
-    /**
-     * Get a player's role string: "OWNER", "ADMIN", or "MEMBER".
-     * Returns null if not in a team.
-     */
+    
     public String getRole(Team team, UUID uuid) {
         if (team.isOwner(uuid))                   return "OWNER";
         if (team.isAdmin(uuid))                   return "ADMIN";
@@ -209,10 +196,7 @@ public class TeamManager {
         if (db != null) db.saveMembersAsync(team);
     }
 
-    /**
-     * Remove a member from their team (leave/kick).
-     * Blocks owners from leaving if they're the last owner.
-     */
+    
     public void removeMember(UUID uuid) throws TeamException {
         Team team = getTeam(uuid);
 
@@ -268,9 +252,7 @@ public class TeamManager {
         if (db != null) db.saveMembersAsync(team);
     }
 
-    /**
-     * Demote an admin to member via the model method (consistent encapsulation).
-     */
+    
     public void demoteAdminToMember(Team team, UUID uuid) throws TeamException {
         if (!team.isAdmin(uuid)) {
             throw new TeamException(TeamError.ALREADY_LOWEST_RANK, "Player is not an admin");
@@ -301,9 +283,7 @@ public class TeamManager {
         if (db != null) db.saveTeamBaseAsync(team);
     }
 
-    /**
-     * Delete the team home and save to database.
-     */
+    
     public void deleteHome(Team team) {
         team.setHome(null);
         if (db != null) db.saveTeamBaseAsync(team);
@@ -369,9 +349,7 @@ public class TeamManager {
         if (db != null) db.saveRelationsAsync(team);
     }
 
-    /**
-     * Remove an ally relationship (mutual removal).
-     */
+    
     public void removeAlly(Team team, String target) throws TeamException {
         target = target.toLowerCase();
 
@@ -417,9 +395,7 @@ public class TeamManager {
         if (db != null) db.saveRelationsAsync(team);
     }
 
-    /**
-     * Remove an enemy relationship (one-sided — only removes from your team).
-     */
+    
     public void removeEnemy(Team team, String target) throws TeamException {
         target = target.toLowerCase();
 
@@ -448,12 +424,7 @@ public class TeamManager {
         if (db != null) db.saveMembersAsync(team);
     }
 
-    /**
-     * Validates a team tag for length and disallowed characters.
-     * Tags must not contain MiniMessage angle-bracket tags, spaces, or curly braces.
-     *
-     * @throws TeamException if the tag is invalid
-     */
+    
     public void validateTag(String tag) throws TeamException {
         if (tag == null || tag.isEmpty()) {
             throw new TeamException(TeamError.TEAM_NAME_TOO_SHORT, "Tag cannot be empty");
@@ -473,13 +444,7 @@ public class TeamManager {
         }
     }
 
-    /**
-     * Rename a team. Updates in-memory state and all DB tables atomically.
-     *
-     * @param team    the team to rename
-     * @param newName the new name
-     * @throws TeamException if the new name is invalid or already taken
-     */
+    
     public void renameTeam(Team team, String newName) throws TeamException {
         String newNameLower = newName.toLowerCase();
         String oldNameLower = team.getName().toLowerCase();
@@ -499,7 +464,7 @@ public class TeamManager {
             }
         }
 
-        // Update in-memory state first
+        
         teams.remove(oldNameLower);
         team.setName(newNameLower);
         teams.put(newNameLower, team);
@@ -520,7 +485,7 @@ public class TeamManager {
             Main.getEchestManager().invalidate(oldNameLower);
         }
 
-        // Persist to DB async — rollback in-memory if it fails
+        
         if (db != null) {
             Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
                 boolean success = db.renameTeam(oldNameLower, newNameLower);

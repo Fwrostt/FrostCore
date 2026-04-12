@@ -12,23 +12,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
 
-/**
- * Public team info panel.
- *
- * <h3>5-row layout</h3>
- * <pre>
- *  Row 0  ◾ ◾ ◾ ◾  [Team skull + header]  ◾ ◾ ◾ ◾
- *  Row 1  ◾ P  P  P  P  P  P  │  [Stats    ]
- *  Row 2  ◾ P  P  P  P  P  P  │  [Relations]
- *  Row 3  ◾ P  P  P  P  P  P  │  ◾
- *  Row 4  ◾ ◾ ◾ ◾  [← Back]  ◾ ◾ ◾ ◾
- * </pre>
- *
- * Player heads fill cols 1–6 across rows 1–3 (18 slots).
- * Order: owners → admins → members.
- * If the team has more than 18 members the overflow count appears in the Stats lore.
- * Warp names are intentionally omitted (private information).
- */
+
 public class TeamInfoGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();

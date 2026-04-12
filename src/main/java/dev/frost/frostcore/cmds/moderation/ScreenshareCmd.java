@@ -83,7 +83,7 @@ public class ScreenshareCmd implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    // ━━━━━━━━━━━━━━━━━━ Session Management ━━━━━━━━━━━━━━━━━━
+    
 
     private void startScreenshare(Player target, String staffName) {
         UUID uuid = target.getUniqueId();
@@ -170,7 +170,7 @@ public class ScreenshareCmd implements CommandExecutor, TabCompleter {
                 + ") — Auto-banned for 7 days.");
     }
 
-    // ━━━━━━━━━━━━━━━━━━ Utilities ━━━━━━━━━━━━━━━━━━
+    
 
     private void broadcastToStaff(String message) {
         for (Player online : Bukkit.getOnlinePlayers()) {

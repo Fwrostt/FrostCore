@@ -12,10 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Central manager for the entire moderation system.
- * Replaces the old PunishmentManager with a full punishment lifecycle.
- */
+
 public class ModerationManager {
 
     private static ModerationManager instance;
@@ -24,29 +21,29 @@ public class ModerationManager {
     private final ConfigManager config;
     private final MiniMessage mini = MiniMessage.miniMessage();
 
-    // ━━━ Caches ━━━
-    // Active ban cache: UUID → Punishment
+    
+    
     private final Map<UUID, Punishment> activeBans = new ConcurrentHashMap<>();
-    // Active IP bans: IP → Punishment
+    
     private final Map<String, Punishment> activeIpBans = new ConcurrentHashMap<>();
-    // Active mute cache: UUID → Punishment
+    
     private final Map<UUID, Punishment> activeMutes = new ConcurrentHashMap<>();
-    // Active IP mutes: IP → Punishment
+    
     private final Map<String, Punishment> activeIpMutes = new ConcurrentHashMap<>();
-    // Frozen players
+    
     private final Set<UUID> frozenPlayers = ConcurrentHashMap.newKeySet();
-    // Jailed players: UUID → JailedEntry
+    
     private final Map<UUID, ModerationDatabase.JailedEntry> jailedPlayers = new ConcurrentHashMap<>();
-    // Jail locations
+    
     private final Map<String, JailLocation> jailLocations = new ConcurrentHashMap<>();
-    // Chat locked
+    
     private volatile boolean chatLocked = false;
-    // Lockdown
+    
     private volatile boolean lockdown = false;
     private volatile String lockdownReason = null;
-    // Staff cooldowns: staffUUID → (action → last used timestamp)
+    
     private final Map<UUID, Map<String, Long>> staffCooldowns = new ConcurrentHashMap<>();
-    // Allowed players (IP ban bypass)
+    
     private final Set<UUID> allowedPlayers = ConcurrentHashMap.newKeySet();
 
     public ModerationManager(ModerationDatabase modDb, WebhookManager webhookManager) {
@@ -61,44 +58,44 @@ public class ModerationManager {
         return instance;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ LOADING ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     private void load() {
-        // Load active bans
+        
         for (Punishment p : modDb.loadActivePunishments(PunishmentType.BAN, PunishmentType.TEMPBAN)) {
             if (p.isExpired()) continue;
             if (p.targetUuid() != null) activeBans.put(p.targetUuid(), p);
         }
 
-        // Load active IP bans
+        
         for (Punishment p : modDb.loadActivePunishments(PunishmentType.IPBAN)) {
             if (p.isExpired()) continue;
             if (p.ip() != null) activeIpBans.put(p.ip(), p);
         }
 
-        // Load active mutes
+        
         for (Punishment p : modDb.loadActivePunishments(PunishmentType.MUTE, PunishmentType.TEMPMUTE)) {
             if (p.isExpired()) continue;
             if (p.targetUuid() != null) activeMutes.put(p.targetUuid(), p);
         }
 
-        // Load active IP mutes
+        
         for (Punishment p : modDb.loadActivePunishments(PunishmentType.IPMUTE)) {
             if (p.isExpired()) continue;
             if (p.ip() != null) activeIpMutes.put(p.ip(), p);
         }
 
-        // Load jail locations
+        
         jailLocations.putAll(modDb.loadJailLocations());
 
-        // Load jailed players
+        
         Map<UUID, ModerationDatabase.JailedEntry> jailed = modDb.loadJailedPlayers();
         long now = System.currentTimeMillis();
         jailed.forEach((uuid, entry) -> {
             if (entry.expiresAt() == -1 || entry.expiresAt() > now) {
                 jailedPlayers.put(uuid, entry);
             } else {
-                modDb.unjailPlayer(uuid); // Expired
+                modDb.unjailPlayer(uuid); 
             }
         });
 
@@ -106,14 +103,9 @@ public class ModerationManager {
                 + " mutes, " + jailedPlayers.size() + " jailed, " + jailLocations.size() + " jails.");
     }
 
-    // ━━━━━━━━━━━━━━━━ PUNISHMENT EXECUTION ━━━━━━━━━━━━━━━━━
+    
 
-    /**
-     * Execute a punishment (ban, mute, warn, kick, etc).
-     * This is the main entry point for all punishment actions.
-     *
-     * @return the created Punishment record, or null on failure
-     */
+    
     public Punishment punish(PunishmentType type, UUID targetUuid, String targetName,
                              String ip, String reason, CommandSender staff,
                              long duration, boolean silent) {
@@ -136,25 +128,25 @@ public class ModerationManager {
         int id = modDb.insertPunishment(p);
         if (id == -1) return null;
 
-        // Recreate with actual ID
+        
         p = new Punishment(
                 id, type, targetUuid, targetName, ip,
                 p.reason(), staffUuid, staffName, duration, now, expiresAt,
                 true, null, null, null, null, server, silent, randomId
         );
 
-        // Update caches
+        
         updateCacheAfterPunish(p);
 
-        // Handle online player effects
+        
         handleOnlineEffects(p);
 
-        // Broadcast to staff
+        
         if (config.getBoolean("moderation.broadcast-to-staff", true)) {
             broadcastToStaff(p, silent);
         }
 
-        // Discord webhook
+        
         if (webhookManager != null) {
             webhookManager.sendPunishmentWebhookAsync(p);
         }
@@ -162,9 +154,7 @@ public class ModerationManager {
         return p;
     }
 
-    /**
-     * Remove a punishment (unban, unmute, unwarn).
-     */
+    
     public boolean removePunishment(int punishmentId, CommandSender staff, String reason, boolean delete) {
         Punishment p = modDb.getPunishmentById(punishmentId);
         if (p == null) return false;
@@ -178,10 +168,10 @@ public class ModerationManager {
             modDb.deactivatePunishment(punishmentId, staffUuid, staffName, reason);
         }
 
-        // Remove from cache
+        
         removeCacheEntry(p);
 
-        // Webhook
+        
         if (webhookManager != null) {
             webhookManager.sendUnpunishWebhookAsync(p, staffName);
         }
@@ -189,21 +179,19 @@ public class ModerationManager {
         return true;
     }
 
-    /**
-     * Remove an active punishment by player UUID and category.
-     */
+    
     public boolean removePunishmentByPlayer(UUID targetUuid, String category,
                                             CommandSender staff, String reason) {
         UUID staffUuid = (staff instanceof Player pl) ? pl.getUniqueId() : null;
         String staffName = staff != null ? staff.getName() : "CONSOLE";
 
-        // Get active punishment first for webhook
+        
         Punishment active = modDb.getActivePunishment(targetUuid, category);
 
         int count = modDb.deactivateAllActive(targetUuid, category, staffUuid, staffName);
         if (count == 0) return false;
 
-        // Remove from cache
+        
         switch (category.toUpperCase()) {
             case "BAN" -> activeBans.remove(targetUuid);
             case "MUTE" -> activeMutes.remove(targetUuid);
@@ -216,7 +204,7 @@ public class ModerationManager {
         return true;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━●━ CACHE MANAGEMENT ━━━━━━━━━━━━━━━━━
+    
 
     private void updateCacheAfterPunish(Punishment p) {
         switch (p.type()) {
@@ -234,7 +222,7 @@ public class ModerationManager {
                 if (p.ip() != null) activeIpMutes.put(p.ip(), p);
                 if (p.targetUuid() != null) activeMutes.put(p.targetUuid(), p);
             }
-            default -> {} // Kick and warn don't need caching
+            default -> {} 
         }
     }
 
@@ -281,7 +269,7 @@ public class ModerationManager {
             case JAIL -> {
                 MessageManager mm = Main.getMessageManager();
                 mm.sendRaw(target, "<#D4727A>MOD <dark_gray>»</dark_gray> <#8FA3BF>You have been jailed. Reason: <white>" + p.reason());
-                // Teleport to jail
+                
                 ModerationDatabase.JailedEntry entry = jailedPlayers.get(p.targetUuid());
                 if (entry != null) {
                     JailLocation jail = jailLocations.get(entry.jailName());
@@ -324,12 +312,12 @@ public class ModerationManager {
                 Main.getMessageManager().sendRaw(online, msg);
             }
         }
-        // Also log to console
+        
         FrostLogger.info("[MOD] " + p.getStaffDisplayName() + " " + p.type().getPastTense() + " "
                 + p.getTargetDisplayName() + " - " + p.reason() + " [#" + p.randomId() + "]");
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ QUERIES ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public boolean isBanned(UUID uuid) {
         Punishment p = activeBans.get(uuid);
@@ -380,7 +368,7 @@ public class ModerationManager {
     public Punishment getActiveIpBan(String ip)  { return activeIpBans.get(ip); }
     public Punishment getActiveIpMute(String ip) { return activeIpMutes.get(ip); }
 
-    // ━━━━━━━━━━━━━━━━━━━━━ FREEZE ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public boolean isFrozen(UUID uuid)           { return frozenPlayers.contains(uuid); }
     public void setFrozen(UUID uuid, boolean frozen) {
@@ -389,7 +377,7 @@ public class ModerationManager {
     }
     public void toggleFreeze(UUID uuid) { setFrozen(uuid, !isFrozen(uuid)); }
 
-    // ━━━━━━━━━━━━━━━━━━━━━ JAIL ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public boolean isJailed(UUID uuid) {
         ModerationDatabase.JailedEntry entry = jailedPlayers.get(uuid);
@@ -414,7 +402,7 @@ public class ModerationManager {
 
     public ModerationDatabase.JailedEntry getJailedEntry(UUID uuid) { return jailedPlayers.get(uuid); }
 
-    // ━━━━━━━━━━━━━━━━ JAIL LOCATIONS ━━━━━━━━━━━━━━━━━━
+    
 
     public JailLocation getJailLocation(String name) { return jailLocations.get(name.toLowerCase()); }
     public Map<String, JailLocation> getJailLocations() { return Collections.unmodifiableMap(jailLocations); }
@@ -427,7 +415,7 @@ public class ModerationManager {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> modDb.deleteJailLocation(name.toLowerCase()));
     }
 
-    // ━━━━━━━━━━━━━━━━ CHAT LOCK / LOCKDOWN ━━━━━━━━━━━━━━━━━━
+    
 
     public boolean isChatLocked()   { return chatLocked; }
     public void setChatLocked(boolean locked) { this.chatLocked = locked; }
@@ -439,7 +427,7 @@ public class ModerationManager {
         this.lockdownReason = reason;
     }
 
-    // ━━━━━━━━━━━━━━━━ ALLOWED PLAYERS ━━━━━━━━━━━━━━━━━━
+    
 
     public boolean isAllowed(UUID uuid) { return allowedPlayers.contains(uuid); }
     public void addAllowed(UUID uuid, UUID addedBy) {
@@ -451,7 +439,7 @@ public class ModerationManager {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> modDb.removeAllowedPlayer(uuid));
     }
 
-    // ━━━━━━━━━━━━━━━━ STAFF COOLDOWNS ━━━━━━━━━━━━━━━━━━
+    
 
     public boolean isOnCooldown(UUID staffUuid, String action) {
         Map<String, Long> cooldowns = staffCooldowns.get(staffUuid);
@@ -474,20 +462,18 @@ public class ModerationManager {
     }
 
     private long getCooldownMs(String action) {
-        // Default 5 seconds, can be overridden by group limits
+        
         return 5000L;
     }
 
-    // ━━━━━━━━━━━━━━━━ IP BAN → ALT AUTO-BAN ━━━━━━━━━━━━━━━━━━
+    
 
-    /**
-     * When an IP is banned, auto-ban all alt accounts associated with that IP.
-     */
+    
     public void autoBanAlts(String ip, Punishment original, CommandSender staff) {
         Set<UUID> alts = modDb.getAlts(original.targetUuid());
         for (UUID altUuid : alts) {
-            if (isAllowed(altUuid)) continue; // Skip allowed players
-            if (isBanned(altUuid)) continue;  // Already banned
+            if (isAllowed(altUuid)) continue; 
+            if (isBanned(altUuid)) continue;  
 
             String altName = modDb.getLastKnownName(altUuid);
             punish(PunishmentType.BAN, altUuid, altName, null,
@@ -496,7 +482,7 @@ public class ModerationManager {
         }
     }
 
-    // ━━━━━━━━━━━━━━━━ DELEGATION ━━━━━━━━━━━━━━━━━━
+    
 
     public ModerationDatabase getDatabase() { return modDb; }
     public WebhookManager getWebhookManager() { return webhookManager; }

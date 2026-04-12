@@ -15,12 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Handles {@code /warps} — opens the interactive warp browser GUI.
- * <p>
- * If {@code warps.gui-enabled} is {@code false} in {@code config.yml}, it falls back
- * to displaying the classic chat warp list instead (delegates to {@link WarpCmd}).
- */
+
 public class WarpsCmd implements CommandExecutor, TabCompleter {
 
     private final MessageManager mm     = MessageManager.get();

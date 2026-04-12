@@ -10,11 +10,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Database access layer for the moderation system.
- * Handles all CRUD for punishments, IP tracking, player names,
- * jail locations, reports, and allowed players.
- */
+
 public class ModerationDatabase {
 
     private final DatabaseManager db;
@@ -25,12 +21,12 @@ public class ModerationDatabase {
         this.plugin = plugin;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ TABLE CREATION ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void createTables() {
         try (Connection conn = db.getConnection(); Statement stmt = conn.createStatement()) {
 
-            // Auto-increment syntax differs between SQLite and MySQL
+            
             String autoInc = db.getType() == DatabaseType.MYSQL ? "AUTO_INCREMENT" : "AUTOINCREMENT";
 
             stmt.executeUpdate("""
@@ -123,7 +119,7 @@ public class ModerationDatabase {
                 )
             """);
 
-            // Create indexes for common queries
+            
             try {
                 stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_punishments_uuid ON punishments(uuid)");
                 stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_punishments_ip ON punishments(ip)");
@@ -133,7 +129,7 @@ public class ModerationDatabase {
                 stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_player_ips_ip ON player_ips(ip)");
                 stmt.executeUpdate("CREATE INDEX IF NOT EXISTS idx_reports_handled ON reports(handled)");
             } catch (SQLException ignored) {
-                // Indexes may already exist
+                
             }
 
             FrostLogger.info("Moderation database tables verified.");
@@ -142,11 +138,9 @@ public class ModerationDatabase {
         }
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ PUNISHMENTS ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
-    /**
-     * Insert a new punishment and return the generated ID.
-     */
+    
     public int insertPunishment(Punishment p) {
         String sql = """
             INSERT INTO punishments (type, uuid, target_name, ip, reason, staff_uuid, staff_name,
@@ -191,9 +185,7 @@ public class ModerationDatabase {
         });
     }
 
-    /**
-     * Deactivate a punishment by ID.
-     */
+    
     public void deactivatePunishment(int id, UUID removedBy, String removedByName, String removedReason) {
         String sql = "UPDATE punishments SET active = 0, removed_by = ?, removed_by_name = ?, removed_at = ?, removed_reason = ? WHERE id = ?";
         try (Connection conn = db.getConnection();
@@ -214,9 +206,7 @@ public class ModerationDatabase {
                 () -> deactivatePunishment(id, removedBy, removedByName, removedReason));
     }
 
-    /**
-     * Permanently delete a punishment record.
-     */
+    
     public void deletePunishment(int id) {
         try (Connection conn = db.getConnection();
              PreparedStatement ps = conn.prepareStatement("DELETE FROM punishments WHERE id = ?")) {
@@ -227,9 +217,7 @@ public class ModerationDatabase {
         }
     }
 
-    /**
-     * Load all active punishments of a specific type for caching.
-     */
+    
     public List<Punishment> loadActivePunishments(PunishmentType... types) {
         List<Punishment> result = new ArrayList<>();
         StringBuilder placeholders = new StringBuilder();
@@ -255,9 +243,7 @@ public class ModerationDatabase {
         return result;
     }
 
-    /**
-     * Get a punishment by its sequential ID.
-     */
+    
     public Punishment getPunishmentById(int id) {
         try (Connection conn = db.getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM punishments WHERE id = ?")) {
@@ -271,9 +257,7 @@ public class ModerationDatabase {
         return null;
     }
 
-    /**
-     * Get a punishment by its randomized ID.
-     */
+    
     public Punishment getPunishmentByRandomId(String randomId) {
         try (Connection conn = db.getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM punishments WHERE random_id = ?")) {
@@ -287,9 +271,7 @@ public class ModerationDatabase {
         return null;
     }
 
-    /**
-     * Get the active punishment of a specific category for a player UUID.
-     */
+    
     public Punishment getActivePunishment(UUID uuid, String category) {
         List<String> typeNames = getTypeNamesForCategory(category);
         if (typeNames.isEmpty()) return null;
@@ -316,9 +298,7 @@ public class ModerationDatabase {
         return null;
     }
 
-    /**
-     * Get active IP-based punishment.
-     */
+    
     public Punishment getActiveIpPunishment(String ip, String category) {
         List<String> typeNames = getTypeNamesForCategory(category);
         if (typeNames.isEmpty()) return null;
@@ -345,9 +325,7 @@ public class ModerationDatabase {
         return null;
     }
 
-    /**
-     * Get all punishments for a player (history).
-     */
+    
     public List<Punishment> getPlayerHistory(UUID uuid, String typeFilter) {
         List<Punishment> result = new ArrayList<>();
         String sql;
@@ -382,9 +360,7 @@ public class ModerationDatabase {
         return result;
     }
 
-    /**
-     * Get punishments issued by a specific staff member.
-     */
+    
     public List<Punishment> getStaffHistory(UUID staffUuid, String typeFilter) {
         List<Punishment> result = new ArrayList<>();
         String baseSql = "SELECT * FROM punishments WHERE staff_uuid = ?";
@@ -420,9 +396,7 @@ public class ModerationDatabase {
         return result;
     }
 
-    /**
-     * Get all active punishments of a type, paginated.
-     */
+    
     public List<Punishment> getActivePunishmentsPaginated(String category, int page, int pageSize) {
         List<Punishment> result = new ArrayList<>();
         List<String> typeNames = getTypeNamesForCategory(category);
@@ -450,9 +424,7 @@ public class ModerationDatabase {
         return result;
     }
 
-    /**
-     * Count active punishments of a type.
-     */
+    
     public int countActivePunishments(String category) {
         List<String> typeNames = getTypeNamesForCategory(category);
         if (typeNames.isEmpty()) return 0;
@@ -478,9 +450,7 @@ public class ModerationDatabase {
         return 0;
     }
 
-    /**
-     * Count warns for a player (for escalation).
-     */
+    
     public int countPlayerWarnings(UUID uuid) {
         String sql = "SELECT COUNT(*) FROM punishments WHERE uuid = ? AND type = 'WARN'";
         try (Connection conn = db.getConnection();
@@ -495,9 +465,7 @@ public class ModerationDatabase {
         return 0;
     }
 
-    /**
-     * Get active warnings for a player.
-     */
+    
     public List<Punishment> getActiveWarnings(UUID uuid) {
         List<Punishment> result = new ArrayList<>();
         String sql = "SELECT * FROM punishments WHERE uuid = ? AND type = 'WARN' AND active = 1 ORDER BY created_at DESC";
@@ -511,9 +479,7 @@ public class ModerationDatabase {
         return result;
     }
 
-    /**
-     * Deactivate all active punishments of a category for a player.
-     */
+    
     public int deactivateAllActive(UUID uuid, String category, UUID removedBy, String removedByName) {
         List<String> typeNames = getTypeNamesForCategory(category);
         if (typeNames.isEmpty()) return 0;
@@ -541,9 +507,7 @@ public class ModerationDatabase {
         return 0;
     }
 
-    /**
-     * Rollback all punishments by a staff member, optionally within a duration.
-     */
+    
     public int staffRollback(UUID staffUuid, Long sinceMs) {
         String sql;
         if (sinceMs != null) {
@@ -565,9 +529,7 @@ public class ModerationDatabase {
         return 0;
     }
 
-    /**
-     * Prune inactive punishment history for a player.
-     */
+    
     public int pruneHistory(UUID uuid, Long sinceMs) {
         String sql;
         if (sinceMs != null) {
@@ -588,7 +550,7 @@ public class ModerationDatabase {
         return 0;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ IP TRACKING ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void recordPlayerIp(UUID uuid, String ip) {
         String sql = db.getType() == DatabaseType.MYSQL
@@ -619,9 +581,7 @@ public class ModerationDatabase {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> recordPlayerIp(uuid, ip));
     }
 
-    /**
-     * Get all UUIDs associated with a given IP.
-     */
+    
     public Set<UUID> getUuidsByIp(String ip) {
         Set<UUID> result = new LinkedHashSet<>();
         try (Connection conn = db.getConnection();
@@ -638,9 +598,7 @@ public class ModerationDatabase {
         return result;
     }
 
-    /**
-     * Get all IPs associated with a given UUID.
-     */
+    
     public Set<String> getIpsByUuid(UUID uuid) {
         Set<String> result = new LinkedHashSet<>();
         try (Connection conn = db.getConnection();
@@ -657,20 +615,18 @@ public class ModerationDatabase {
         return result;
     }
 
-    /**
-     * Get all alt accounts for a player (UUIDs that share any IP).
-     */
+    
     public Set<UUID> getAlts(UUID uuid) {
         Set<UUID> alts = new LinkedHashSet<>();
         Set<String> ips = getIpsByUuid(uuid);
         for (String ip : ips) {
             alts.addAll(getUuidsByIp(ip));
         }
-        alts.remove(uuid); // Don't include self
+        alts.remove(uuid); 
         return alts;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ PLAYER NAMES ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void recordPlayerName(UUID uuid, String name) {
         String sql = db.getType() == DatabaseType.MYSQL
@@ -724,7 +680,7 @@ public class ModerationDatabase {
         return null;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ JAIL LOCATIONS ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void saveJailLocation(JailLocation jail) {
         String sql = db.getType() == DatabaseType.MYSQL
@@ -772,7 +728,7 @@ public class ModerationDatabase {
         return result;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━ JAILED PLAYERS ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void jailPlayer(UUID uuid, String jailName, long expiresAt, String reason, UUID staffUuid) {
         String sql = db.getType() == DatabaseType.MYSQL
@@ -823,7 +779,7 @@ public class ModerationDatabase {
         return result;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ REPORTS ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public int insertReport(Report r) {
         String sql = """
@@ -890,7 +846,7 @@ public class ModerationDatabase {
         return 0;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ ALLOWED PLAYERS ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     public void addAllowedPlayer(UUID uuid, UUID addedBy) {
         String sql = db.getType() == DatabaseType.MYSQL
@@ -930,7 +886,7 @@ public class ModerationDatabase {
         return false;
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━ HELPERS ━━━━━━━━━━━━━━━━━━━━━━━
+    
 
     private Punishment fromResultSet(ResultSet rs) throws SQLException {
         String uuidStr = rs.getString("uuid");

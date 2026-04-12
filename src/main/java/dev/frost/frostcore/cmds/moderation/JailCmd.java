@@ -24,7 +24,7 @@ public class JailCmd implements CommandExecutor, TabCompleter {
         if (!Main.getGroupLimitManager().canPunish(sender, target)) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>You cannot punish this player."); return true; }
         if (mod.isJailed(target.getUniqueId())) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>This player is already jailed."); return true; }
 
-        // Determine jail name
+        
         String jailName = "default";
         if (args.length >= 2 && mod.getJailLocation(args[1]) != null) {
             jailName = args[1].toLowerCase();
@@ -38,7 +38,7 @@ public class JailCmd implements CommandExecutor, TabCompleter {
         JailLocation jail = mod.getJailLocation(jailName);
         if (jail == null) { mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Jail not found: <white>" + jailName); return true; }
 
-        // Parse duration and reason from remaining args
+        
         long duration = -1;
         StringBuilder reason = new StringBuilder();
         int startIdx = (args.length >= 2 && mod.getJailLocation(args[1]) != null) ? 2 : 1;
@@ -56,7 +56,7 @@ public class JailCmd implements CommandExecutor, TabCompleter {
         mod.jailPlayer(target.getUniqueId(), jailName, expiresAt, reasonStr, staffUuid);
         mod.punish(PunishmentType.JAIL, target.getUniqueId(), target.getName(), null, reasonStr, sender, duration, false);
 
-        // Teleport to jail
+        
         var loc = jail.toBukkitLocation();
         if (loc != null) target.teleport(loc);
 

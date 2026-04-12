@@ -2,10 +2,7 @@ package dev.frost.frostcore.cmds.moderation;
 
 import dev.frost.frostcore.moderation.Punishment;
 
-/**
- * Utility for parsing moderation command arguments.
- * Extracts duration, reason, -s (silent), and -t (template) flags.
- */
+
 public class ParsedArgs {
 
     public final long duration;      
@@ -20,16 +17,9 @@ public class ParsedArgs {
         this.template = template;
     }
 
-    /**
-     * Parse args starting from a given index.
-     * Supports: [duration] [reason words...] [-s] [-t template]
-     *
-     * @param args the full command arguments
-     * @param startIndex index to start parsing from (skipping player name etc.)
-     * @return ParsedArgs with extracted values
-     */
+    
     public static ParsedArgs parse(String[] args, int startIndex) {
-        long duration = -1; // Default to permanent
+        long duration = -1; 
         boolean silent = false;
         String template = null;
         StringBuilder reason = new StringBuilder();
@@ -49,7 +39,7 @@ public class ParsedArgs {
                 continue;
             }
 
-            // Try to parse as duration (only the first non-flag arg)
+            
             if (!durationParsed) {
                 long parsed = Punishment.parseTime(arg);
                 if (parsed != -2) {
@@ -59,7 +49,7 @@ public class ParsedArgs {
                 }
             }
 
-            // Everything else is part of the reason
+            
             if (!reason.isEmpty()) reason.append(" ");
             reason.append(arg);
         }
@@ -67,10 +57,7 @@ public class ParsedArgs {
         return new ParsedArgs(duration, reason.toString(), silent, template);
     }
 
-    /**
-     * Parse args starting from a given index, skipping duration parsing entirely.
-     * Use this for commands like /warn and /kick where duration is not expected.
-     */
+    
     public static ParsedArgs parseReasonOnly(String[] args, int startIndex) {
         boolean silent = false;
         String template = null;
@@ -93,10 +80,7 @@ public class ParsedArgs {
         return new ParsedArgs(-1, reason.toString(), silent, template);
     }
 
-    /**
-     * Parse with a required duration (for /tempban, /tempmute).
-     * Returns ParsedArgs with duration = -2 if not found (caller should error).
-     */
+    
     public static ParsedArgs parseRequired(String[] args, int startIndex) {
         if (startIndex >= args.length) {
             return new ParsedArgs(-2, "", false, null);
@@ -107,7 +91,7 @@ public class ParsedArgs {
             return new ParsedArgs(-2, "", false, null);
         }
 
-        // Parse rest as reason + flags
+        
         boolean silent = false;
         String template = null;
         StringBuilder reason = new StringBuilder();

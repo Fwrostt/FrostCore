@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
-/** /reports [page] — view open reports */
+
 public class ReportsCmd implements CommandExecutor, TabCompleter {
     private final MessageManager mm = Main.getMessageManager();
     @Override public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
@@ -25,7 +25,7 @@ public class ReportsCmd implements CommandExecutor, TabCompleter {
             ModerationDatabase modDb = ModerationManager.getInstance().getDatabase();
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                 if (sender instanceof org.bukkit.entity.Player p) {
-                    List<Report> guiReports = modDb.getOpenReports(0, 1000); // load max 1000
+                    List<Report> guiReports = modDb.getOpenReports(0, 1000); 
                     ReportsGui.open(p, guiReports);
                 } else {
                     List<Report> reports = modDb.getOpenReports(pNum, 10);

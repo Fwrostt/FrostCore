@@ -16,10 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * /ban <player> [duration] [reason] [-s] [-t template]
- * Bans a player permanently or temporarily.
- */
+
 public class BanCmd implements CommandExecutor, TabCompleter {
 
     private final MessageManager mm = Main.getMessageManager();
@@ -38,7 +35,7 @@ public class BanCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Check exemption
+        
         if (target.isOnline()) {
             GroupLimitManager glm = Main.getGroupLimitManager();
             if (!glm.canPunish(sender, target.getPlayer())) {
@@ -47,16 +44,16 @@ public class BanCmd implements CommandExecutor, TabCompleter {
             }
         }
 
-        // Check if already banned
+        
         if (mod.isBanned(target.getUniqueId())) {
             mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>This player is already banned.");
             return true;
         }
 
-        // Parse flags
+        
         ParsedArgs parsed = ParsedArgs.parse(args, 1);
 
-        // Template support
+        
         if (parsed.template != null) {
             TemplateManager tm = Main.getTemplateManager();
             TemplateManager.PunishmentTemplate template = tm.getTemplate(parsed.template);
@@ -76,7 +73,7 @@ public class BanCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Check group limits
+        
         GroupLimitManager glm = Main.getGroupLimitManager();
         if (glm.requiresTemplate(sender)) {
             mm.sendRaw(sender, "<#D4727A>MOD <dark_gray>»</dark_gray> <#D4727A>Your group requires a template. Use <white>-t <template>");
@@ -107,7 +104,7 @@ public class BanCmd implements CommandExecutor, TabCompleter {
                     .filter(n -> n.toLowerCase().startsWith(args[0].toLowerCase())).collect(Collectors.toList());
         }
         if (args.length == 2) return List.of("1h", "1d", "7d", "30d", "permanent", "-t");
-        // If last arg is -t, suggest templates
+        
         if (args.length >= 2 && args[args.length - 2].equals("-t")) {
             return new ArrayList<>(Main.getTemplateManager().getTemplateNames());
         }

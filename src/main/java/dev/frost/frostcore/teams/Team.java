@@ -31,17 +31,12 @@ public class Team {
         this.color = "black";
     }
 
-    /**
-     * Factory method for loading a team from the database.
-     * Members/owners are added separately after creation.
-     */
+    
     public static Team createEmpty(String name, String tag, String color, boolean pvpToggle) {
         return new Team(name, tag, color, pvpToggle);
     }
 
-    /**
-     * Private constructor for database loading — no owner added.
-     */
+    
     private Team(String name, String tag, String color, boolean pvpToggle) {
         this.name = name;
         this.tag = tag;
@@ -53,10 +48,7 @@ public class Team {
         return owners.size() + admins.size() + members.size();
     }
 
-    /**
-     * Returns the team name with the first letter capitalized for display.
-     * The raw name (getName()) is always lowercase for lookups.
-     */
+    
     public String getDisplayName() {
         if (name == null || name.isEmpty()) return name;
         return name.substring(0, 1).toUpperCase() + name.substring(1);
@@ -97,9 +89,7 @@ public class Team {
         }
     }
 
-    /**
-     * Demote an owner to admin. Removes from owners and adds to admins.
-     */
+    
     public void demoteToAdmin(UUID uuid) {
         if (owners.remove(uuid)) {
             admins.add(uuid);
