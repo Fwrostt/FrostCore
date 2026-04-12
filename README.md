@@ -23,7 +23,7 @@ Designed with a focus on **Premium Aesthetics** and **Thread-Safe Performance**,
 ## ✨ Key Modules
 
 ### 🚨 Enterprise Moderation Suite
-A LiteBans-parity moderation system built directly into the core, removing the need for external, bloated, paid plugins. 
+A moderation system built directly into the core, removing the need for external, bloated, paid plugins. 
 - **100% Async Database & Cross-Server Sync:** Punishments, limits, and alt IP-tracking are fully database-persistent (MySQL/SQLite).
 - **Punishment IDs & Templates:** Punishments get generated Hex IDs (`#8A5F73`) for aesthetic consistency. Integrated `punishments.yml` templates allow automatic escalation strings (e.g., *1st Warning -> 30d Tempban -> Perm Ban*).
 - **Group Hierarchy & Exemptions:** Strict staff role-weight checks ensure Junior Mods cannot punish Admins. 
