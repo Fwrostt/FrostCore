@@ -21,8 +21,12 @@ public class VanishListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player joiner = event.getPlayer();
 
-        // If the joining player is vanished (re-vanish after relog is handled by VanishManager re-login logic)
-        // For now, just hide all currently vanished players from this new joiner
+        // Suppress join message if the player was vanished (edge case: quick relog)
+        if (vm.isVanished(joiner.getUniqueId())) {
+            event.joinMessage(null);
+        }
+
+        // Hide all currently vanished players from this new joiner
         vm.hideVanishedFrom(joiner);
     }
 

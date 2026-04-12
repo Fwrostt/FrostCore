@@ -60,7 +60,7 @@ public final class GuiTemplate {
     public static GuiItem prevButton(int currentPage, int totalPages,
                                      GuiAction<ClickContext> onClick) {
         return Button.of(Material.SPECTRAL_ARROW)
-                .name("<gradient:#55CDFC:#7B68EE>◀ Previous Page")
+                .name("<gradient:#6B8DAE:#8BADC4>◀ Previous Page")
                 .lore(
                     "<dark_gray>Page <white>" + currentPage + "<dark_gray> of <white>" + totalPages,
                     "",
@@ -80,7 +80,7 @@ public final class GuiTemplate {
     public static GuiItem nextButton(int currentPage, int totalPages,
                                      GuiAction<ClickContext> onClick) {
         return Button.of(Material.ARROW)
-                .name("<gradient:#55CDFC:#7B68EE>Next Page ▶")
+                .name("<gradient:#6B8DAE:#8BADC4>Next Page ▶")
                 .lore(
                     "<dark_gray>Page <white>" + (currentPage + 2) + "<dark_gray> of <white>" + totalPages,
                     "",
@@ -100,7 +100,7 @@ public final class GuiTemplate {
     public static GuiItem prevFrameButton(int currentFrame, int totalFrames,
                                           GuiAction<ClickContext> onClick) {
         return Button.of(Material.SPECTRAL_ARROW)
-                .name("<gradient:#FFD700:#FFA500>◀ Previous")
+                .name("<gradient:#C8A87C:#A68B5B>◀ Previous")
                 .lore(
                     "<dark_gray>" + (currentFrame + 1) + " <gray>/ <dark_gray>" + totalFrames,
                     "<gray>Click to go back"
@@ -119,7 +119,7 @@ public final class GuiTemplate {
     public static GuiItem nextFrameButton(int currentFrame, int totalFrames,
                                           GuiAction<ClickContext> onClick) {
         return Button.of(Material.ARROW)
-                .name("<gradient:#FFD700:#FFA500>Next ▶")
+                .name("<gradient:#C8A87C:#A68B5B>Next ▶")
                 .lore(
                     "<dark_gray>" + (currentFrame + 1) + " <gray>/ <dark_gray>" + totalFrames,
                     "<gray>Click to continue"

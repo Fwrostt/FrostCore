@@ -37,10 +37,13 @@ public class SpawnListener implements Listener {
         if (!config.getBoolean("spawn.teleport-on-join", false)) return;
         if (!config.getBoolean("spawn.enabled", true)) return;
 
+        Player player = event.getPlayer();
+
+        // Only teleport on first join — not every login
+        if (player.hasPlayedBefore()) return;
+
         Location spawn = warpManager.getSpawn();
         if (spawn == null) return;
-
-        Player player = event.getPlayer();
 
         org.bukkit.Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
             if (player.isOnline()) {

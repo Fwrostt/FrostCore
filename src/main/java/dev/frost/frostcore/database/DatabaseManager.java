@@ -109,6 +109,10 @@ public class DatabaseManager {
         return dataSource.getConnection();
     }
 
+    public DatabaseType getType() {
+        return type;
+    }
+
     private void createTables() {
         try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
 
@@ -555,7 +559,7 @@ public class DatabaseManager {
     public void deleteTeam(String teamName) {
         try (Connection conn = getConnection()) {
 
-            for (String table : new String[]{"team_relations", "team_warps", "team_members"}) {
+            for (String table : new String[]{"team_relations", "team_warps", "team_members", "team_echests"}) {
                 try (PreparedStatement ps = conn.prepareStatement("DELETE FROM " + table + " WHERE team_name = ?")) {
                     ps.setString(1, teamName);
                     ps.executeUpdate();
@@ -862,18 +866,6 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Delete ALL cooldowns for a player.
-     */
-    public void deleteCooldowns(UUID uuid) {
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement("DELETE FROM player_cooldowns WHERE uuid = ?")) {
-            ps.setString(1, uuid.toString());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            FrostLogger.error("Failed to delete cooldowns for " + uuid, e);
-        }
-    }
 
     public Map<String, Location> loadPlayerHomes(UUID uuid) {
         Map<String, Location> homes = new LinkedHashMap<>();

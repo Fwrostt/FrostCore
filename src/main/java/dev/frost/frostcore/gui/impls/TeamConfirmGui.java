@@ -24,11 +24,11 @@ public class TeamConfirmGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
 
-    private static final String GOLD    = "<#FFD27F>";
-    private static final String BLUE    = "<#A3C4FF>";
-    private static final String DIM     = "<#888888>";
-    private static final String POS     = "<#78D97B>";
-    private static final String NEG     = "<#E07070>";
+    private static final String GOLD    = "<#D4C4A8>";
+    private static final String BLUE    = "<#8FA3BF>";
+    private static final String DIM     = "<#707880>";
+    private static final String POS     = "<#7ECFA0>";
+    private static final String NEG     = "<#D4727A>";
     private static final String SEP     = "<!italic><dark_gray>──────────────";
 
     private final Material           infoIcon;

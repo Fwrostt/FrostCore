@@ -33,13 +33,13 @@ public class TeamInfoGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
 
-    private static final String GOLD      = "<#FFD27F>";
-    private static final String BLUE      = "<#A3C4FF>";
-    private static final String SKY       = "<#81CFFA>";
-    private static final String SILVER    = "<#BBBBBB>";
-    private static final String DIM       = "<#888888>";
-    private static final String POS       = "<#78D97B>";
-    private static final String NEG       = "<#E07070>";
+    private static final String GOLD      = "<#D4C4A8>";
+    private static final String BLUE      = "<#8FA3BF>";
+    private static final String SKY       = "<#8BADC4>";
+    private static final String SILVER    = "<#A0A0A0>";
+    private static final String DIM       = "<#707880>";
+    private static final String POS       = "<#7ECFA0>";
+    private static final String NEG       = "<#D4727A>";
     private static final String SEP_LINE  = "<!italic><dark_gray>──────────────";
 
     private static final int[] PLAYER_SLOTS = Slot.rectangle(1, 1, 3, 6);
@@ -48,7 +48,7 @@ public class TeamInfoGui extends Gui {
     private final Player viewer;
 
     public TeamInfoGui(Player viewer, Team team) {
-        super(MM.deserialize("<!italic><gradient:#FFD700:#FFA500>" + team.getDisplayName()), 5);
+        super(MM.deserialize("<!italic><gradient:#C8A87C:#A68B5B>" + team.getDisplayName()), 5);
         this.team   = team;
         this.viewer = viewer;
     }
@@ -89,7 +89,7 @@ public class TeamInfoGui extends Gui {
 
     private GuiItem buildHeaderItem(UUID ownerUUID) {
         return Button.of(makeSkull(ownerUUID))
-                .name("<!italic><gradient:#FFD700:#FFA500>" + team.getDisplayName())
+                .name("<!italic><gradient:#C8A87C:#A68B5B>" + team.getDisplayName())
                 .lore(
                     "<!italic><dark_gray>Tag  <dark_gray>│ <white>[" + team.getTag() + "]",
                     "<!italic><dark_gray>Size <dark_gray>│ <white>" + team.getTotalMembers() + " members",

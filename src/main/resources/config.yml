@@ -12,9 +12,10 @@ database:
     username: root
     password: ""
     pool-size: 10
+
 # GUI Settings
 gui:
-  borders: true          # If true, guis will generate with black glass panes separating content. If false, those slots will remain empty.
+  borders: true         
 
 # Logging & Auditing Settings
 logging:
@@ -167,3 +168,37 @@ teams:
   # Team List Pagination
   list:
     teams-per-page: 10  # Number of teams shown per page in /team list
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#                 MODERATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+moderation:
+  enabled: true
+
+  # Broadcast punishments to online staff with frostcore.moderation.notify
+  broadcast-to-staff: true
+
+  # Commands blocked while muted (prevents circumventing mute via /msg etc.)
+  muted-blocked-commands:
+    - "/msg"
+    - "/tell"
+    - "/w"
+    - "/whisper"
+    - "/pm"
+    - "/me"
+    - "/say"
+    - "/reply"
+    - "/r"
+
+  # Use group weights for exemption (lower weight staff can't punish higher weight)
+  use-group-weights: true
+
+  # Server name shown in punishment records and Discord embeds
+  server-name: "Survival"
+
+  # Discord Webhooks (leave empty to disable)
+  # Validates on startup — invalid URLs are auto-disabled
+  webhooks:
+    punishments: ""      # Bans, mutes, warns, kicks
+    reports: ""          # Player reports
+    staff-activity: ""   # Staff admin actions (lockdown, rollback, prune)

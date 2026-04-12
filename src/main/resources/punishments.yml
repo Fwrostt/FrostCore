@@ -1,0 +1,177 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#                  FrostCore — Punishment Configuration
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+# This file defines punishment templates and staff group limits.
+#
+# Templates allow staff to quickly apply pre-configured punishments
+# with escalation for repeat offenders.
+#
+# Usage: /ban <player> -t <template>
+#        /mute <player> -t <template>
+#
+# Duration format: 30s, 5m, 1h, 7d, 2w, 1M, 1y, permanent
+#
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━ TEMPLATES ━━━━━━━━━━━━━━━━━━━━━━━━━━
+templates:
+
+  # ── Hacking / Cheating ──
+  hacking:
+    type: BAN
+    reason: "Hacking / Cheating"
+    duration: 30d
+    escalation:
+      1: 30d
+      2: 90d
+      3: permanent
+
+  xray:
+    type: BAN
+    reason: "X-Ray"
+    duration: 14d
+    escalation:
+      1: 14d
+      2: 30d
+      3: permanent
+
+  # ── Chat Offenses ──
+  chat-abuse:
+    type: MUTE
+    reason: "Chat Abuse / Toxicity"
+    duration: 1h
+    escalation:
+      1: 1h
+      2: 6h
+      3: 1d
+      4: 7d
+      5: permanent
+
+  advertising:
+    type: MUTE
+    reason: "Advertising"
+    duration: 7d
+    escalation:
+      1: 7d
+      2: 30d
+      3: permanent
+
+  spam:
+    type: MUTE
+    reason: "Spamming"
+    duration: 30m
+    escalation:
+      1: 30m
+      2: 2h
+      3: 1d
+
+  hate-speech:
+    type: MUTE
+    reason: "Hate Speech / Discrimination"
+    duration: 7d
+    escalation:
+      1: 7d
+      2: 30d
+      3: permanent
+
+  # ── Gameplay Offense ──
+  griefing:
+    type: BAN
+    reason: "Griefing"
+    duration: 7d
+    escalation:
+      1: 7d
+      2: 30d
+      3: permanent
+
+  exploiting:
+    type: BAN
+    reason: "Exploiting Bugs"
+    duration: 14d
+    escalation:
+      1: 14d
+      2: 30d
+      3: permanent
+
+  scamming:
+    type: BAN
+    reason: "Scamming"
+    duration: 7d
+    escalation:
+      1: 7d
+      2: 30d
+      3: permanent
+
+  # ── Staff Disrespect ──
+  staff-disrespect:
+    type: MUTE
+    reason: "Staff Disrespect"
+    duration: 2h
+    escalation:
+      1: 2h
+      2: 12h
+      3: 3d
+
+  # ── Warning Templates ──
+  verbal-warning:
+    type: WARN
+    reason: "Verbal Warning"
+    duration: permanent
+
+  final-warning:
+    type: WARN
+    reason: "Final Warning — Next offense will result in a ban"
+    duration: permanent
+
+
+# ━━━━━━━━━━━━━━━━━━━━━ STAFF GROUP LIMITS ━━━━━━━━━━━━━━━━━━━━
+#
+# Groups define what staff members can and cannot do.
+# Higher weights mean more authority.
+#
+# Staff with frostcore.moderation.group.unlimited bypass all limits.
+# Staff with frostcore.moderation.cooldown.bypass bypass cooldowns.
+#
+# When use-group-weights is enabled in config.yml:
+#   Lower-weight staff CANNOT punish higher-weight staff.
+#   Lower-weight staff CANNOT remove punishments by higher-weight staff.
+
+groups:
+
+  admin:
+    permission: frostcore.moderation.group.admin
+    weight: 100
+    max-ban-duration: permanent
+    max-mute-duration: permanent
+    require-template: false
+    cooldowns:
+      ban: 0s
+      kick: 0s
+      mute: 0s
+      warn: 0s
+
+  moderator:
+    permission: frostcore.moderation.group.moderator
+    weight: 50
+    max-ban-duration: 30d
+    max-mute-duration: 30d
+    require-template: false
+    cooldowns:
+      ban: 10s
+      kick: 5s
+      mute: 10s
+      warn: 5s
+
+  helper:
+    permission: frostcore.moderation.group.helper
+    weight: 10
+    max-ban-duration: 7d
+    max-mute-duration: 1d
+    require-template: true
+    cooldowns:
+      ban: 20s
+      kick: 20s
+      mute: 20s
+      warn: 20s

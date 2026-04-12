@@ -25,7 +25,7 @@ import java.util.Map;
 public class HomesGui extends Gui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
-    private static final String BED_TITLE = "<!italic><#6BA3E3>Home: <white>";
+    private static final String BED_TITLE = "<!italic><#8BADC4>Home: <white>";
     private static final String SEP = "<!italic><dark_gray>──────────────";
 
     private final Player viewer;
@@ -39,7 +39,7 @@ public class HomesGui extends Gui {
 
     public HomesGui(Player viewer) {
         super(
-            MM.deserialize("<!italic><gradient:#6BA3E3:#4979C7>Personal Homes"),
+            MM.deserialize("<!italic><gradient:#6B8DAE:#8BADC4>Personal Homes"),
             Main.getConfigManager().getInt("homes.gui.rows", 4)
         );
 
@@ -126,7 +126,7 @@ public class HomesGui extends Gui {
         boolean hasHome = team.getHome() != null;
 
         Button.Builder banner = Button.of(Material.CYAN_BANNER)
-                .name("<!italic><#55CDFC>★ Team Home")
+                .name("<!italic><#8BADC4>★ Team Home")
                 .glow();
 
         if (hasHome) {
@@ -138,7 +138,7 @@ public class HomesGui extends Gui {
 
             boolean isAdmin = team.isOwner(viewer.getUniqueId()) || team.isAdmin(viewer.getUniqueId());
             Button.Builder delBtn = Button.of(isAdmin ? Material.LIGHT_BLUE_DYE : Material.GRAY_DYE)
-                    .name(isAdmin ? "<!italic><#55CDFC>DELETE" : "<!italic><red>DELETE")
+                    .name(isAdmin ? "<!italic><#8BADC4>DELETE" : "<!italic><#D4727A>DELETE")
                     .lore(isAdmin ? "<!italic><white>Click to delete team home" : "<!italic><dark_gray>Requires admin/owner");
 
             if (isAdmin) {
@@ -160,9 +160,9 @@ public class HomesGui extends Gui {
                 .name(BED_TITLE + name)
                 .lore(
                     SEP,
-                    "<!italic><#6BA3E3>▪ <gray>Left-Click to <white>teleport",
-                    "<!italic><#8AADC4>▪ <gray>Middle-Click to <white>rename",
-                    "<!italic><#E07070>▪ <gray>Right-Click to <white>delete",
+                    "<!italic><#8BADC4>▪ <gray>Left-Click to <white>teleport",
+                    "<!italic><#8FA3BF>▪ <gray>Middle-Click to <white>rename",
+                    "<!italic><#D4727A>▪ <gray>Right-Click to <white>delete",
                     SEP
                 )
                 .onClick(ctx -> {
@@ -175,7 +175,7 @@ public class HomesGui extends Gui {
                         viewer.chat("/delhome " + name);
                     } else if (ctx.isMiddleClick()) {
                         ctx.close();
-                        Component msg = MM.deserialize("{homes.prefix}<#B0C4FF>Click here or type <white>/renamehome " + name + " <newname></white> to rename.")
+                        Component msg = MM.deserialize("{homes.prefix}<#8FA3BF>Click here or type <white>/renamehome " + name + " <newname></white> to rename.")
                                 .replaceText(b -> b.matchLiteral("{homes.prefix}").replacement(MM.deserialize(mm.getRaw("homes.prefix"))))
                                 .clickEvent(ClickEvent.suggestCommand("/renamehome " + name + " "));
                         viewer.sendMessage(msg);
@@ -215,7 +215,7 @@ public class HomesGui extends Gui {
 
         if (currentPage > 0) {
             setItem(Slot.bottomLeft(getRows()), Button.of(Material.SPECTRAL_ARROW)
-                    .name("<!italic><#A3C4FF>◀ Previous")
+                    .name("<!italic><#8FA3BF>◀ Previous")
                     .onClick(ctx -> {
                         currentPage--;
                         refresh(viewer);
@@ -224,7 +224,7 @@ public class HomesGui extends Gui {
 
         if (currentPage < totalPages - 1) {
             setItem(Slot.bottomRight(getRows()), Button.of(Material.ARROW)
-                    .name("<!italic><#A3C4FF>Next ▶")
+                    .name("<!italic><#8FA3BF>Next ▶")
                     .onClick(ctx -> {
                         currentPage++;
                         refresh(viewer);

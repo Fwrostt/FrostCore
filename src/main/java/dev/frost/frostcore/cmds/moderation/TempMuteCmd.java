@@ -1,0 +1,50 @@
+package dev.frost.frostcore.cmds.moderation;
+
+import dev.frost.frostcore.Main;
+import dev.frost.frostcore.manager.MessageManager;
+import dev.frost.frostcore.moderation.*;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class TempMuteCmd implements CommandExecutor, TabCompleter {
+    private final MessageManager mm = Main.getMessageManager();
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
+        ModerationManager mod = ModerationManager.getInstance();
+        if (args.length < 2) {
+            mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#8FA3BF>Usage: <white>/tempmute <player> <duration> [reason] [-s]");
+            return true;
+        }
+        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+        if (!target.hasPlayedBefore() && !target.isOnline()) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Player not found."); return true; }
+        if (target.isOnline() && !Main.getGroupLimitManager().canPunish(sender, target.getPlayer())) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>You cannot punish this player."); return true; }
+        if (mod.isMuted(target.getUniqueId())) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>This player is already muted."); return true; }
+
+        ParsedArgs parsed = ParsedArgs.parseRequired(args, 1);
+        if (parsed.duration == -2) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Invalid duration. Use: 10s, 5m, 1h, 7d"); return true; }
+        if (Main.getGroupLimitManager().exceedsMaxDuration(sender, "TEMPMUTE", parsed.duration)) { mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#D4727A>Duration exceeds your group's maximum."); return true; }
+
+        String reason = parsed.reason.isEmpty() ? "Temporarily muted" : parsed.reason;
+        mod.punish(PunishmentType.TEMPMUTE, target.getUniqueId(), target.getName(), null, reason, sender, parsed.duration, parsed.silent);
+        mm.sendRaw(sender, "<gradient:#D4727A:#A35560>MODERATION</gradient> <dark_gray>» <#7ECFA0>Muted <white>" + target.getName() + " <#8FA3BF>for " + Punishment.formatDuration(parsed.duration) + ".");
+        return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
+        if (args.length == 1) return Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(n -> n.toLowerCase().startsWith(args[0].toLowerCase())).collect(Collectors.toList());
+        if (args.length == 2) return List.of("30m", "1h", "6h", "1d", "7d");
+        return List.of("-s");
+    }
+}

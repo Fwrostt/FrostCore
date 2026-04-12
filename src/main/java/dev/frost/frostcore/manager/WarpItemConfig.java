@@ -40,7 +40,7 @@ public class WarpItemConfig {
         lore.add("<gray>▸ Click to teleport to <white>" + capitalized);
         lore.add("");
         return new WarpItemConfig(
-                "<gradient:#55CDFC:#7B68EE><bold>⬡ " + capitalized + "</bold></gradient>",
+                "<gradient:#6B8DAE:#8BADC4><bold>⬡ " + capitalized + "</bold></gradient>",
                 Material.ENDER_PEARL,
                 lore,
                 false,
@@ -65,7 +65,7 @@ public class WarpItemConfig {
      */
     public static WarpItemConfig loadFrom(ConfigurationSection section, String warpName) {
         String displayName = section.getString("display-name",
-                "<gradient:#55CDFC:#7B68EE><bold>⬡ " + warpName + "</bold></gradient>");
+                "<gradient:#6B8DAE:#8BADC4><bold>⬡ " + warpName + "</bold></gradient>");
 
         String matName = section.getString("material", "ENDER_PEARL");
         Material material;

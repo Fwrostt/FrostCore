@@ -124,7 +124,9 @@ public class TeamEchestManager {
             db.saveEchest(key, base64);
         });
 
-        if (inv.getViewers().size() <= 1) {
+        // Bukkit still counts the closing player in getViewers() during InventoryCloseEvent,
+        // so size <= 1 means this is the last viewer. Use < 2 for clarity.
+        if (inv.getViewers().size() < 2) {
             openEchests.remove(key);
         }
     }

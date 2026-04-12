@@ -53,7 +53,7 @@ public class WarpsGui extends Gui {
 
     public WarpsGui(Player viewer) {
         super(
-            MM.deserialize("<!italic><gradient:#55CDFC:#7B68EE>Server Warps"),
+            MM.deserialize("<!italic><gradient:#6B8DAE:#8BADC4>Server Warps"),
             Main.getConfigManager().getInt("warps.gui.rows", 5)
         );
 
@@ -119,7 +119,7 @@ public class WarpsGui extends Gui {
         if (currentPage > 0) {
             int cp = currentPage;
             setItem(Slot.bottomLeft(getRows()), Button.of(Material.SPECTRAL_ARROW)
-                    .name("<!italic><#A3C4FF>◀ Previous")
+                    .name("<!italic><#8FA3BF>◀ Previous")
                     .lore("<!italic><gray>Page <white>" + cp + " <gray>of <white>" + totalPages)
                     .onClick(ctx -> {
                         if (!viewer.isOnline()) return;
@@ -132,7 +132,7 @@ public class WarpsGui extends Gui {
         if (currentPage < totalPages - 1) {
             int cp = currentPage;
             setItem(Slot.bottomRight(getRows()), Button.of(Material.ARROW)
-                    .name("<!italic><#A3C4FF>Next ▶")
+                    .name("<!italic><#8FA3BF>Next ▶")
                     .lore("<!italic><gray>Page <white>" + (cp + 2) + " <gray>of <white>" + totalPages)
                     .onClick(ctx -> {
                         if (!viewer.isOnline()) return;
@@ -177,7 +177,7 @@ public class WarpsGui extends Gui {
 
             return btn.onClick(ctx ->
                     mm.sendRaw(ctx.getPlayer(),
-                            "<red>✘ You don't have permission to use the <white>" + warpName + "</white> warp."))
+                            "<#D4727A>✘ You don't have permission to use the <white>" + warpName + "</white> warp."))
                     .build();
         }
 

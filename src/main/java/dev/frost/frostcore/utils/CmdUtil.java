@@ -5,7 +5,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
-import dev.frost.frostcore.utils.FrostLogger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +13,8 @@ public class CmdUtil {
 
     private final JavaPlugin plugin = Main.getInstance();
     private final Map<String, CommandExecutor> commands = new HashMap<>();
+    private int registeredCount = 0;
+    private int failedCount = 0;
 
     /**
      * Register a command with its executor and optional tab completer.
@@ -26,7 +27,8 @@ public class CmdUtil {
         PluginCommand command = plugin.getCommand(commandName);
 
         if (command == null) {
-            FrostLogger.error("Command '" + commandName + "' not found in plugin.yml! Registration failed.");
+            FrostLogger.error("Command '/" + commandName + "' not found in plugin.yml! Registration failed.");
+            failedCount++;
             return;
         }
 
@@ -36,11 +38,23 @@ public class CmdUtil {
         }
 
         commands.put(commandName.toLowerCase(), executor);
-        FrostLogger.info("Successfully registered command: /" + commandName);
+        registeredCount++;
     }
 
     public void registerCommand(String commandName, CommandExecutor executor) {
         registerCommand(commandName, executor, null);
+    }
+
+    /**
+     * Print a single summary line with the registration results.
+     * Call this once after all commands have been registered.
+     */
+    public void printSummary() {
+        if (failedCount > 0) {
+            FrostLogger.warn("Registered " + registeredCount + " commands (" + failedCount + " failed).");
+        } else {
+            FrostLogger.info("Registered " + registeredCount + " commands.");
+        }
     }
 
     public void unregisterCommand(String commandName) {

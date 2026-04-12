@@ -117,7 +117,9 @@ public class HomeManager implements Listener {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             Map<String, Location> homes = Main.getDatabaseManager().loadPlayerHomes(uuid);
 
-            cache.put(uuid, homes);
+            // Use ConcurrentHashMap to prevent race conditions between
+            // async load completion and main-thread commands like /sethome
+            cache.put(uuid, new java.util.concurrent.ConcurrentHashMap<>(homes));
         });
     }
 

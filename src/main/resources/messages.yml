@@ -1,276 +1,358 @@
-# FrostCore Messages
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# FrostCore — Messages Configuration
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+# All messages use MiniMessage formatting.
+# Nested references like {teleport.prefix} are resolved automatically.
+# Player placeholders like {player}, {team}, etc. are replaced at runtime.
+#
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-teleport:
-  prefix: "<gradient:#55CDFC:#7B68EE>TELEPORT</gradient> <dark_gray>»</dark_gray> "
 
-  # ━━━ TPA ━━━
-  tpa-sent: "{teleport.prefix}<#B0C4FF>Request sent to <white>{player}</white>."
-  tpa-received-header: "{teleport.prefix}<white>{player}</white> <#B0C4FF>wants to teleport to you."
-  tpahere-received-header: "{teleport.prefix}<white>{player}</white> <#B0C4FF>wants you to teleport to them."
-  tpa-expired-sender: "{teleport.prefix}<dark_gray>Your request to <white>{player}</white> expired."
-  tpa-expired-target: "{teleport.prefix}<dark_gray>Teleport request from <white>{player}</white> expired."
-  tpa-accepted-sender: "{teleport.prefix}<#55FF55><white>{player}</white> accepted your request!"
-  tpa-accepted-target: "{teleport.prefix}<#55FF55>You accepted <white>{player}</white>'s request."
-  tpa-declined-sender: "{teleport.prefix}<#FF5555><white>{player}</white> declined your request."
-  tpa-declined-target: "{teleport.prefix}<#B0C4FF>Request declined."
-  tpa-no-pending: "{teleport.prefix}<#FF5555>No pending teleport requests."
-  tpa-self: "{teleport.prefix}<#FF5555>You can't send a request to yourself."
-  tpa-already-sent: "{teleport.prefix}<#FF5555>You already have a pending request to that player."
-  tpa-disabled: "{teleport.prefix}<#FF5555>TPA is currently disabled."
-  tpa-cooldown: "{teleport.prefix}<#FF5555>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
-  tpa-wait: "{teleport.prefix}<#B0C4FF>Teleporting in <white>{time}s</white> <#B0C4FF>- don't move!"
-  tpa-teleport: "{teleport.prefix}<#55FF55>Teleported!"
-  tpa-teleport-cancelled: "{teleport.prefix}<#FF5555>Teleport cancelled! <dark_gray>(you moved)"
-
-  # ━━━ WARPS ━━━
-  warp-teleport: "{teleport.prefix}<#55FF55>Teleported to <white>{warp}</white>."
-  warp-not-found: "{teleport.prefix}<#FF5555>Warp <white>{warp}</white> not found."
-  warp-cooldown: "{teleport.prefix}<#FF5555>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
-  warp-wait: "{teleport.prefix}<#B0C4FF>Warping in <white>{time}s</white> <#B0C4FF>- don't move!"
-  warp-teleport-cancelled: "{teleport.prefix}<#FF5555>Warp cancelled! <dark_gray>(you moved)"
-  warp-set: "{teleport.prefix}<#55FF55>Warp <white>{warp}</white> has been set."
-  warp-deleted: "{teleport.prefix}<#FF5555>Warp <white>{warp}</white> deleted."
-  warp-already-exists: "{teleport.prefix}<#FF5555>Warp <white>{warp}</white> already exists. Use again to overwrite."
-  warp-disabled: "{teleport.prefix}<#FF5555>Warps are currently disabled."
-  no-warps: "{teleport.prefix}<#B0C4FF>There are no warps set."
-
-  # ━━━ SPAWN ━━━
-  spawn-teleport: "{teleport.prefix}<#55FF55>Teleported to spawn."
-  spawn-cooldown: "{teleport.prefix}<#FF5555>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
-  spawn-wait: "{teleport.prefix}<#B0C4FF>Teleporting to spawn in <white>{time}s</white> <#B0C4FF>- don't move!"
-  spawn-teleport-cancelled: "{teleport.prefix}<#FF5555>Teleport cancelled! <dark_gray>(you moved)"
-  spawn-set: "{teleport.prefix}<#55FF55>Spawn point has been set."
-  spawn-not-set: "{teleport.prefix}<#FF5555>Spawn is not set yet."
-  spawn-disabled: "{teleport.prefix}<#FF5555>Spawn is currently disabled."
-
-  # ━━━ ADMIN TP ━━━
-  tp-player: "{teleport.prefix}<#B0C4FF>Teleported to <white>{player}</white>."
-  tp-coords: "{teleport.prefix}<#B0C4FF>Teleported to <white>{x}, {y}, {z}</white>."
-  tp-here: "{teleport.prefix}<#B0C4FF>Teleported <white>{player}</white> to you."
-  tp-here-target: "{teleport.prefix}<#B0C4FF>You were teleported to <white>{player}</white>."
-  tp-to-player: "{teleport.prefix}<#B0C4FF>Teleported to <white>{player}</white>."
-  tp-offline: "{teleport.prefix}<#B0C4FF>Teleported to <white>{player}</white>'s last known location."
-  tp-offline-no-data: "{teleport.prefix}<#FF5555>No location data found for <white>{player}</white>."
-  player-not-found: "{teleport.prefix}<#FF5555>Player not found."
-
-  # ━━━ BACK ━━━
-  back-no-location: "{teleport.prefix}<#FF5555>You don't have a previous location to return to."
-  back-teleport: "{teleport.prefix}<#B0C4FF>Teleported to your previous location."
-  back-wait: "{teleport.prefix}<#B0C4FF>Teleporting to your previous location in <white>{time}s</white>..."
-  back-cooldown: "{teleport.prefix}<#FF5555>You must wait <white>{time}s</white> before using /back again."
-  back-teleport-cancelled: "{teleport.prefix}<#FF5555>Teleport cancelled! You moved."
-
-teams:
-  prefix: "<gradient:#FFD27F:#FFB732>TEAM</gradient> <dark_gray>»</dark_gray> "
-
-  # ━━━ TEAM CHAT ━━━
-  chat-format: "<dark_gray>[<gradient:#FFD700:#FFA500>Team</gradient>] <white>{player}</white> <dark_gray>» <#FFD27F>{chat}"
-  chat-enabled: "{teams.prefix}<#FFD27F>Team chat <green><bold>enabled</bold></green><#FFD27F>. Your messages are now team-only."
-  chat-disabled: "{teams.prefix}<#FFD27F>Team chat <red><bold>disabled</bold></red><#FFD27F>. You are now in global chat."
-
-  # ━━━ CORE ━━━
-  create: "{teams.prefix}<#55FF55>Team <white>{team}</white> has been created!"
-  disband: "{teams.prefix}<#FF5555>Team <white>{team}</white> has been disbanded."
-  leave: "{teams.prefix}<#FFD27F>You left <white>{team}</white>."
-  kick: "{teams.prefix}<#FF5555><white>{player}</white> has been kicked from the team."
-  join: "{teams.prefix}<#55FF55>You joined <white>{team}</white>!"
-  settag-success: "{teams.prefix}<#FFD27F>Team tag updated."
-  renamed: "{teams.prefix}<#FFD27F>Team renamed from <white>{old}</white> to <white>{new}</white>."
-
-  # ━━━ INVITES ━━━
-  invite: "{teams.prefix}<#FFD27F>Invited <white>{player}</white> to join your team."
-  invite-received: "{teams.prefix}<white>{player}</white> <#FFD27F>invited you to join <white>{team}</white>!"
-  invite-accepted: "{teams.prefix}<#55FF55><white>{player}</white> joined the team."
-  invite-declined-target: "{teams.prefix}<#FFD27F>Invite declined."
-  invite-declined-sender: "{teams.prefix}<#FF5555><white>{player}</white> declined your invite."
-  invite-expired: "{teams.prefix}<dark_gray>Invite from <white>{team}</white> expired."
-  invite-expired-sender: "{teams.prefix}<dark_gray>Your invite to <white>{player}</white> expired."
-  no-pending-invite: "{teams.prefix}<#FF5555>No pending invites."
-
-  # ━━━ ALLIES / ENEMIES ━━━
-  ally-request-sent: "{teams.prefix}<#FFD27F>Alliance request sent to <#55FF55>{team}</#55FF55>."
-  ally-request-received: "{teams.prefix}<#55FF55><white>{team}</white> wants to form an alliance!"
-  ally-accepted: "{teams.prefix}<#55FF55>Now allied with <white>{team}</white>!"
-  ally-declined-target: "{teams.prefix}<#FFD27F>Alliance with <white>{team}</white> declined."
-  ally-declined-sender: "{teams.prefix}<#FF5555><white>{team}</white> declined the alliance."
-  ally-expired: "{teams.prefix}<dark_gray>Alliance request with <white>{team}</white> expired."
-  enemy: "{teams.prefix}<#FF5555><white>{team}</white> is now your <red>enemy</red>."
-  unally: "{teams.prefix}<#FFD27F>No longer allied with <white>{team}</white>."
-  unenemy: "{teams.prefix}<#FFD27F><white>{team}</white> removed from enemies."
-  allies-disabled: "{teams.prefix}<#FF5555>Allies system is disabled."
-  enemies-disabled: "{teams.prefix}<#FF5555>Enemies system is disabled."
-
-  # ━━━ ROLES ━━━
-  promoted: "{teams.prefix}<#55FF55><white>{player}</white> promoted to <bold>{role}</bold>."
-  promoted-target: "{teams.prefix}<#55FF55>You have been promoted to <bold>{role}</bold>!"
-  demoted: "{teams.prefix}<#FF5555><white>{player}</white> demoted to <bold>{role}</bold>."
-  demoted-target: "{teams.prefix}<#FF5555>You have been demoted to <bold>{role}</bold>."
-  kicked: "{teams.prefix}<#FF5555>You were kicked from <white>{team}</white>."
-
-  # ━━━ PVP ━━━
-  pvp-toggle: "{teams.prefix}<#FFD27F>Team PvP is now {state}."
-
-  # ━━━ HOME ━━━
-  home: "{teams.prefix}<#FFD27F>Teleporting to team home..."
-  home-set: "{teams.prefix}<#55FF55>Team home set at your location."
-  home-del: "{teams.prefix}<#FF5555>Team home removed."
-  home-cooldown: "{teams.prefix}<#FF5555>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
-  home-wait: "{teams.prefix}<#FFD27F>Teleporting in <white>{time}s</white> <#FFD27F>- don't move!"
-  home-teleport: "{teams.prefix}<#55FF55>Teleported to team home."
-  home-teleport-cancelled: "{teams.prefix}<#FF5555>Teleport cancelled! <dark_gray>(you moved)"
-  home-disabled: "{teams.prefix}<#FF5555>Team homes are disabled."
-
-  # ━━━ WARPS ━━━
-  warp: "{teams.prefix}<#FFD27F>Teleporting to warp <white>{warp}</white>"
-  warp-set: "{teams.prefix}<#55FF55>Warp <white>{warp}</white> created."
-  warp-del: "{teams.prefix}<#FF5555>Warp <white>{warp}</white> deleted."
-  warp-cooldown: "{teams.prefix}<#FF5555>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
-  warp-wait: "{teams.prefix}<#FFD27F>Warping in <white>{time}s</white> <#FFD27F>- don't move!"
-  warp-teleport: "{teams.prefix}<#55FF55>Teleported to <white>{warp}</white>."
-  warp-teleport-cancelled: "{teams.prefix}<#FF5555>Warp cancelled! <dark_gray>(you moved)"
-  warps-disabled: "{teams.prefix}<#FF5555>Team warps are disabled."
-  warp-not-found: "{teams.prefix}<#FF5555>Warp not found."
-  warp-already-exists: "{teams.prefix}<#FF5555>A warp with that name already exists."
-
-  # ━━━ PERMISSIONS ━━━
-  only-owner: "{teams.prefix}<#FF5555>Only team <bold>owners</bold> can do this."
-  only-admin: "{teams.prefix}<#FF5555>Only <bold>admins</bold> or <bold>owners</bold> can do this."
-
-  # ━━━ ERRORS ━━━
-  no-team: "{teams.prefix}<#FF5555>You are not in a team."
-  team-not-found: "{teams.prefix}<#FF5555>Team not found."
-  player-not-found: "{teams.prefix}<#FF5555>Player not found or offline."
-  already-in-team: "{teams.prefix}<#FF5555>You are already in a team."
-  team-full: "{teams.prefix}<#FF5555>This team is full."
-  already-ally: "{teams.prefix}<#FF5555>Already allied with that team."
-  already-enemy: "{teams.prefix}<#FF5555>Already enemies with that team."
-  not-ally: "{teams.prefix}<#FF5555>Not allied with that team."
-  not-enemy: "{teams.prefix}<#FF5555>Not enemies with that team."
-  cannot-self: "{teams.prefix}<#FF5555>You cannot target your own team."
-  max-admins-reached: "{teams.prefix}<#FF5555>Max admins reached."
-  max-owners-reached: "{teams.prefix}<#FF5555>Max owners reached."
-  max-warps-reached: "{teams.prefix}<#FF5555>Max warps reached."
-  max-allies-reached: "{teams.prefix}<#FF5555>Max allies reached."
-  max-enemies-reached: "{teams.prefix}<#FF5555>Max enemies reached."
-  team-already-exists: "{teams.prefix}<#FF5555>A team with that name already exists."
-  name-too-short: "{teams.prefix}<#FF5555>Name must be at least <white>{min}</white> characters."
-  name-too-long: "{teams.prefix}<#FF5555>Name cannot exceed <white>{max}</white> characters."
-  name-banned: "{teams.prefix}<#FF5555>That name contains banned words."
-  not-in-team: "{teams.prefix}<#FF5555>That player is not in your team."
-  home-not-set: "{teams.prefix}<#FF5555>No team home set."
-  cannot-leave-as-owner: "{teams.prefix}<#FF5555>You're the last owner! <dark_gray>Disband or promote someone first."
-  cannot-kick-higher: "{teams.prefix}<#FF5555>Cannot kick someone of equal or higher rank."
-  already-highest-rank: "{teams.prefix}<#FF5555>Already at the highest rank."
-  already-lowest-rank: "{teams.prefix}<#FF5555>Already at the lowest rank."
-  cannot-demote-last-owner: "{teams.prefix}<#FF5555>Cannot demote the last owner. <dark_gray>Promote someone first."
-  echest-disabled: "{teams.prefix}<#FF5555>Team echest is disabled."
-  tag-invalid-length: "{teams.prefix}<#FF5555>Tag must be <white>{min}-{max}</white> characters."
-
-homes:
-  prefix: "<#55CDFC>HOME <dark_gray>»</dark_gray> "
-  set-success: "{homes.prefix}<#55FF55>Home <#B0C4FF>{home}</#B0C4FF> has been set."
-  delete-success: "{homes.prefix}<#FF5555>Home <#B0C4FF>{home}</#B0C4FF> deleted."
-  rename-success: "{homes.prefix}<#55FF55>Home <#B0C4FF>{old}</#B0C4FF> renamed to <white>{new}</white>."
-  rename-failed: "{homes.prefix}<#FF5555>Failed to rename home (new name may exist)."
-  not-found: "{homes.prefix}<#FF5555>Home <white>{home}</white> not found."
-  max-reached: "{homes.prefix}<#FF5555>You have reached your maximum of <white>{max}</white> homes."
-  cooldown: "{homes.prefix}<#FF5555>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
-  wait: "{homes.prefix}<#B0C4FF>Teleporting to <white>{home}</white> in <white>{time}s</white> <#B0C4FF>- don't move!"
-  teleport: "{homes.prefix}<#55FF55>Teleported to <#B0C4FF>{home}</#B0C4FF>."
-  teleport-cancelled: "{homes.prefix}<#FF5555>Teleport cancelled! <dark_gray>(you moved)"
-  no-homes: "{homes.prefix}<#B0C4FF>You have no personal homes set."
-  disabled: "{homes.prefix}<#FF5555>Personal homes are currently disabled."
-
-admin:
-  prefix: "<#55CDFC>ADMIN <dark_gray>»</dark_gray> "
-  gamemode-changed: "{admin.prefix}<#B0C4FF>Your gamemode has been set to <white>{mode}</white>."
-  gamemode-changed-other: "{admin.prefix}<#B0C4FF>Set <white>{player}</white>'s gamemode to <white>{mode}</white>."
-  gamemode-usage: "{admin.prefix}<#FF5555>Usage: /gm <0-3/s/c/a/sp> [player]"
-  gamemode-invalid: "{admin.prefix}<#FF5555>Invalid gamemode."
-  player-not-found: "{admin.prefix}<#FF5555>Player not found."
-  sudo-success: "{admin.prefix}<#B0C4FF>Forced <white>{player}</white> to run: <white>{action}</white>"
-  broadcast-prefix: "<gradient:#55CDFC:#7B68EE><bold>BROADCAST</bold></gradient> <dark_gray>»</dark_gray> <white>"
-  chat-cleared: "{admin.prefix}<#B0C4FF>The chat has been cleared by <white>{player}</white>."
-  time-set: "{admin.prefix}<#B0C4FF>World time set to <white>{time}</white>."
-  weather-set: "{admin.prefix}<#B0C4FF>Weather set to <white>{weather}</white>."
-  invsee-self: "{admin.prefix}<#FF5555>You cannot view your own inventory."
-  smite-success: "{admin.prefix}<#B0C4FF>Lightning struck <white>{player}</white>!"
-  whois-header: "{admin.prefix}<#B0C4FF>Information for <white>{player}</white>:"
-  vanish-on: "{admin.prefix}<#B0C4FF>You are now <#55FF55><bold>VANISHED</bold></#55FF55>. You are invisible to other players."
-  vanish-off: "{admin.prefix}<#B0C4FF>You are now <#FF5555><bold>VISIBLE</bold></#FF5555>. Other players can see you again."
-  hat-success: "{admin.prefix}<#B0C4FF>You are now wearing a fancy <#55CDFC>hat</#55CDFC>!"
-  tpall-success: "{admin.prefix}<#B0C4FF>Teleported <white>{count}</white> players to your location."
-  top-success: "{admin.prefix}<#55FF55>Teleported to the top block!"
-  bottom-success: "{admin.prefix}<#55FF55>Teleported to the safest bottom block!"
-  bottom-failed: "{admin.prefix}<#FF5555>No safe bottom block found!"
-  near-title: "{admin.prefix}<#B0C4FF>Nearby players (<white>{radius}m</white>):"
-  near-player: " <dark_gray>⬥</dark_gray> <white>{player}</white> <dark_gray>(<#B0C4FF>{distance}m</#B0C4FF>)"
-  near-none: "{admin.prefix}<#FF5555>No players found nearby."
-  coords-self: "{admin.prefix}<#B0C4FF>Your coordinates: <white>X:{x} Y:{y} Z:{z}</white> <dark_gray>(<#7B68EE>{world}</#7B68EE>)</dark_gray>"
-  coords-other: "{admin.prefix}<#B0C4FF><white>{player}</white>'s coordinates: <white>X:{x} Y:{y} Z:{z}</white> <dark_gray>(<#7B68EE>{world}</#7B68EE>)</dark_gray>"
-
-message:
-  prefix: "<#55CDFC>MSG <dark_gray>»</dark_gray> "
-  sent: "<white>You <dark_gray>→ <#55CDFC>{player}</#55CDFC><dark_gray>: <#B0C4FF>{message}"
-  received: "<#55CDFC>{player}</#55CDFC> <dark_gray>→ <white>You<dark_gray>: <#B0C4FF>{message}"
-  no-reply: "{message.prefix}<#FF5555>You have nobody to reply to."
-  reply-offline: "{message.prefix}<#FF5555>That player is no longer online."
-  ignored: "{message.prefix}<#FF5555>This player is ignoring you."
-  ignore-on: "{message.prefix}<#B0C4FF>You are now ignoring <white>{player}</white>."
-  ignore-off: "{message.prefix}<#B0C4FF>You are no longer ignoring <white>{player}</white>."
-
+# ┌─────────────────────────────────┐
+# │        GENERAL / GLOBAL         │
+# └─────────────────────────────────┘
 general:
-  no-permission: "<#FF5555>✘ You don't have permission to do that."
+  no-permission: "<gradient:#D4727A:#A35560>✘</gradient> <#8FA3BF>You don't have permission to do that."
 
+
+# ┌─────────────────────────────────┐
+# │          TELEPORTATION          │
+# └─────────────────────────────────┘
+teleport:
+  prefix: "<gradient:#6B8DAE:#8BADC4>TELEPORT</gradient> <dark_gray>» </dark_gray>"
+
+  # ── TPA ──
+  tpa-sent: "{teleport.prefix}<#8FA3BF>Request sent to <white>{player}</white>."
+  tpa-received-header: "{teleport.prefix}<white>{player}</white> <#8FA3BF>wants to teleport to you."
+  tpahere-received-header: "{teleport.prefix}<white>{player}</white> <#8FA3BF>wants you to teleport to them."
+  tpa-expired-sender: "{teleport.prefix}<#707880>Your request to <white>{player}</white> expired."
+  tpa-expired-target: "{teleport.prefix}<#707880>Teleport request from <white>{player}</white> expired."
+  tpa-accepted-sender: "{teleport.prefix}<#7ECFA0><white>{player}</white> accepted your request!"
+  tpa-accepted-target: "{teleport.prefix}<#7ECFA0>You accepted <white>{player}</white>'s request."
+  tpa-declined-sender: "{teleport.prefix}<#D4727A><white>{player}</white> declined your request."
+  tpa-declined-target: "{teleport.prefix}<#8FA3BF>Request declined."
+  tpa-no-pending: "{teleport.prefix}<#D4727A>No pending teleport requests."
+  tpa-self: "{teleport.prefix}<#D4727A>You can't send a request to yourself."
+  tpa-already-sent: "{teleport.prefix}<#D4727A>You already have a pending request to that player."
+  tpa-disabled: "{teleport.prefix}<#D4727A>TPA is currently disabled."
+  tpa-cooldown: "{teleport.prefix}<#D4727A>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  tpa-wait: "{teleport.prefix}<#8FA3BF>Teleporting in <white>{time}s</white> <#8FA3BF>— don't move!"
+  tpa-teleport: "{teleport.prefix}<#7ECFA0>Teleported!"
+  tpa-teleport-cancelled: "{teleport.prefix}<#D4727A>Teleport cancelled! <dark_gray>(you moved)"
+
+  # ── TPA TOGGLE ──
+  tpa-toggle-on: "{teleport.prefix}<#7ECFA0>TPA requests <bold>enabled</bold>."
+  tpa-toggle-off: "{teleport.prefix}<#D4727A>TPA requests <bold>disabled</bold>."
+
+  # ── WARPS ──
+  warp-teleport: "{teleport.prefix}<#7ECFA0>Teleported to <white>{warp}</white>."
+  warp-not-found: "{teleport.prefix}<#D4727A>Warp <white>{warp}</white> not found."
+  warp-cooldown: "{teleport.prefix}<#D4727A>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  warp-wait: "{teleport.prefix}<#8FA3BF>Warping in <white>{time}s</white> <#8FA3BF>— don't move!"
+  warp-teleport-cancelled: "{teleport.prefix}<#D4727A>Warp cancelled! <dark_gray>(you moved)"
+  warp-set: "{teleport.prefix}<#7ECFA0>Warp <white>{warp}</white> has been set."
+  warp-deleted: "{teleport.prefix}<#D4727A>Warp <white>{warp}</white> deleted."
+  warp-already-exists: "{teleport.prefix}<#D4A76A>Warp <white>{warp}</white> already exists. Use again to overwrite."
+  warp-disabled: "{teleport.prefix}<#D4727A>Warps are currently disabled."
+  no-warps: "{teleport.prefix}<#8FA3BF>There are no warps set."
+
+  # ── SPAWN ──
+  spawn-teleport: "{teleport.prefix}<#7ECFA0>Teleported to spawn."
+  spawn-cooldown: "{teleport.prefix}<#D4727A>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  spawn-wait: "{teleport.prefix}<#8FA3BF>Teleporting to spawn in <white>{time}s</white> <#8FA3BF>— don't move!"
+  spawn-teleport-cancelled: "{teleport.prefix}<#D4727A>Teleport cancelled! <dark_gray>(you moved)"
+  spawn-set: "{teleport.prefix}<#7ECFA0>Spawn point has been set."
+  spawn-not-set: "{teleport.prefix}<#D4727A>Spawn is not set yet."
+  spawn-disabled: "{teleport.prefix}<#D4727A>Spawn is currently disabled."
+
+  # ── ADMIN TP ──
+  tp-player: "{teleport.prefix}<#8FA3BF>Teleported to <white>{player}</white>."
+  tp-coords: "{teleport.prefix}<#8FA3BF>Teleported to <white>{x}, {y}, {z}</white>."
+  tp-here: "{teleport.prefix}<#8FA3BF>Teleported <white>{player}</white> to you."
+  tp-here-target: "{teleport.prefix}<#8FA3BF>You were teleported to <white>{player}</white>."
+  tp-to-player: "{teleport.prefix}<#8FA3BF>Teleported to <white>{player}</white>."
+  tp-offline: "{teleport.prefix}<#8FA3BF>Teleported to <white>{player}</white>'s last known location."
+  tp-offline-no-data: "{teleport.prefix}<#D4727A>No location data found for <white>{player}</white>."
+  player-not-found: "{teleport.prefix}<#D4727A>Player not found."
+
+  # ── BACK ──
+  back-no-location: "{teleport.prefix}<#D4727A>You don't have a previous location to return to."
+  back-teleport: "{teleport.prefix}<#8FA3BF>Teleported to your previous location."
+  back-wait: "{teleport.prefix}<#8FA3BF>Teleporting to your previous location in <white>{time}s</white>..."
+  back-cooldown: "{teleport.prefix}<#D4727A>You must wait <white>{time}s</white> before using /back again."
+  back-teleport-cancelled: "{teleport.prefix}<#D4727A>Teleport cancelled! You moved."
+
+
+# ┌─────────────────────────────────┐
+# │            TEAMS                │
+# └─────────────────────────────────┘
+teams:
+  prefix: "<gradient:#C8A87C:#A68B5B>TEAM</gradient> <dark_gray>» </dark_gray>"
+
+  # ── TEAM CHAT ──
+  chat-format: "<dark_gray>[<gradient:#C8A87C:#A68B5B>Team</gradient>] <white>{player}</white> <dark_gray>» <#D4C4A8>{chat}"
+  chat-enabled: "{teams.prefix}<#8FA3BF>Team chat <#7ECFA0><bold>enabled</bold></#7ECFA0>. Your messages are now team-only."
+  chat-disabled: "{teams.prefix}<#8FA3BF>Team chat <#D4727A><bold>disabled</bold></#D4727A>. You are now in global chat."
+
+  # ── CORE ──
+  create: "{teams.prefix}<#7ECFA0>Team <white>{team}</white> has been created!"
+  disband: "{teams.prefix}<#D4727A>Team <white>{team}</white> has been disbanded."
+  leave: "{teams.prefix}<#D4A76A>You left <white>{team}</white>."
+  kick: "{teams.prefix}<#D4727A><white>{player}</white> has been kicked from the team."
+  join: "{teams.prefix}<#7ECFA0>You joined <white>{team}</white>!"
+  settag-success: "{teams.prefix}<#8FA3BF>Team tag updated."
+  renamed: "{teams.prefix}<#8FA3BF>Team renamed from <white>{old}</white> to <white>{new}</white>."
+  color-set: "{teams.prefix}<#8FA3BF>Team color updated."
+
+  # ── INVITES ──
+  invite: "{teams.prefix}<#8FA3BF>Invited <white>{player}</white> to join your team."
+  invite-received: "{teams.prefix}<white>{player}</white> <#8FA3BF>invited you to join <white>{team}</white>!"
+  invite-accepted: "{teams.prefix}<#7ECFA0><white>{player}</white> joined the team."
+  invite-declined-target: "{teams.prefix}<#8FA3BF>Invite declined."
+  invite-declined-sender: "{teams.prefix}<#D4727A><white>{player}</white> declined your invite."
+  invite-expired: "{teams.prefix}<#707880>Invite from <white>{team}</white> expired."
+  invite-expired-sender: "{teams.prefix}<#707880>Your invite to <white>{player}</white> expired."
+  no-pending-invite: "{teams.prefix}<#D4727A>No pending invites."
+
+  # ── ALLIES / ENEMIES ──
+  ally-request-sent: "{teams.prefix}<#8FA3BF>Alliance request sent to <#7ECFA0>{team}</#7ECFA0>."
+  ally-request-received: "{teams.prefix}<#7ECFA0><white>{team}</white> wants to form an alliance!"
+  ally-accepted: "{teams.prefix}<#7ECFA0>Now allied with <white>{team}</white>!"
+  ally-declined-target: "{teams.prefix}<#D4A76A>Alliance with <white>{team}</white> declined."
+  ally-declined-sender: "{teams.prefix}<#D4727A><white>{team}</white> declined the alliance."
+  ally-expired: "{teams.prefix}<#707880>Alliance request with <white>{team}</white> expired."
+  enemy: "{teams.prefix}<#D4727A><white>{team}</white> is now your <bold>enemy</bold>."
+  unally: "{teams.prefix}<#D4A76A>No longer allied with <white>{team}</white>."
+  unenemy: "{teams.prefix}<#D4A76A><white>{team}</white> removed from enemies."
+  allies-disabled: "{teams.prefix}<#D4727A>Allies system is disabled."
+  enemies-disabled: "{teams.prefix}<#D4727A>Enemies system is disabled."
+
+  # ── ROLES ──
+  promoted: "{teams.prefix}<#7ECFA0><white>{player}</white> promoted to <bold>{role}</bold>."
+  promoted-target: "{teams.prefix}<#7ECFA0>You have been promoted to <bold>{role}</bold>!"
+  demoted: "{teams.prefix}<#D4727A><white>{player}</white> demoted to <bold>{role}</bold>."
+  demoted-target: "{teams.prefix}<#D4727A>You have been demoted to <bold>{role}</bold>."
+  kicked: "{teams.prefix}<#D4727A>You were kicked from <white>{team}</white>."
+
+  # ── PVP ──
+  pvp-toggle: "{teams.prefix}<#8FA3BF>Team PvP is now {state}."
+
+  # ── HOME ──
+  home: "{teams.prefix}<#8FA3BF>Teleporting to team home..."
+  home-set: "{teams.prefix}<#7ECFA0>Team home set at your location."
+  home-del: "{teams.prefix}<#D4727A>Team home removed."
+  home-cooldown: "{teams.prefix}<#D4727A>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  home-wait: "{teams.prefix}<#8FA3BF>Teleporting in <white>{time}s</white> <#8FA3BF>— don't move!"
+  home-teleport: "{teams.prefix}<#7ECFA0>Teleported to team home."
+  home-teleport-cancelled: "{teams.prefix}<#D4727A>Teleport cancelled! <dark_gray>(you moved)"
+  home-disabled: "{teams.prefix}<#D4727A>Team homes are disabled."
+
+  # ── WARPS ──
+  warp: "{teams.prefix}<#8FA3BF>Teleporting to warp <white>{warp}</white>"
+  warp-set: "{teams.prefix}<#7ECFA0>Warp <white>{warp}</white> created."
+  warp-del: "{teams.prefix}<#D4727A>Warp <white>{warp}</white> deleted."
+  warp-cooldown: "{teams.prefix}<#D4727A>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  warp-wait: "{teams.prefix}<#8FA3BF>Warping in <white>{time}s</white> <#8FA3BF>— don't move!"
+  warp-teleport: "{teams.prefix}<#7ECFA0>Teleported to <white>{warp}</white>."
+  warp-teleport-cancelled: "{teams.prefix}<#D4727A>Warp cancelled! <dark_gray>(you moved)"
+  warps-disabled: "{teams.prefix}<#D4727A>Team warps are disabled."
+  warp-not-found: "{teams.prefix}<#D4727A>Warp not found."
+  warp-already-exists: "{teams.prefix}<#D4727A>A warp with that name already exists."
+
+  # ── PERMISSIONS ──
+  only-owner: "{teams.prefix}<#D4727A>Only team <bold>owners</bold> can do this."
+  only-admin: "{teams.prefix}<#D4727A>Only <bold>admins</bold> or <bold>owners</bold> can do this."
+
+  # ── ERRORS ──
+  no-team: "{teams.prefix}<#D4727A>You are not in a team."
+  team-not-found: "{teams.prefix}<#D4727A>Team not found."
+  player-not-found: "{teams.prefix}<#D4727A>Player not found or offline."
+  already-in-team: "{teams.prefix}<#D4727A>You are already in a team."
+  team-full: "{teams.prefix}<#D4727A>This team is full."
+  already-ally: "{teams.prefix}<#D4727A>Already allied with that team."
+  already-enemy: "{teams.prefix}<#D4727A>Already enemies with that team."
+  not-ally: "{teams.prefix}<#D4727A>Not allied with that team."
+  not-enemy: "{teams.prefix}<#D4727A>Not enemies with that team."
+  cannot-self: "{teams.prefix}<#D4727A>You cannot target your own team."
+  max-admins-reached: "{teams.prefix}<#D4727A>Max admins reached."
+  max-owners-reached: "{teams.prefix}<#D4727A>Max owners reached."
+  max-warps-reached: "{teams.prefix}<#D4727A>Max warps reached."
+  max-allies-reached: "{teams.prefix}<#D4727A>Max allies reached."
+  max-enemies-reached: "{teams.prefix}<#D4727A>Max enemies reached."
+  team-already-exists: "{teams.prefix}<#D4727A>A team with that name already exists."
+  name-too-short: "{teams.prefix}<#D4727A>Name must be at least <white>{min}</white> characters."
+  name-too-long: "{teams.prefix}<#D4727A>Name cannot exceed <white>{max}</white> characters."
+  name-banned: "{teams.prefix}<#D4727A>That name contains banned words."
+  not-in-team: "{teams.prefix}<#D4727A>That player is not in your team."
+  home-not-set: "{teams.prefix}<#D4727A>No team home set."
+  cannot-leave-as-owner: "{teams.prefix}<#D4727A>You're the last owner! <dark_gray>Disband or promote someone first."
+  cannot-kick-higher: "{teams.prefix}<#D4727A>Cannot kick someone of equal or higher rank."
+  already-highest-rank: "{teams.prefix}<#D4727A>Already at the highest rank."
+  already-lowest-rank: "{teams.prefix}<#D4727A>Already at the lowest rank."
+  cannot-demote-last-owner: "{teams.prefix}<#D4727A>Cannot demote the last owner. <dark_gray>Promote someone first."
+  echest-disabled: "{teams.prefix}<#D4727A>Team echest is disabled."
+  tag-invalid-length: "{teams.prefix}<#D4727A>Tag must be <white>{min}-{max}</white> characters."
+
+
+# ┌─────────────────────────────────┐
+# │        PERSONAL HOMES           │
+# └─────────────────────────────────┘
+homes:
+  prefix: "<gradient:#6B8DAE:#8BADC4>HOME</gradient> <dark_gray>» </dark_gray>"
+  set-success: "{homes.prefix}<#7ECFA0>Home <white>{home}</white> has been set."
+  delete-success: "{homes.prefix}<#D4727A>Home <white>{home}</white> deleted."
+  rename-success: "{homes.prefix}<#7ECFA0>Home <white>{old}</white> renamed to <white>{new}</white>."
+  rename-failed: "{homes.prefix}<#D4727A>Failed to rename home (new name may exist)."
+  not-found: "{homes.prefix}<#D4727A>Home <white>{home}</white> not found."
+  max-reached: "{homes.prefix}<#D4727A>You have reached your maximum of <white>{max}</white> homes."
+  cooldown: "{homes.prefix}<#D4727A>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  wait: "{homes.prefix}<#8FA3BF>Teleporting to <white>{home}</white> in <white>{time}s</white> <#8FA3BF>— don't move!"
+  teleport: "{homes.prefix}<#7ECFA0>Teleported to <white>{home}</white>."
+  teleport-cancelled: "{homes.prefix}<#D4727A>Teleport cancelled! <dark_gray>(you moved)"
+  no-homes: "{homes.prefix}<#8FA3BF>You have no personal homes set."
+  disabled: "{homes.prefix}<#D4727A>Personal homes are currently disabled."
+
+
+# ┌─────────────────────────────────┐
+# │         ADMINISTRATION          │
+# └─────────────────────────────────┘
+admin:
+  prefix: "<gradient:#A68FCF:#8B78B5>ADMIN</gradient> <dark_gray>» </dark_gray>"
+
+  # ── GAMEMODE ──
+  gamemode-changed: "{admin.prefix}<#8FA3BF>Your gamemode has been set to <white>{mode}</white>."
+  gamemode-changed-other: "{admin.prefix}<#8FA3BF>Set <white>{player}</white>'s gamemode to <white>{mode}</white>."
+  gamemode-usage: "{admin.prefix}<#D4727A>Usage: /gm <0-3/s/c/a/sp> [player]"
+  gamemode-invalid: "{admin.prefix}<#D4727A>Invalid gamemode."
+
+  # ── PLAYER LOOKUP ──
+  player-not-found: "{admin.prefix}<#D4727A>Player not found."
+  whois-header: "{admin.prefix}<#8FA3BF>Information for <white>{player}</white>:"
+
+  # ── COMMANDS ──
+  sudo-success: "{admin.prefix}<#8FA3BF>Forced <white>{player}</white> to run: <white>{action}</white>"
+  broadcast-prefix: "<gradient:#A68FCF:#8B78B5><bold>BROADCAST</bold></gradient> <dark_gray>» </dark_gray><white>"
+  chat-cleared: "{admin.prefix}<#8FA3BF>The chat has been cleared by <white>{player}</white>."
+  time-set: "{admin.prefix}<#8FA3BF>World time set to <white>{time}</white>."
+  weather-set: "{admin.prefix}<#8FA3BF>Weather set to <white>{weather}</white>."
+  invsee-self: "{admin.prefix}<#D4727A>You cannot view your own inventory."
+  smite-success: "{admin.prefix}<#D4A76A>Lightning struck <white>{player}</white>!"
+
+  # ── VANISH ──
+  vanish-on: "{admin.prefix}<#8FA3BF>You are now <#7ECFA0><bold>VANISHED</bold></#7ECFA0>. You are invisible to other players."
+  vanish-off: "{admin.prefix}<#8FA3BF>You are now <#D4727A><bold>VISIBLE</bold></#D4727A>. Other players can see you again."
+
+  # ── MISC ──
+  hat-success: "{admin.prefix}<#8FA3BF>You are now wearing a fancy <#A68FCF>hat</#A68FCF>!"
+  tpall-success: "{admin.prefix}<#8FA3BF>Teleported <white>{count}</white> players to your location."
+  top-success: "{admin.prefix}<#7ECFA0>Teleported to the top block!"
+  bottom-success: "{admin.prefix}<#7ECFA0>Teleported to the safest bottom block!"
+  bottom-failed: "{admin.prefix}<#D4727A>No safe bottom block found!"
+
+  # ── NEAR / COORDS ──
+  near-title: "{admin.prefix}<#8FA3BF>Nearby players (<white>{radius}m</white>):"
+  near-player: " <dark_gray>⬥</dark_gray> <white>{player}</white> <dark_gray>(<#8FA3BF>{distance}m</#8FA3BF>)"
+  near-none: "{admin.prefix}<#D4727A>No players found nearby."
+  coords-self: "{admin.prefix}<#8FA3BF>Your coordinates: <white>X:{x} Y:{y} Z:{z}</white> <dark_gray>(<#A68FCF>{world}</#A68FCF>)</dark_gray>"
+  coords-other: "{admin.prefix}<#8FA3BF><white>{player}</white>'s coordinates: <white>X:{x} Y:{y} Z:{z}</white> <dark_gray>(<#A68FCF>{world}</#A68FCF>)</dark_gray>"
+
+
+# ┌─────────────────────────────────┐
+# │        PRIVATE MESSAGING        │
+# └─────────────────────────────────┘
+message:
+  prefix: "<gradient:#6B8DAE:#8BADC4>MSG</gradient> <dark_gray>» </dark_gray>"
+  sent: "<white>You <dark_gray>→ <gradient:#6B8DAE:#8BADC4>{player}</gradient><dark_gray>: <#8FA3BF>{message}"
+  received: "<gradient:#6B8DAE:#8BADC4>{player}</gradient> <dark_gray>→ <white>You<dark_gray>: <#8FA3BF>{message}"
+  socialspy: "<dark_gray>[<#707880>Spy</dark_gray>] <#707880>{sender} → {target}: <#8FA3BF>{message}"
+  no-reply: "{message.prefix}<#D4727A>You have nobody to reply to."
+  reply-offline: "{message.prefix}<#D4727A>That player is no longer online."
+  ignored: "{message.prefix}<#D4727A>This player is ignoring you."
+  ignore-on: "{message.prefix}<#8FA3BF>You are now ignoring <white>{player}</white>."
+  ignore-off: "{message.prefix}<#8FA3BF>You are no longer ignoring <white>{player}</white>."
+
+
+# ┌─────────────────────────────────┐
+# │         UTILITY COMMANDS        │
+# └─────────────────────────────────┘
 utilities:
-  prefix: "<#55CDFC>UTILS <dark_gray>»</dark_gray> "
-  fly-toggle: "{utilities.prefix}<#B0C4FF>Flight mode is now {state}."
-  fly-toggle-other: "{utilities.prefix}<#B0C4FF>Flight mode for <white>{player}</white> is now {state}."
-  heal-success: "{utilities.prefix}<#55FF55>You have been fully healed and fed."
-  heal-success-other: "{utilities.prefix}<#55FF55>You have fully healed and fed <white>{player}</white>."
-  feed-success: "{utilities.prefix}<#55FF55>Your appetite has been satiated."
-  feed-success-other: "{utilities.prefix}<#55FF55>You have fed <white>{player}</white>."
-  god-toggle: "{utilities.prefix}<#B0C4FF>God mode is now {state}."
-  god-toggle-other: "{utilities.prefix}<#B0C4FF>God mode for <white>{player}</white> is now {state}."
-  clear-success: "{utilities.prefix}<#55FF55>Your inventory has been cleared."
-  clear-success-other: "{utilities.prefix}<#55FF55>Cleared inventory of <white>{player}</white>."
-  speed-changed: "{utilities.prefix}<#B0C4FF>Your <white>{type}</white> speed has been set to <white>{val}</white>."
-  speed-usage: "{utilities.prefix}<#FF5555>Usage: /speed <fly|walk> <1-10> [player]"
-  speed-invalid: "{utilities.prefix}<#FF5555>Speed must be a number between 1 and 10."
-  nick-success: "{utilities.prefix}<#55FF55>Your nickname has been set to <white>{nick}</white>."
-  nick-success-other: "{utilities.prefix}<#55FF55>Set nickname for <white>{player}</white> to <white>{nick}</white>."
-  nick-removed: "{utilities.prefix}<#FF5555>Your nickname has been removed."
-  nick-removed-other: "{utilities.prefix}<#FF5555>Removed nickname for <white>{player}</white>."
-  nick-usage: "{utilities.prefix}<#FF5555>Usage: /nick [player] <name> or /unnick [player]"
-  rename-success: "{utilities.prefix}<#55FF55>Item renamed to <white>{name}</white>."
-  rename-usage: "{utilities.prefix}<#FF5555>Usage: /itemrename <name>"
-  no-item-held: "{utilities.prefix}<#FF5555>You must be holding an item!"
-  lore-add-success: "{utilities.prefix}<#55FF55>Added lore line."
-  lore-set-success: "{utilities.prefix}<#55FF55>Set lore line."
-  lore-remove-success: "{utilities.prefix}<#FF5555>Removed lore line."
-  lore-usage: "{utilities.prefix}<#FF5555>Usage: /lore <add|set|remove> [line] <text>"
-  invalid-line: "{utilities.prefix}<#FF5555>Invalid lore line number."
-  repair-success: "{utilities.prefix}<#55FF55>Repaired item for <white>{player}</white>."
-  repair-all-success: "{utilities.prefix}<#55FF55>Repaired all items in <white>{player}'s</white> inventory."
-  repair-not-damageable: "{utilities.prefix}<#FF5555>This item cannot be repaired."
+  prefix: "<gradient:#6B9E8A:#5A8774>UTILS</gradient> <dark_gray>» </dark_gray>"
 
+  # ── FLIGHT ──
+  fly-toggle: "{utilities.prefix}<#8FA3BF>Flight mode is now {state}."
+  fly-toggle-other: "{utilities.prefix}<#8FA3BF>Flight mode for <white>{player}</white> is now {state}."
+
+  # ── HEALTH ──
+  heal-success: "{utilities.prefix}<#7ECFA0>You have been fully healed and fed."
+  heal-success-other: "{utilities.prefix}<#7ECFA0>You have fully healed and fed <white>{player}</white>."
+  feed-success: "{utilities.prefix}<#7ECFA0>Your appetite has been satiated."
+  feed-success-other: "{utilities.prefix}<#7ECFA0>You have fed <white>{player}</white>."
+
+  # ── GOD MODE ──
+  god-toggle: "{utilities.prefix}<#8FA3BF>God mode is now {state}."
+  god-toggle-other: "{utilities.prefix}<#8FA3BF>God mode for <white>{player}</white> is now {state}."
+
+  # ── INVENTORY ──
+  clear-success: "{utilities.prefix}<#7ECFA0>Your inventory has been cleared."
+  clear-success-other: "{utilities.prefix}<#7ECFA0>Cleared inventory of <white>{player}</white>."
+
+  # ── SPEED ──
+  speed-changed: "{utilities.prefix}<#8FA3BF>Your <white>{type}</white> speed has been set to <white>{val}</white>."
+  speed-usage: "{utilities.prefix}<#D4727A>Usage: /speed <fly|walk> <1-10> [player]"
+  speed-invalid: "{utilities.prefix}<#D4727A>Speed must be a number between 1 and 10."
+
+  # ── NICKNAME ──
+  nick-success: "{utilities.prefix}<#7ECFA0>Your nickname has been set to <white>{nick}</white>."
+  nick-success-other: "{utilities.prefix}<#7ECFA0>Set nickname for <white>{player}</white> to <white>{nick}</white>."
+  nick-removed: "{utilities.prefix}<#D4727A>Your nickname has been removed."
+  nick-removed-other: "{utilities.prefix}<#D4727A>Removed nickname for <white>{player}</white>."
+  nick-usage: "{utilities.prefix}<#D4727A>Usage: /nick [player] <name> or /unnick [player]"
+
+  # ── ITEM EDITING ──
+  rename-success: "{utilities.prefix}<#7ECFA0>Item renamed to <white>{name}</white>."
+  rename-usage: "{utilities.prefix}<#D4727A>Usage: /itemrename <name>"
+  no-item-held: "{utilities.prefix}<#D4727A>You must be holding an item!"
+  lore-add-success: "{utilities.prefix}<#7ECFA0>Added lore line."
+  lore-set-success: "{utilities.prefix}<#7ECFA0>Set lore line."
+  lore-remove-success: "{utilities.prefix}<#D4727A>Removed lore line."
+  lore-usage: "{utilities.prefix}<#D4727A>Usage: /lore <add|set|remove> [line] <text>"
+  invalid-line: "{utilities.prefix}<#D4727A>Invalid lore line number."
+
+  # ── REPAIR ──
+  repair-success: "{utilities.prefix}<#7ECFA0>Repaired item for <white>{player}</white>."
+  repair-all-success: "{utilities.prefix}<#7ECFA0>Repaired all items in <white>{player}'s</white> inventory."
+  repair-not-damageable: "{utilities.prefix}<#D4727A>This item cannot be repaired."
+
+
+# ┌─────────────────────────────────┐
+# │          MODERATION             │
+# └─────────────────────────────────┘
 moderation:
-  prefix: "<#55CDFC>MOD <dark_gray>»</dark_gray> "
-  mute-success: "{moderation.prefix}<#B0C4FF>You have muted <white>{player}</white> for <white>{time}</white>."
-  muted-alert: "{moderation.prefix}<#FF5555>You have been muted for <white>{time}</white>."
-  muted-message: "{moderation.prefix}<#FF5555>You are muted and cannot chat!"
-  unmute-success: "{moderation.prefix}<#55FF55>You have unmuted <white>{player}</white>."
-  unmuted-alert: "{moderation.prefix}<#55FF55>You have been unmuted."
-  chat-locked-broadcast: "{moderation.prefix}<#FF5555>Chat has been <bold>LOCKED</bold> by an administrator."
-  chat-unlocked-broadcast: "{moderation.prefix}<#55FF55>Chat has been <bold>UNLOCKED</bold> by an administrator."
-  chat-locked-message: "{moderation.prefix}<#FF5555>Chat is currently locked!"
-  freeze-success: "{moderation.prefix}<#B0C4FF>You have frozen <white>{player}</white>."
-  unfreeze-success: "{moderation.prefix}<#B0C4FF>You have unfrozen <white>{player}</white>."
-  frozen-alert: " <#FF5555><bold>✘ YOU ARE FROZEN ✘</bold></#FF5555>"
-  frozen-alert-long: "{moderation.prefix}<#FF5555><bold>YOU HAVE BEEN FROZEN!</bold> <white>Do not disconnect or you may be banned.</white>"
-  unfrozen-alert: "{moderation.prefix}<#55FF55>You have been unfrozen! You can now move again."
-  frozen-command-denied: "{moderation.prefix}<#FF5555>You cannot use commands while frozen!"
-  kick-success: "{moderation.prefix}<#B0C4FF>Kicked <white>{player}</white>: <white>{reason}</white>"
-  ban-success: "{moderation.prefix}<#B0C4FF>Banned <white>{player}</white> for <white>{time}</white>."
-  unban-success: "{moderation.prefix}<#55FF55>Unbanned <white>{player}</white>."
-  warn-success: "{moderation.prefix}<#FFAA00>Warned <white>{player}</white>: <white>{reason}</white>"
+  prefix: "<gradient:#C27070:#A35560>MOD</gradient> <dark_gray>» </dark_gray>"
+
+  # ── MUTE ──
+  mute-success: "{moderation.prefix}<#8FA3BF>You have muted <white>{player}</white> for <white>{time}</white>."
+  muted-alert: "{moderation.prefix}<#D4727A>You have been muted for <white>{time}</white>."
+  muted-message: "{moderation.prefix}<#D4727A>You are muted and cannot chat!"
+  unmute-success: "{moderation.prefix}<#7ECFA0>You have unmuted <white>{player}</white>."
+  unmuted-alert: "{moderation.prefix}<#7ECFA0>You have been unmuted."
+
+  # ── CHAT LOCK ──
+  chat-locked-broadcast: "{moderation.prefix}<#D4727A>Chat has been <bold>LOCKED</bold> by an administrator."
+  chat-unlocked-broadcast: "{moderation.prefix}<#7ECFA0>Chat has been <bold>UNLOCKED</bold> by an administrator."
+  chat-locked-message: "{moderation.prefix}<#D4727A>Chat is currently locked!"
+
+  # ── FREEZE ──
+  freeze-success: "{moderation.prefix}<#8FA3BF>You have frozen <white>{player}</white>."
+  unfreeze-success: "{moderation.prefix}<#8FA3BF>You have unfrozen <white>{player}</white>."
+  frozen-alert: " <#D4727A><bold>✘ YOU ARE FROZEN ✘</bold></#D4727A>"
+  frozen-alert-long: "{moderation.prefix}<#D4727A><bold>YOU HAVE BEEN FROZEN!</bold> <white>Do not disconnect or you may be banned.</white>"
+  unfrozen-alert: "{moderation.prefix}<#7ECFA0>You have been unfrozen! You can now move again."
+  frozen-command-denied: "{moderation.prefix}<#D4727A>You cannot use commands while frozen!"
+
+  # ── KICK / BAN / WARN ──
+  kick-success: "{moderation.prefix}<#8FA3BF>Kicked <white>{player}</white>: <white>{reason}</white>"
+  ban-success: "{moderation.prefix}<#8FA3BF>Banned <white>{player}</white> for <white>{time}</white>."
+  unban-success: "{moderation.prefix}<#7ECFA0>Unbanned <white>{player}</white>."
+  warn-success: "{moderation.prefix}<#D4A76A>Warned <white>{player}</white>: <white>{reason}</white>"

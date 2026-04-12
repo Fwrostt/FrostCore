@@ -13,13 +13,13 @@ import java.util.Objects;
 
 public class RecipeUtil {
 
-    private static final ConfigManager configManager = Main.getConfigManager();
-    private static final JavaPlugin plugin = Main.getInstance();
+    private static ConfigManager config() { return Main.getConfigManager(); }
+    private static JavaPlugin plugin() { return Main.getInstance(); }
 
     private static final Map<String, ItemStack> premadeItems = new HashMap<>();
 
     public static Material getItemFromConfig(String path) {
-        String materialName = configManager.getString(path);
+        String materialName = config().getString(path);
         if (materialName == null) {
             return Material.BEDROCK;
         }
@@ -28,7 +28,7 @@ public class RecipeUtil {
     }
 
     public static RecipeChoice getChoice(String path) {
-        String itemKey = configManager.getString(path);
+        String itemKey = config().getString(path);
         if (itemKey == null) {
             return new RecipeChoice.MaterialChoice(Material.BEDROCK);
         }

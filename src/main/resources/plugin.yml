@@ -1,5 +1,5 @@
 name: FrostCore
-version: '1.1.5'
+version: '1.2.0'
 main: dev.frost.frostcore.Main
 api-version: '1.21'
 authors: [ Frost ]
@@ -291,8 +291,119 @@ commands:
     permission: frostcore.moderation.ban
   warn:
     description: Warn a player
-    usage: /warn <player> [reason]
+    usage: /warn <player> [reason] [-s] [-t template]
     permission: frostcore.moderation.warn
+  unwarn:
+    description: Remove a warning
+    usage: /unwarn <player|ID>
+    permission: frostcore.moderation.warn
+  tempban:
+    description: Temporarily ban a player
+    usage: /tempban <player> <duration> [reason] [-s]
+    permission: frostcore.moderation.ban
+  tempmute:
+    description: Temporarily mute a player
+    usage: /tempmute <player> <duration> [reason] [-s]
+    permission: frostcore.moderation.mute
+  ipban:
+    description: Ban a player by IP (auto-bans alts)
+    usage: /ipban <player> [duration] [reason] [-s]
+    aliases: [banip]
+    permission: frostcore.moderation.ipban
+  ipmute:
+    description: Mute a player by IP
+    usage: /ipmute <player> [duration] [reason] [-s]
+    aliases: [muteip]
+    permission: frostcore.moderation.ipmute
+  jail:
+    description: Jail a player
+    usage: /jail <player> [jail] [duration] [reason]
+    permission: frostcore.moderation.jail
+  unjail:
+    description: Release a player from jail
+    usage: /unjail <player>
+    permission: frostcore.moderation.jail
+  setjail:
+    description: Set a jail location
+    usage: /setjail <name>
+    permission: frostcore.moderation.jail.manage
+  deljail:
+    description: Delete a jail location
+    usage: /deljail <name>
+    permission: frostcore.moderation.jail.manage
+  report:
+    description: Report a player
+    usage: /report <player> <reason>
+    permission: frostcore.report
+  checkban:
+    description: View active ban info
+    usage: /checkban <player|ID>
+    permission: frostcore.moderation.check
+  checkmute:
+    description: View active mute info
+    usage: /checkmute <player|ID>
+    permission: frostcore.moderation.check
+  checkwarn:
+    description: View warning info
+    usage: /checkwarn <player|ID>
+    permission: frostcore.moderation.check
+  history:
+    description: View a player's punishment history
+    usage: /history <player> [type]
+    permission: frostcore.moderation.history
+  staffhistory:
+    description: View punishments issued by a staff member
+    usage: /staffhistory <staff> [type]
+    permission: frostcore.moderation.history
+  warnings:
+    description: View active warnings for a player
+    usage: /warnings [player]
+    permission: frostcore.moderation.check
+  banlist:
+    description: List all active bans
+    usage: /banlist [page]
+    permission: frostcore.moderation.check
+  mutelist:
+    description: List all active mutes
+    usage: /mutelist [page]
+    permission: frostcore.moderation.check
+  warnlist:
+    description: List all active warnings
+    usage: /warnlist [page]
+    permission: frostcore.moderation.check
+  alts:
+    description: Show alt accounts by shared IP
+    usage: /alts <player>
+    aliases: [dupeip]
+    permission: frostcore.moderation.alts
+  iphistory:
+    description: View IP history for a player
+    usage: /iphistory <player>
+    permission: frostcore.moderation.alts
+  namehistory:
+    description: View previous usernames of a player
+    usage: /namehistory <player>
+    permission: frostcore.moderation.namehistory
+  reports:
+    description: View open player reports
+    usage: /reports [page]
+    permission: frostcore.moderation.reports
+  lockdown:
+    description: Toggle server lockdown
+    usage: /lockdown [reason]
+    permission: frostcore.moderation.lockdown
+  prunehistory:
+    description: Prune old punishment history
+    usage: /prunehistory <player> [duration]
+    permission: frostcore.moderation.admin
+  staffrollback:
+    description: Rollback punishments by a staff member
+    usage: /staffrollback <staff> [duration]
+    permission: frostcore.moderation.admin
+  moderation:
+    description: Moderation admin tools
+    usage: /moderation allow <add|remove|check> <player>
+    permission: frostcore.moderation.admin
   tpall:
     description: Teleport all players to you
     usage: /tpall
@@ -393,18 +504,6 @@ permissions:
   frostcore.admin.coords:
     description: Allows viewing coordinates
     default: op
-  frostcore.utility.top:
-    description: Deprecated - use frostcore.admin.top
-    default: op
-  frostcore.utility.bottom:
-    description: Deprecated - use frostcore.admin.bottom
-    default: op
-  frostcore.utility.near:
-    description: Deprecated - use frostcore.admin.near
-    default: op
-  frostcore.utility.coords:
-    description: Deprecated - use frostcore.admin.coords
-    default: op
   frostcore.utility.back:
     description: Allows using /back command
     default: true
@@ -417,6 +516,51 @@ permissions:
   frostcore.moderation.freeze:
     description: Allows freezing players
     default: op
+  frostcore.moderation.ipban:
+    description: Allows IP banning players
+    default: op
+  frostcore.moderation.ipmute:
+    description: Allows IP muting players
+    default: op
+  frostcore.moderation.jail:
+    description: Allows jailing players
+    default: op
+  frostcore.moderation.jail.manage:
+    description: Allows managing jail locations
+    default: op
+  frostcore.moderation.check:
+    description: Allows checking punishment info
+    default: op
+  frostcore.moderation.history:
+    description: Allows viewing punishment history
+    default: op
+  frostcore.moderation.alts:
+    description: Allows viewing alt accounts and IP history
+    default: op
+  frostcore.moderation.reports:
+    description: Allows viewing player reports
+    default: op
+  frostcore.moderation.lockdown:
+    description: Allows toggling server lockdown
+    default: op
+  frostcore.moderation.admin:
+    description: Allows admin moderation tools
+    default: op
+  frostcore.moderation.notify:
+    description: Receives moderation notifications
+    default: op
+  frostcore.moderation.exempt:
+    description: Exempt from being punished by lower-weight staff
+    default: op
+  frostcore.moderation.group.unlimited:
+    description: Bypass all group limits
+    default: op
+  frostcore.moderation.cooldown.bypass:
+    description: Bypass moderation cooldowns
+    default: op
+  frostcore.report:
+    description: Allows reporting players
+    default: true
   frostcore.moderation.bypass.lockchat:
     description: Allows chatting when locked
     default: op

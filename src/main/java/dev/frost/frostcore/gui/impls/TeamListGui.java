@@ -49,7 +49,7 @@ public class TeamListGui extends Gui {
     private int currentPage = 0;
 
     public TeamListGui(Player viewer) {
-        super(MM.deserialize("<!italic><gradient:#FFD700:#FFA500>Teams"), 6);
+        super(MM.deserialize("<!italic><gradient:#C8A87C:#A68B5B>Teams"), 6);
         this.viewer      = viewer;
         this.teamManager = TeamManager.getInstance();
         this.viewerTeam  = safeGetTeam(viewer);
@@ -70,7 +70,7 @@ public class TeamListGui extends Gui {
         currentPage    = Math.min(currentPage, totalPages - 1);
 
         setItem(0, 4, Button.of(Material.NETHER_STAR)
-                .name("<!italic><gradient:#FFD700:#FFA500>Teams")
+                .name("<!italic><gradient:#C8A87C:#A68B5B>Teams")
                 .lore(
                     "<!italic><dark_gray>" + total + " team" + (total == 1 ? "" : "s") + " on this server",
                     "<!italic><gray>Click a team to view info"
@@ -96,7 +96,7 @@ public class TeamListGui extends Gui {
         if (currentPage > 0) {
             int cp = currentPage;
             setItem(Slot.bottomLeft(getRows()), Button.of(Material.SPECTRAL_ARROW)
-                    .name("<!italic><#A3C4FF>◀ Previous")
+                    .name("<!italic><#8FA3BF>◀ Previous")
                     .lore("<!italic><gray>Page <white>" + cp + " <gray>of <white>" + totalPages)
                     .onClick(ctx -> { currentPage--; refresh(viewer); })
                     .build());
@@ -105,7 +105,7 @@ public class TeamListGui extends Gui {
         if (currentPage < totalPages - 1) {
             int cp = currentPage;
             setItem(Slot.bottomRight(getRows()), Button.of(Material.ARROW)
-                    .name("<!italic><#A3C4FF>Next ▶")
+                    .name("<!italic><#8FA3BF>Next ▶")
                     .lore("<!italic><gray>Page <white>" + (cp + 2) + " <gray>of <white>" + totalPages)
                     .onClick(ctx -> { currentPage++; refresh(viewer); })
                     .build());
@@ -140,14 +140,14 @@ public class TeamListGui extends Gui {
 
         ItemStack skull = makeSkull(ownerUUID);
         Button.Builder btn = Button.of(skull)
-                .name("<!italic><gradient:#FFD700:#FFA500>" + team.getDisplayName())
+                .name("<!italic><gradient:#C8A87C:#A68B5B>" + team.getDisplayName())
                 .lore(lore);
 
         if (isEnemy) {
 
             return btn.onClick(ctx ->
                     Main.getMessageManager().sendRaw(ctx.getPlayer(),
-                            "<red>✘ <gray>You cannot view info about an enemy team.")
+                            "<#D4727A>✘ <gray>You cannot view info about an enemy team.")
             ).build();
         }
 

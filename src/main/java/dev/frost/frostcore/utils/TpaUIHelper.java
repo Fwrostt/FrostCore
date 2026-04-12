@@ -1,4 +1,4 @@
-package dev.frost.frostcore.cmds;
+package dev.frost.frostcore.utils;
 
 import dev.frost.frostcore.Main;
 import dev.frost.frostcore.manager.MessageManager;
@@ -15,18 +15,18 @@ public class TpaUIHelper {
 
     public static void sendTpaRequest(Player target, String senderName, String description, int expiry) {
 
-        String div = "<gradient:#55CDFC:#7B68EE><strikethrough>                                                          </strikethrough></gradient>";
+        String div = "<gradient:#6B8DAE:#8BADC4><strikethrough>                                                          </strikethrough></gradient>";
 
-        Component accept = MINI.deserialize("<click:run_command:'/tpaccept " + senderName + "'><hover:show_text:'<#A3FFA3>Click to accept!'> <#A3FFA3><bold>✔ ACCEPT</bold> </hover></click>");
-        Component decline = MINI.deserialize("<click:run_command:'/tpdecline " + senderName + "'><hover:show_text:'<#FF6B6B>Click to deny!'> <#FF6B6B><bold>✖ DECLINE</bold> </hover></click>");
+        Component accept = MINI.deserialize("<click:run_command:'/tpaccept " + senderName + "'><hover:show_text:'<#7ECFA0>Click to accept!'> <#7ECFA0><bold>✔ ACCEPT</bold> </hover></click>");
+        Component decline = MINI.deserialize("<click:run_command:'/tpdecline " + senderName + "'><hover:show_text:'<#D4727A>Click to deny!'> <#D4727A><bold>✖ DECLINE</bold> </hover></click>");
 
         Component message = Component.empty()
                 .append(MINI.deserialize("\n"))
                 .append(MINI.deserialize(div))
                 .append(MINI.deserialize("\n"))
-                .append(MINI.deserialize(" <gradient:#55CDFC:#7B68EE><bold>⚡ TELEPORT REQUEST</bold></gradient>"))
+                .append(MINI.deserialize(" <gradient:#6B8DAE:#8BADC4><bold>⚡ TELEPORT REQUEST</bold></gradient>"))
                 .append(MINI.deserialize("\n\n"))
-                .append(MINI.deserialize(" <white>" + senderName + "</white> <#B0C4FF>" + description + ".</#B0C4FF>"))
+                .append(MINI.deserialize(" <white>" + senderName + "</white> <#8FA3BF>" + description + ".</#8FA3BF>"))
                 .append(MINI.deserialize("\n\n"))
                 .append(MINI.deserialize(" <dark_gray>Expires in <white>" + expiry + "s</white>.</dark_gray>"))
                 .append(MINI.deserialize("\n\n"))

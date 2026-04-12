@@ -147,6 +147,12 @@ public class PunishmentManager {
         db.savePlayerPunishmentAsync(uuid, mute, frozen);
     }
 
+    /**
+     * Parses a human-readable time string like "1h30m" into milliseconds.
+     *
+     * @return milliseconds if valid, -1 if input is explicitly "permanent" (null/empty), 
+     *         or -2 if the input is malformed/unparseable.
+     */
     public long parseTime(String input) {
         if (input == null || input.isEmpty()) return -1;
         
@@ -168,6 +174,7 @@ public class PunishmentManager {
             }
         }
         
-        return found ? totalMs : -1;
+        // Return -2 for invalid/unparseable input (NOT -1, which means permanent)
+        return found ? totalMs : -2;
     }
 }

@@ -48,8 +48,8 @@ public class ConfigManager {
             config.setDefaults(defConfig);
             config.options().copyDefaults(true);
         }
-
-        saveConfig();
+        // Note: intentionally NOT saving here — defaults are applied in-memory only.
+        // This prevents overwriting manual edits that may be in-progress.
     }
 
     public void saveConfig() {

@@ -263,10 +263,7 @@ public class TeamManager {
             throw new TeamException(TeamError.CANNOT_DEMOTE_LAST_OWNER, "Cannot demote the last owner");
         }
 
-        team.demoteToMember(uuid);
-
-        team.getMembers().remove(uuid);
-        team.getAdmins().add(uuid);
+        team.demoteToAdmin(uuid);
 
         if (db != null) db.saveMembersAsync(team);
     }
@@ -346,6 +343,10 @@ public class TeamManager {
 
     public void addAlly(Team team, String target) throws TeamException {
         target = target.toLowerCase();
+
+        if (!teams.containsKey(target)) {
+            throw new TeamException(TeamError.TEAM_NOT_FOUND, "Target team not found");
+        }
 
         if (!config.getBoolean("teams.relations.allies-enabled")) {
             throw new TeamException(TeamError.ALLIES_DISABLED, "Allies are disabled");
@@ -498,15 +499,7 @@ public class TeamManager {
             }
         }
 
-        if (db != null) {
-            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-                boolean success = db.renameTeam(oldNameLower, newNameLower);
-                if (!success) {
-                    FrostLogger.error("Database rename failed for team " + oldNameLower + " -> " + newNameLower);
-                }
-            });
-        }
-
+        // Update in-memory state first
         teams.remove(oldNameLower);
         team.setName(newNameLower);
         teams.put(newNameLower, team);
@@ -525,6 +518,32 @@ public class TeamManager {
 
         if (Main.getEchestManager() != null) {
             Main.getEchestManager().invalidate(oldNameLower);
+        }
+
+        // Persist to DB async — rollback in-memory if it fails
+        if (db != null) {
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+                boolean success = db.renameTeam(oldNameLower, newNameLower);
+                if (!success) {
+                    FrostLogger.error("Database rename failed for team " + oldNameLower + " -> " + newNameLower + ", rolling back.");
+                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                        teams.remove(newNameLower);
+                        team.setName(oldNameLower);
+                        teams.put(oldNameLower, team);
+                        for (Team other : teams.values()) {
+                            if (other == team) continue;
+                            if (other.isAlly(newNameLower)) {
+                                other.removeAlly(newNameLower);
+                                other.addAlly(oldNameLower);
+                            }
+                            if (other.isEnemy(newNameLower)) {
+                                other.removeEnemy(newNameLower);
+                                other.addEnemy(oldNameLower);
+                            }
+                        }
+                    });
+                }
+            });
         }
     }
 
