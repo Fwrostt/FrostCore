@@ -148,7 +148,9 @@ public class ModerationManager {
 
         
         if (webhookManager != null) {
-            webhookManager.sendPunishmentWebhookAsync(p);
+            Player target = p.targetUuid() != null ? Bukkit.getPlayer(p.targetUuid()) : null;
+            String playerStatus = (target != null && target.isOnline()) ? target.getGameMode().name() : "Offline";
+            webhookManager.sendPunishmentWebhookAsync(p, playerStatus);
         }
 
         return p;

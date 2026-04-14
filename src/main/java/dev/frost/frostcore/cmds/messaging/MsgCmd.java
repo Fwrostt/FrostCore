@@ -27,34 +27,53 @@ public class MsgCmd implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("You must be a player to use this command.");
-            return true;
-        }
-
         if (args.length < 2) {
-            mm.sendRaw(player, "<#FF5555>Usage: /msg <player> <message>");
+            if (sender instanceof Player) {
+                mm.sendRaw(sender, "<#D4727A>Usage: /msg <player> <message>");
+            } else {
+                sender.sendMessage("Usage: /msg <player> <message>");
+            }
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            mm.send(player, "admin.player-not-found");
+            if (sender instanceof Player) {
+                mm.send(sender, "admin.player-not-found");
+            } else {
+                sender.sendMessage("Player not found.");
+            }
             return true;
         }
 
-        if (target.equals(player)) {
-            mm.sendRaw(player, "<#FF5555>You can't message yourself!");
+        if (sender instanceof Player player && target.equals(player)) {
+            mm.sendRaw(player, "<#D4727A>You can't message yourself!");
             return true;
         }
 
-        if (pmm.isIgnoring(target.getUniqueId(), player.getUniqueId())) {
+        if (sender instanceof Player player && pmm.isIgnoring(target.getUniqueId(), player.getUniqueId())) {
             mm.send(player, "message.ignored");
             return true;
         }
 
         String msg = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        sendPrivateMessage(player, target, msg);
+
+        if (sender instanceof Player player) {
+            sendPrivateMessage(player, target, msg);
+        } else {
+            String consoleName = "Console";
+            mm.send(target, "message.received", Map.of("player", consoleName, "message", msg));
+            target.playSound(target.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1.8f);
+            sender.sendMessage("[" + consoleName + " -> " + target.getName() + "] " + msg);
+
+            for (java.util.UUID spyUUID : pmm.getSocialSpies()) {
+                if (spyUUID.equals(target.getUniqueId())) continue;
+                Player spy = Bukkit.getPlayer(spyUUID);
+                if (spy != null && spy.isOnline()) {
+                    mm.sendRaw(spy, "<dark_gray>[<gradient:#FF5555:#FF55FF>SPY</gradient>] <#6BA3E3>" + consoleName + " <dark_gray>→ <#6BA3E3>" + target.getName() + "<dark_gray>: <#B0C4FF>" + msg);
+                }
+            }
+        }
         return true;
     }
 

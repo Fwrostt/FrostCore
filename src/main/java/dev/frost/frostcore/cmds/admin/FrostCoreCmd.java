@@ -52,9 +52,13 @@ public class FrostCoreCmd implements CommandExecutor, TabCompleter {
             Main.getWebhookManager().reload();
         }
 
+        if (Main.getMaceManager() != null) {
+            Main.getMaceManager().reload();
+        }
+
         FrostLogger.info("Configuration reloaded by " + sender.getName() + ".");
         sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
-                .deserialize("<green><bold>✔</bold></green> <white>FrostCore configuration reloaded.</white> <gray>(config.yml, messages.yml, warps.yml, webhooks)"));
+                .deserialize("<green><bold>✔</bold></green> <white>FrostCore configuration reloaded.</white> <gray>(config.yml, messages.yml, warps.yml, webhooks, mace limiter)"));
         return true;
     }
 

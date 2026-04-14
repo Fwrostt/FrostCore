@@ -16,6 +16,7 @@ import dev.frost.frostcore.invites.handlers.TeamJoinInviteHandler;
 import dev.frost.frostcore.invites.handlers.TpaHereInviteHandler;
 import dev.frost.frostcore.invites.handlers.TpaInviteHandler;
 import dev.frost.frostcore.listeners.*;
+import dev.frost.frostcore.mace.MaceDatabase;
 import dev.frost.frostcore.manager.*;
 import dev.frost.frostcore.moderation.*;
 import dev.frost.frostcore.placeholderapi.TeamExpansion;
@@ -45,6 +46,8 @@ public final class Main extends JavaPlugin {
     @Getter private static BackManager backManager;
     @Getter private static VanishManager vanishManager;
     @Getter private static PrivateMessageManager privateMessageManager;
+    @Getter private static MaceManager maceManager;
+    @Getter private static GlowManager glowManager;
     private static CmdUtil cmdUtil;
     private TeamExpansion teamExpansion;
 
@@ -98,6 +101,13 @@ public final class Main extends JavaPlugin {
         backManager = new BackManager();
         vanishManager = new VanishManager();
         privateMessageManager = new PrivateMessageManager();
+
+        MaceDatabase maceDb = new MaceDatabase(databaseManager);
+        maceDb.createTable();
+        maceManager = new MaceManager(maceDb);
+
+        glowManager = new GlowManager();
+
         cmdUtil = new CmdUtil();
     }
 
@@ -130,6 +140,8 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new VanishListener(), this);
         getServer().getPluginManager().registerEvents(new StaffChatListener(), this);
         getServer().getPluginManager().registerEvents(homeManager, this);
+        getServer().getPluginManager().registerEvents(new MaceListener(), this);
+        getServer().getPluginManager().registerEvents(new GlowListener(), this);
     }
 
     private void setupCmds() {
@@ -376,6 +388,9 @@ public final class Main extends JavaPlugin {
         CoordsCmd coordsCmd = new CoordsCmd();
         cmdUtil.registerCommand("coords", coordsCmd, coordsCmd);
 
+        MaceCmd maceCmd = new MaceCmd();
+        cmdUtil.registerCommand("mace", maceCmd, maceCmd);
+
         MsgCmd msgCmd = new MsgCmd();
         cmdUtil.registerCommand("msg", msgCmd, msgCmd);
         cmdUtil.registerCommand("tell", msgCmd, msgCmd);
@@ -387,6 +402,9 @@ public final class Main extends JavaPlugin {
         cmdUtil.registerCommand("reply", replyCmd, replyCmd);
         IgnoreCmd ignoreCmd = new IgnoreCmd();
         cmdUtil.registerCommand("ignore", ignoreCmd, ignoreCmd);
+
+        GlowCmd glowCmd = new GlowCmd();
+        cmdUtil.registerCommand("glow", glowCmd, glowCmd);
 
         cmdUtil.printSummary();
     }
@@ -407,6 +425,9 @@ public final class Main extends JavaPlugin {
         }
         if (teamExpansion != null) {
             teamExpansion.unregister();
+        }
+        if (glowManager != null) {
+            glowManager.cleanup();
         }
     }
 }

@@ -1,5 +1,5 @@
 name: FrostCore
-version: '1.2.0'
+version: '1.2.1'
 main: dev.frost.frostcore.Main
 api-version: '1.21'
 authors: [ Frost ]
@@ -434,6 +434,14 @@ commands:
     description: View server performance information
     usage: /ram
     permission: frostcore.admin.ram
+  mace:
+    description: Mace limiter admin tools
+    usage: /mace <info|list|inspect|destroy|give|settings|reload|reset>
+    permission: frostcore.mace.admin
+  glow:
+    description: Toggle glow effect with color
+    usage: /glow [color] or /glow <player> <color>
+    aliases: [glowcolor]
 
 permissions:
   frostcore.ping:
@@ -670,6 +678,75 @@ permissions:
   frostcore.utility.repair:
     description: Allows repairing items
     default: op
+  frostcore.mace.admin:
+    description: Allows managing the mace limiter system
+    default: op
+  frostcore.mace.bypass:
+    description: Bypass mace crafting and per-player limits
+    default: op
+  frostcore.mace.bypass.enchant:
+    description: Bypass mace enchantment level limits
+    default: op
+  frostcore.mace.notify:
+    description: Receives mace limiter staff notifications
+    default: op
+  frostcore.glow.use:
+    description: Allows using /glow command
+    default: true
+  frostcore.glow.admin:
+    description: Allows setting glow on other players
+    default: op
+  frostcore.glow.*:
+    description: Access to all glow colors
+    default: op
+  frostcore.glow.white:
+    description: White glow color
+    default: true
+  frostcore.glow.light_gray:
+    description: Light gray glow color
+    default: true
+  frostcore.glow.gray:
+    description: Gray glow color
+    default: true
+  frostcore.glow.black:
+    description: Black glow color
+    default: true
+  frostcore.glow.red:
+    description: Red glow color
+    default: false
+  frostcore.glow.dark_red:
+    description: Dark red glow color
+    default: false
+  frostcore.glow.orange:
+    description: Orange glow color
+    default: false
+  frostcore.glow.yellow:
+    description: Yellow glow color
+    default: false
+  frostcore.glow.lime:
+    description: Lime glow color
+    default: false
+  frostcore.glow.green:
+    description: Green glow color
+    default: false
+  frostcore.glow.aqua:
+    description: Aqua glow color
+    default: false
+  frostcore.glow.cyan:
+    description: Cyan glow color
+    default: false
+  frostcore.glow.blue:
+    description: Blue glow color
+    default: false
+  frostcore.glow.dark_blue:
+    description: Dark blue glow color
+    default: false
+  frostcore.glow.pink:
+    description: Pink glow color
+    default: false
+  frostcore.glow.purple:
+    description: Purple glow color
+    default: false
 
 libraries:
   - com.zaxxer:HikariCP:5.1.0

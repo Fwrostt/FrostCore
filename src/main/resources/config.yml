@@ -203,3 +203,33 @@ moderation:
     reports: ""          # Player reports
     staff-activity: ""   # Staff admin actions (lockdown, rollback, prune)
     staffchat: ""        # Staff messages
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#                 MACE LIMITER
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+mace-limiter:
+  enabled: true
+  # Maximum number of maces allowed on the entire server
+  max-maces-overall: 3
+  # Maximum number of maces a single player can hold (0 = unlimited)
+  max-maces-per-player: 1
+  # What to do when a player joins with an untracked mace (e.g. from creative)
+  # TRACK = auto-register and count it | CONFISCATE = remove it | IGNORE = leave it alone
+  untracked-mace-action: TRACK
+  # Notify staff (frostcore.mace.notify) when maces are crafted/destroyed/transferred
+  notify-staff: true
+  # Enchantment level limits — enchantments not listed here are unlimited
+  enchantment-limits:
+    DENSITY: 5
+    BREACH: 4
+    WIND_BURST: 3
+  # Worlds where maces cannot be used in PvP
+  restricted-worlds: []
+  # Cooldown between mace PvP hits in seconds (0 = disabled)
+  pvp-cooldown: 0
+  # Maximum damage a mace can deal per hit (0 = unlimited/vanilla)
+  damage-cap: 0
+  # If true, maces are destroyed (removed from drops) when a player dies
+  disable-on-death: false
+  tracked-materials:
+    - MACE

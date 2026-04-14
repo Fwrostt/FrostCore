@@ -100,12 +100,12 @@ public class WebhookManager {
 
     
 
-    public void sendPunishmentWebhookAsync(Punishment p) {
+    public void sendPunishmentWebhookAsync(Punishment p, String playerStatus) {
         if (!punishmentEnabled) return;
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> sendPunishmentWebhook(p));
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> sendPunishmentWebhook(p, playerStatus));
     }
 
-    private void sendPunishmentWebhook(Punishment p) {
+    private void sendPunishmentWebhook(Punishment p, String playerStatus) {
         try {
             DW webhook = new DW(punishmentUrl);
             webhook.setUsername("FrostCore Moderation");
@@ -148,10 +148,12 @@ public class WebhookManager {
             }
             desc.append("\uD83C\uDFAE **Server:** `").append(p.server()).append("`\n");  
 
-            Player targetPlayer = Bukkit.getPlayer(p.targetUuid());
-            String gamemode = targetPlayer != null ? targetPlayer.getGameMode().name() : "Offline";
-            gamemode = gamemode.substring(0, 1).toUpperCase() + gamemode.substring(1).toLowerCase();
-            desc.append("\uD83D\uDCAE **Gamemode:** `").append(gamemode).append("`");
+            if (playerStatus.equalsIgnoreCase("Offline")) {
+                desc.append("\uD83D\uDCF6 **Status:** `Offline`");
+            } else {
+                String gamemode = playerStatus.substring(0, 1).toUpperCase() + playerStatus.substring(1).toLowerCase();
+                desc.append("\uD83D\uDCAE **Gamemode:** `").append(gamemode).append("`");
+            }
 
             DW.EmbedObject embed = new DW.EmbedObject()
                     .setTitle(emoji + "  " + p.type().getDisplayName() + silentTag)
