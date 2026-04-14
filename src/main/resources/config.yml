@@ -208,7 +208,7 @@ moderation:
 #                 MACE LIMITER
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 mace-limiter:
-  enabled: true
+  enabled: false
   # Maximum number of maces allowed on the entire server
   max-maces-overall: 3
   # Maximum number of maces a single player can hold (0 = unlimited)

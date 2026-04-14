@@ -701,16 +701,16 @@ permissions:
     default: op
   frostcore.glow.white:
     description: White glow color
-    default: true
+    default: false
   frostcore.glow.light_gray:
     description: Light gray glow color
-    default: true
+    default: false
   frostcore.glow.gray:
     description: Gray glow color
-    default: true
+    default: false
   frostcore.glow.black:
     description: Black glow color
-    default: true
+    default: false
   frostcore.glow.red:
     description: Red glow color
     default: false

@@ -1,9 +1,10 @@
-package dev.frost.frostcore.gui;
+package dev.frost.frostcore.gui.impls;
 
 import dev.frost.frostcore.Main;
+import dev.frost.frostcore.gui.*;
 import dev.frost.frostcore.mace.*;
-import dev.frost.frostcore.utils.TeleportUtil;
 import dev.frost.frostcore.manager.MaceManager;
+import dev.frost.frostcore.utils.TeleportUtil;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

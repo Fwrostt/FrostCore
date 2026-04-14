@@ -4,6 +4,7 @@ import dev.frost.frostcore.glow.*;
 import dev.frost.frostcore.manager.GlowManager;
 import dev.frost.frostcore.Main;
 import dev.frost.frostcore.gui.*;
+import dev.frost.frostcore.gui.impls.GlowGui;
 import dev.frost.frostcore.manager.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,25 +30,29 @@ public class GlowCmd implements CommandExecutor, TabCompleter {
         MessageManager mm = Main.getMessageManager();
         GlowManager mgr = Main.getGlowManager();
 
-        if (args.length == 0) {
-            if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player player)) {
+            if (args.length == 2) {
+                // Let console process args later
+            } else {
                 sender.sendMessage("Usage: /glow <player> <color>");
                 return true;
             }
-            if (!player.hasPermission("frostcore.glow.use")) {
-                mm.sendRaw(player, PREFIX + "<#D4727A>You don't have permission to use glow.");
-                return true;
+        }
+
+        if (sender instanceof Player p && !p.hasPermission("frostcore.glow.use") && !p.hasPermission("frostcore.glow.admin")) {
+            mm.sendRaw(sender, PREFIX + "<#D4727A>You don't have permission to use glow.");
+            return true;
+        }
+
+        if (args.length == 0) {
+            if (sender instanceof Player p) {
+                GuiManager.schedule(() -> GlowGui.open(p));
             }
-            GuiManager.schedule(() -> GlowGui.open(player));
             return true;
         }
 
         if (args.length == 1) {
-            if (!(sender instanceof Player player)) {
-                sender.sendMessage("Usage: /glow <player> <color>");
-                return true;
-            }
-
+            Player player = (Player) sender;
             String input = args[0];
 
             if (input.equalsIgnoreCase("off") || input.equalsIgnoreCase("remove") || input.equalsIgnoreCase("none")) {
@@ -60,11 +65,6 @@ public class GlowCmd implements CommandExecutor, TabCompleter {
             if (color == null) {
                 mm.sendRaw(player, PREFIX + "<#D4727A>Unknown color: <white>" + input);
                 mm.sendRaw(player, PREFIX + "<dark_gray>Available: <#8FA3BF>" + getColorList(player));
-                return true;
-            }
-
-            if (!player.hasPermission("frostcore.glow.use")) {
-                mm.sendRaw(player, PREFIX + "<#D4727A>You don't have permission to use glow.");
                 return true;
             }
 

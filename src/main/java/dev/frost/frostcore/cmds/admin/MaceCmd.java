@@ -4,7 +4,7 @@ import dev.frost.frostcore.Main;
 import dev.frost.frostcore.gui.GuiManager;
 import dev.frost.frostcore.gui.GuiTemplate;
 import dev.frost.frostcore.mace.MaceEntry;
-import dev.frost.frostcore.gui.MaceGui;
+import dev.frost.frostcore.gui.impls.MaceGui;
 import dev.frost.frostcore.manager.MaceManager;
 import dev.frost.frostcore.manager.MessageManager;
 import org.bukkit.Bukkit;

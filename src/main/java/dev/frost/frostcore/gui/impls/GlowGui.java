@@ -1,6 +1,7 @@
-package dev.frost.frostcore.gui;
+package dev.frost.frostcore.gui.impls;
 
 import dev.frost.frostcore.Main;
+import dev.frost.frostcore.gui.*;
 import dev.frost.frostcore.glow.*;
 import dev.frost.frostcore.manager.GlowManager;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -60,8 +61,7 @@ public class GlowGui {
                         .name(color.getColoredName())
                         .lore(
                                 "<!italic><dark_gray>Permission: <#7ECFA0>Unlocked",
-                                isActive ? "<!italic><dark_gray>Status: <#7ECFA0>Active" : "",
-                                "",
+                                isActive ? "<!italic><dark_gray>Status: <#7ECFA0>Active\n\n" : "",
                                 isActive ? "<!italic><gray>▸ Click to remove" : "<!italic><gray>▸ Click to apply"
                         );
 
