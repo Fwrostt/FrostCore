@@ -26,7 +26,7 @@
 
 ## ✨ Features
 
-FrostCore replaces **Essentials, LiteBans, CombinedTeams, HuskHomes, DeluxeMenus**, and more — with one lightweight, fully integrated, premium-quality plugin. Every system is built from scratch with performance, aesthetics, and configurability in mind.
+FrostCore replaces **Essentials, LiteBans, BetterTeams, HuskHomes, DeluxeMenus**, and more — with one lightweight, fully integrated, premium-quality plugin. Every system is built from scratch with performance, aesthetics, and configurability in mind.
 
 ### 🏴‍☠️ Team System
 > A full-featured faction-style team system with roles, relations, and shared storage.
