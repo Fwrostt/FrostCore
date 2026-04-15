@@ -15,6 +15,7 @@ repositories {
     maven {
         url = 'https://repo.helpch.at/releases'
     }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -27,6 +28,7 @@ dependencies {
     compileOnly 'mysql:mysql-connector-java:8.0.33'
     compileOnly 'org.xerial:sqlite-jdbc:3.47.1.0'
     compileOnly 'com.google.code.gson:gson:2.11.0'
+    compileOnly 'net.luckperms:api:5.4'
 }
 
 tasks {

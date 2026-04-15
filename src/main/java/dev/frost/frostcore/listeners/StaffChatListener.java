@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 
 public class StaffChatListener implements Listener {
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
 

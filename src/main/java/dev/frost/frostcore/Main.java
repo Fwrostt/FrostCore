@@ -1,5 +1,7 @@
 package dev.frost.frostcore;
 
+import dev.frost.frostcore.chat.ChatListener;
+import dev.frost.frostcore.chat.ChatManager;
 import dev.frost.frostcore.cmds.admin.*;
 import dev.frost.frostcore.cmds.item.*;
 import dev.frost.frostcore.cmds.messaging.*;
@@ -48,6 +50,7 @@ public final class Main extends JavaPlugin {
     @Getter private static PrivateMessageManager privateMessageManager;
     @Getter private static MaceManager maceManager;
     @Getter private static GlowManager glowManager;
+    @Getter private static ChatManager chatManager;
     private static CmdUtil cmdUtil;
     private TeamExpansion teamExpansion;
 
@@ -108,6 +111,8 @@ public final class Main extends JavaPlugin {
 
         glowManager = new GlowManager();
 
+        chatManager = new ChatManager(this);
+
         cmdUtil = new CmdUtil();
     }
 
@@ -142,6 +147,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(homeManager, this);
         getServer().getPluginManager().registerEvents(new MaceListener(), this);
         getServer().getPluginManager().registerEvents(new GlowListener(), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(chatManager), this);
     }
 
     private void setupCmds() {

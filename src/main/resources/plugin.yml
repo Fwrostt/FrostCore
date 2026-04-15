@@ -5,6 +5,7 @@ api-version: '1.21'
 authors: [ Frost ]
 softdepend:
   - PlaceholderAPI
+  - LuckPerms
 commands:
   team:
     description: Main team management command

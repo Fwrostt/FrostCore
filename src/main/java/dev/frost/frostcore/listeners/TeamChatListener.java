@@ -24,7 +24,7 @@ public class TeamChatListener implements Listener {
     private final TeamManager teamManager = TeamManager.getInstance();
     private final MessageManager mm = MessageManager.get();
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
 

@@ -1,0 +1,68 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# FrostCore — Chat Format Configuration
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+# This file controls global chat formatting.
+# Requires LuckPerms for prefix/suffix/group features.
+# Supports MiniMessage, legacy &codes, and &#hex colors.
+#
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Master toggle — set to false to let another plugin handle chat formatting
+enabled: true
+
+# ─────────────────────────────────────────────────────────
+#                    CHAT FORMAT
+# ─────────────────────────────────────────────────────────
+#
+# Available placeholders:
+#   {prefix}          - LuckPerms highest-priority prefix
+#   {suffix}          - LuckPerms highest-priority suffix
+#   {prefixes}        - all prefixes concatenated (by weight)
+#   {suffixes}        - all suffixes concatenated (by weight)
+#   {name}            - player's username
+#   {displayname}     - player's display name / nickname
+#   {world}           - current world name
+#   {username-color}  - LuckPerms meta value: username-color
+#   {message-color}   - LuckPerms meta value: message-color
+#   {message}         - the actual chat message (REQUIRED)
+#
+# Formatting support:
+#   Legacy:       &a, &b, &l, &o, etc.
+#   Hex:          &#FF5555 or &x&F&F&5&5&5&5
+#   MiniMessage:  <gradient:red:blue>, <hover:show_text:'hi'>, <bold>, etc.
+#
+# PlaceholderAPI placeholders work too: %player_health%, %vault_prefix%, etc.
+
+chat-format: "{prefix}{name}&r: {message}"
+
+# Examples:
+# chat-format: "[{world}] {prefix}{name}&r: {message}"
+# chat-format: "{prefix}{name}{suffix}&r: {message}"
+# chat-format: "{prefix}{username-color}{name}&r: {message-color}{message}"
+# chat-format: "<gradient:#6B8DAE:#A68FCF>{name}</gradient> <dark_gray>» <white>{message}"
+
+# ─────────────────────────────────────────────────────────
+#                  PER-GROUP FORMATS
+# ─────────────────────────────────────────────────────────
+# Override chat-format for specific LuckPerms primary groups.
+# Group names must be indented with exactly 2 spaces.
+# If a group is not listed here, the default chat-format is used.
+
+group-formats:
+#  default: "{prefix}{name}&r: {message}"
+#  admin: "&c[Admin] {prefix}{name}&r: {message}"
+#  owner: "<gradient:#FFD700:#FFA500>[Owner]</gradient> {name} <dark_gray>» <white>{message}"
+
+# ─────────────────────────────────────────────────────────
+#                   PERMISSIONS
+# ─────────────────────────────────────────────────────────
+# frostcore.chat.colorcodes  — Allow player to use &a, &l, etc. in chat
+# frostcore.chat.hexcodes    — Allow player to use &#rrggbb hex in chat
+# frostcore.chat.minimessage — Allow player to use <bold>, <gradient>, etc. in chat
+
+# ─────────────────────────────────────────────────────────
+#                CLEAR CHAT MESSAGE
+# ─────────────────────────────────────────────────────────
+# Shown to all players after /chat clear
+clear-chat-message: "&7Chat has been cleared by a staff member."

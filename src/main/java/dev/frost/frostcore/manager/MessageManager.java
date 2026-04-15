@@ -1,10 +1,10 @@
 package dev.frost.frostcore.manager;
 
+import dev.frost.frostcore.utils.ChatColorUtil;
 import dev.frost.frostcore.utils.FrostLogger;
 
 import dev.frost.frostcore.Main;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -22,8 +22,6 @@ public class MessageManager {
     private final Main plugin;
     private FileConfiguration config;
     private final File file;
-
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public MessageManager(Main plugin) {
         this.plugin = plugin;
@@ -104,13 +102,7 @@ public class MessageManager {
 
     private Component parse(String text) {
         if (text == null || text.isEmpty()) return Component.empty();
-
-        try {
-            return miniMessage.deserialize(text);
-        } catch (Exception e) {
-            FrostLogger.warn("MiniMessage parse failed for: " + text);
-            return Component.text(text);
-        }
+        return ChatColorUtil.toComponent(text);
     }
 
     public void send(org.bukkit.command.CommandSender sender, String path) {

@@ -56,9 +56,13 @@ public class FrostCoreCmd implements CommandExecutor, TabCompleter {
             Main.getMaceManager().reload();
         }
 
+        if (Main.getChatManager() != null) {
+            Main.getChatManager().reload();
+        }
+
         FrostLogger.info("Configuration reloaded by " + sender.getName() + ".");
         sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
-                .deserialize("<green><bold>✔</bold></green> <white>FrostCore configuration reloaded.</white> <gray>(config.yml, messages.yml, warps.yml, webhooks, mace limiter)"));
+                .deserialize("<green><bold>✔</bold></green> <white>FrostCore configuration reloaded.</white> <gray>(config.yml, messages.yml, chat-format.yml, warps.yml, webhooks, mace limiter)"));
         return true;
     }
 

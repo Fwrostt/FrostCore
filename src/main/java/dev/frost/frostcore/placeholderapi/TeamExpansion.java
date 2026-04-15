@@ -54,7 +54,10 @@ public class TeamExpansion extends PlaceholderExpansion {
             return switch (params) {
                 case "name" -> team.getName();
                 case "tag" -> team.getTag();
-                case "color" -> team.getColor();
+                case "color" -> {
+                    String c = team.getColor();
+                    yield (c != null && !c.isEmpty()) ? c.replaceAll("[<>]", "") : "";
+                }
                 case "role" -> getRole(team, uuid);
                 case "members" -> String.valueOf(team.getTotalMembers());
                 case "members_online" -> String.valueOf(countOnline(team));
