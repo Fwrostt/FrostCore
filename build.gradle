@@ -3,8 +3,6 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
-group = 'dev.frost'
-version = '1.2.1'
 
 repositories {
     mavenCentral()

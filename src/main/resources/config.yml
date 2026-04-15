@@ -1,9 +1,19 @@
-# FrostCore 
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  FrostCore — Main Configuration
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+#  Core settings for database, teleportation, teams, moderation,
+#  and all other FrostCore modules. Changes require /frostcore reload.
+#
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# Database Configuration
+# ┌─────────────────────────────────┐
+# │           DATABASE              │
+# └─────────────────────────────────┘
 # Supported types: SQLITE, MYSQL
+
 database:
-  type: SQLITE                  
+  type: SQLITE
   # MySQL settings (only used when type is MYSQL)
   mysql:
     host: localhost
@@ -13,100 +23,138 @@ database:
     password: ""
     pool-size: 10
 
-# GUI Settings
+# ┌─────────────────────────────────┐
+# │         GUI SETTINGS            │
+# └─────────────────────────────────┘
+
 gui:
-  borders: true         
+  borders: true                    # If true, all GUI menus (warps, homes, etc.) have a decorative glass pane border
 
-# Logging & Auditing Settings
+# ┌─────────────────────────────────┐
+# │       LOGGING & AUDITING        │
+# └─────────────────────────────────┘
+
 logging:
-  audit-enabled: true    # If true, logs important actions to plugins/FrostCore/logs/audit.log
+  audit-enabled: true              # Log important actions to plugins/FrostCore/logs/audit.log
 
-# Universal Teleport Settings
-# These apply to ALL teleports in the plugin (homes, warps, tpa, etc.)
+# ┌─────────────────────────────────┐
+# │          TELEPORTATION          │
+# └─────────────────────────────────┘
+# Universal settings that apply to ALL teleports (homes, warps, tpa, etc.)
+
 teleport:
-  action-bar: true         # Show progress bar action bar during teleport countdown
-  action-bar-style: BAR    # Can be 'BAR' (shows ●●●○○ animation) or 'TEXT' (shows 'Teleporting in 3s...')
-  title: true              # Show "Teleported!" subtitle on arrival
-  sounds: true             # Play countdown + arrival sounds
-  particles: true     # Show portal particles on arrival
-  admin-bypass: false # If false, admins/OPs will experience delay and cooldown like normal players
+  action-bar: true                 # Show progress bar action bar during teleport countdown
+  action-bar-style: BAR            # BAR = ●●●○○ animation | TEXT = "Teleporting in 3s..."
+  title: true                      # Show "Teleported!" subtitle on arrival
+  sounds: true                     # Play countdown + arrival sounds
+  particles: true                  # Show portal particles on arrival
+  admin-bypass: false              # If false, admins/OPs experience delay and cooldown like normal players
 
-# TPA Settings
+# ┌─────────────────────────────────┐
+# │              TPA                │
+# └─────────────────────────────────┘
+
 tpa:
   enabled: true
-  cooldown: 30        # Seconds before /tpa can be used again
-  delay: 3            # Warmup delay before teleporting (cancelled if player moves)
-  expiry: 60          # Seconds before a tpa request expires
+  cooldown: 30                     # Seconds before /tpa can be used again
+  delay: 3                         # Warmup delay before teleporting (cancelled on movement)
+  expiry: 60                       # Seconds before a tpa request expires
 
-# Server Warps
+# ┌─────────────────────────────────┐
+# │          SERVER WARPS           │
+# └─────────────────────────────────┘
+
 warps:
   enabled: true
-  cooldown: 10        # Cooldown between warp uses (seconds)
-  delay: 3            # Warmup delay before teleporting (seconds)
+  cooldown: 10                     # Cooldown between warp uses (seconds)
+  delay: 3                         # Warmup delay before teleporting (seconds)
   # When gui-enabled is true, /warps opens a chest GUI.
   # When false, /warps shows the classic chat list.
   gui-enabled: true
+
+  # ── GUI Layout ──
+  # Content area: slots in this rectangle are filled with warp items.
+  # Leave a 1-slot border on each side for the glass pane frame.
   gui:
     # Number of chest rows (3–6). Determines how many warp slots fit per page.
-    # rows: 5  →  content area rows 1–3 = 21 slots/page  (recommended)
-    # rows: 6  →  content area rows 1–4 = 28 slots/page
+    #   rows: 3  →  content area = 1 row  = 7 slots/page
+    #   rows: 5  →  content area rows 1–3 = 21 slots/page  (recommended)
+    #   rows: 6  →  content area rows 1–4 = 28 slots/page
     rows: 3
-    # Content area: slots in this rectangle are filled with warp items.
-    # Leave a 1-slot border on each side for the glass pane frame.
     content:
-      start-row: 1   # First content row  (0 = top row; keep ≥1 for top border)
-      end-row: 1     # Last content row   (keep ≤ rows-2 to leave space for nav)
-      start-col: 1   # First content col  (0 = left edge; keep ≥1 for side border)
-      end-col: 7     # Last content col   (8 = right edge; keep ≤7 for side border)
+      start-row: 1                 # First content row  (0 = top row; keep ≥1 for top border)
+      end-row: 1                   # Last content row   (keep ≤ rows-2 to leave space for nav row)
+      start-col: 1                 # First content col  (0 = left edge; keep ≥1 for side border)
+      end-col: 7                   # Last content col   (8 = right edge; keep ≤7 for side border)
 
-# Spawn Settings
+# ┌─────────────────────────────────┐
+# │             SPAWN               │
+# └─────────────────────────────────┘
+
 spawn:
   enabled: true
-  cooldown: 10
-  delay: 3
-  teleport-on-join: false    # Teleport players to spawn on first join
-  teleport-on-respawn: true  # Teleport players to spawn on death
+  cooldown: 10                     # Cooldown between /spawn uses (seconds)
+  delay: 3                         # Warmup delay before teleporting (seconds)
+  teleport-on-join: false          # If true, teleport players to spawn on their first join
+  teleport-on-respawn: true        # If true, teleport players to spawn when they die/respawn
+
+# ┌─────────────────────────────────┐
+# │            UTILITY              │
+# └─────────────────────────────────┘
 
 utility:
-  near-radius: 100
+  near-radius: 100                 # Default radius (in blocks) for the /near command
 
-# Back Command Settings
+# ┌─────────────────────────────────┐
+# │          BACK COMMAND           │
+# └─────────────────────────────────┘
+
 back:
-  cooldown: 5
-  delay: 3
+  cooldown: 5                      # Cooldown between /back uses (seconds)
+  delay: 3                         # Warmup delay before teleporting (seconds)
 
-# Personal Homes Settings
+# ┌─────────────────────────────────┐
+# │        PERSONAL HOMES           │
+# └─────────────────────────────────┘
+
 homes:
   enabled: true
-  max-homes: 5        # Global limit on max homes. Can be overridden using permissions like frostcore.homes.limit.10
-  cooldown: 10        # Cooldown between home uses (seconds)
-  delay: 3            # Warmup delay before teleporting (seconds)
-  gui:
-    rows: 4           # Rows for the /homes GUI
-    content:
-      start-row: 1    # Where the personal homes start matching the screenshot (0-indexed. This means Row 2)
-      end-row: 2      # End row for personal homes
-      start-col: 3    # Col 4 for personal homes. Ensures 1 separator slot between team home and personal homes.
-      end-col: 6      # Col 7. Ensures 1 padding slot at the rightmost corner.
+  max-homes: 5                     # Global limit (override with frostcore.homes.limit.<N>)
+  cooldown: 10                     # Cooldown between home uses (seconds)
+  delay: 3                         # Warmup delay before teleporting (seconds)
 
+  # ── GUI Layout ──
+  # The /homes GUI shows the team home (if any) on the left and personal homes
+  # in the content area defined below. Adjust to taste.
+  gui:
+    rows: 4                        # Number of rows for the /homes GUI chest
+    content:
+      start-row: 1                 # First content row (0-indexed — this means GUI row 2)
+      end-row: 2                   # Last content row for personal homes
+      start-col: 3                 # Col 4 — ensures 1 separator slot between team home and personal homes
+      end-col: 6                   # Col 7 — ensures 1 padding slot at the rightmost corner
+
+# ┌─────────────────────────────────┐
+# │             TEAMS               │
+# └─────────────────────────────────┘
 
 teams:
-  enabled: true  # Enables or disables the entire teams system (blocks all /team commands)
+  enabled: true                    # Enables or disables the entire teams system (blocks all /team commands)
 
-  # Role Limits
-  max-owners: 2    # Maximum number of owners (highest authority in team)
-  max-admins: 4    # Maximum number of admins (second-highest role)
-  player-limit: 10 # Total number of players allowed in one team
+  # ── Role Limits ──
+  max-owners: 2                    # Maximum number of owners (highest authority)
+  max-admins: 4                    # Maximum number of admins (second-highest role)
+  player-limit: 10                 # Total players allowed in one team
 
-  # Core Features
-  pvp-toggle: true      # Default PvP state when a new team is created (true = PvP enabled)
-  team-chat: true       # Enables private team chat channel (/team chat)
-  friendly-fire: false  # If false, teammates cannot damage each other when PvP is disabled
+  # ── Core Features ──
+  pvp-toggle: true                 # Default PvP state for new teams (true = PvP enabled)
+  team-chat: true                  # Enables private team chat (/team chat)
+  friendly-fire: false             # If false, teammates can't damage each other when PvP off
 
-  # Team Name Settings
-  team-name-max-length: 16  # Maximum length of team name
-  team-name-min-length: 3   # Minimum length required for team name
-  team-name-banned: 
+  # ── Team Name Settings ──
+  team-name-max-length: 16         # Maximum character length of a team name
+  team-name-min-length: 3          # Minimum character length required for a team name
+  team-name-banned:
     - "fuck"
     - "nigger"
     - "pussy"
@@ -131,54 +179,56 @@ teams:
     - "tranny"
     - "nazi"
 
-  # Team Tag Settings
-  tag-max-length: 6     # Maximum length of team tag
-  tag-min-length: 1     # Minimum length of team tag
+  # ── Team Tag Settings ──
+  tag-max-length: 6                # Maximum character length of a team tag
+  tag-min-length: 1                # Minimum character length of a team tag
 
-  # Invite Settings
+  # ── Invite Settings ──
   invites:
-    team-join-expiry: 60     # How long (in seconds) a team join invite lasts before expiring
-    team-ally-expiry: 120    # How long (in seconds) an ally request lasts before expiring
+    team-join-expiry: 60           # Seconds before a join invite expires
+    team-ally-expiry: 120          # Seconds before an ally request expires
 
-  # Team Home Settings
+  # ── Team Home ──
   home:
-    enabled: true   # Allows use of /team home command
-    cooldown: 10    # Time (in seconds) before the command can be used again
-    delay: 5        # Delay (in seconds) before teleport - cancelled if player moves
+    enabled: true                  # Allows use of /team home command
+    cooldown: 10                   # Time (in seconds) before the command can be used again
+    delay: 5                       # Delay (in seconds) before teleport — cancelled if player moves
 
-  # Team Warps
+  # ── Team Warps ──
   warps:
-    enabled: true   # Allows teams to create warp points
-    limit: 5        # Maximum number of warps a team can have
-    cooldown: 10    # Cooldown (in seconds) between warp uses
-    delay: 5        # Delay (in seconds) before teleporting to a warp
+    enabled: true                  # Allows teams to create warp points
+    limit: 5                       # Maximum number of warps a team can have
+    cooldown: 10                   # Cooldown (in seconds) between warp uses
+    delay: 5                       # Delay (in seconds) before teleporting to a warp
 
-  # Relations System
+  # ── Relations System ──
   relations:
-    allies-enabled: true   # Allows teams to add other teams as allies
-    enemies-enabled: true  # Allows teams to mark other teams as enemies
-    max-allies: 4          # Maximum number of allied teams
-    max-enemies: 4         # Maximum number of enemy teams
+    allies-enabled: true           # Allows teams to add other teams as allies
+    enemies-enabled: true          # Allows teams to mark other teams as enemies
+    max-allies: 4                  # Maximum number of allied teams
+    max-enemies: 4                 # Maximum number of enemy teams
 
-  # Team Echest (Shared Storage)
+  # ── Team Echest (Shared Storage) ──
   echest:
-    enabled: true  # Enables shared team ender chest inventory
-    slots: 27      # Number of slots (must be multiple of 9: 9, 18, 27, 36, 45, 54)
+    enabled: true                  # Enables shared team ender chest inventory
+    slots: 27                      # Number of slots (must be a multiple of 9: 9, 18, 27, 36, 45, 54)
 
-  # Team List Pagination
+  # ── Team List Pagination ──
   list:
-    teams-per-page: 10  # Number of teams shown per page in /team list
+    teams-per-page: 10             # Number of teams shown per page in /team list
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#                 MODERATION
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ┌─────────────────────────────────┐
+# │          MODERATION             │
+# └─────────────────────────────────┘
+
 moderation:
   enabled: true
 
-  # Broadcast punishments to online staff with frostcore.moderation.notify
+  # Broadcast punishment actions to online staff who have frostcore.moderation.notify
   broadcast-to-staff: true
 
-  # Commands blocked while muted (prevents circumventing mute via /msg etc.)
+  # ── Muted Blocked Commands ──
+  # Commands blocked while muted (prevents circumventing mute via /msg, etc.)
   muted-blocked-commands:
     - "/msg"
     - "/tell"
@@ -190,46 +240,57 @@ moderation:
     - "/reply"
     - "/r"
 
-  # Use group weights for exemption (lower weight staff can't punish higher weight)
+  # ── Group Weights ──
+  # Use group weights for exemption — lower-weight staff can't punish higher-weight staff.
+  # Weights are defined per-group in punishments.yml.
   use-group-weights: true
 
-  # Server name shown in punishment records and Discord embeds
+  # ── Server Identity ──
+  # Server name shown in punishment records and Discord webhook embeds.
   server-name: "Survival"
 
-  # Discord Webhooks (leave empty to disable)
-  # Validates on startup — invalid URLs are auto-disabled
+  # ── Discord Webhooks ──
+  # Leave empty ("") to disable. Invalid URLs are auto-disabled on startup.
   webhooks:
-    punishments: ""      # Bans, mutes, warns, kicks
-    reports: ""          # Player reports
-    staff-activity: ""   # Staff admin actions (lockdown, rollback, prune)
-    staffchat: ""        # Staff messages
+    punishments: ""                # Bans, mutes, warns, kicks
+    reports: ""                    # Player reports
+    staff-activity: ""             # Staff admin actions (lockdown, rollback, prune)
+    staffchat: ""                  # Staff messages
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#                 MACE LIMITER
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ┌─────────────────────────────────┐
+# │         MACE LIMITER            │
+# └─────────────────────────────────┘
+
 mace-limiter:
   enabled: false
   # Maximum number of maces allowed on the entire server
   max-maces-overall: 3
   # Maximum number of maces a single player can hold (0 = unlimited)
   max-maces-per-player: 1
-  # What to do when a player joins with an untracked mace (e.g. from creative)
-  # TRACK = auto-register and count it | CONFISCATE = remove it | IGNORE = leave it alone
+  # What to do when a player joins with an untracked mace (e.g. from creative):
+  #   TRACK      = auto-register and count it towards the limit
+  #   CONFISCATE = remove the mace from the player's inventory
+  #   IGNORE     = leave it alone, don't track it
   untracked-mace-action: TRACK
-  # Notify staff (frostcore.mace.notify) when maces are crafted/destroyed/transferred
+  # Notify staff with frostcore.mace.notify when maces are crafted/destroyed/transferred
   notify-staff: true
-  # Enchantment level limits — enchantments not listed here are unlimited
+
+  # ── Enchantment Limits ──
+  # Enchantments not listed here are unlimited.
   enchantment-limits:
     DENSITY: 5
     BREACH: 4
     WIND_BURST: 3
-  # Worlds where maces cannot be used in PvP
+
+  # ── Combat Restrictions ──
+  # Worlds where maces cannot be used in PvP (list world names)
   restricted-worlds: []
-  # Cooldown between mace PvP hits in seconds (0 = disabled)
+  # Cooldown between mace PvP hits in seconds (0 = no cooldown / disabled)
   pvp-cooldown: 0
-  # Maximum damage a mace can deal per hit (0 = unlimited/vanilla)
+  # Maximum damage a mace can deal per hit (0 = unlimited / vanilla behavior)
   damage-cap: 0
   # If true, maces are destroyed (removed from drops) when a player dies
   disable-on-death: false
+  # Material types tracked by the mace limiter system
   tracked-materials:
     - MACE

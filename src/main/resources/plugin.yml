@@ -1,5 +1,5 @@
 name: FrostCore
-version: '1.2.1'
+version: ${version}
 main: dev.frost.frostcore.Main
 api-version: '1.21'
 authors: [ Frost ]

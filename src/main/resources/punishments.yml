@@ -1,21 +1,23 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#                  FrostCore — Punishment Configuration
+#  FrostCore — Punishment Configuration
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #
-# This file defines punishment templates and staff group limits.
+#  Defines punishment templates and staff group limits.
+#  Templates allow staff to quickly apply pre-configured punishments
+#  with automatic escalation for repeat offenders.
 #
-# Templates allow staff to quickly apply pre-configured punishments
-# with escalation for repeat offenders.
+#  Usage:  /ban <player> -t <template>
+#          /mute <player> -t <template>
 #
-# Usage: /ban <player> -t <template>
-#        /mute <player> -t <template>
-#
-# Duration format: 30s, 5m, 1h, 7d, 2w, 1M, 1y, permanent
+#  Duration format: 30s, 5m, 1h, 7d, 2w, 1M, 1y, permanent
 #
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━ TEMPLATES ━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ┌─────────────────────────────────┐
+# │       PUNISHMENT TEMPLATES      │
+# └─────────────────────────────────┘
+
 templates:
 
   # ── Hacking / Cheating ──
@@ -76,7 +78,7 @@ templates:
       2: 30d
       3: permanent
 
-  # ── Gameplay Offense ──
+  # ── Gameplay Offenses ──
   griefing:
     type: BAN
     reason: "Griefing"
@@ -126,20 +128,23 @@ templates:
     duration: permanent
 
 
-# ━━━━━━━━━━━━━━━━━━━━━ STAFF GROUP LIMITS ━━━━━━━━━━━━━━━━━━━━
+# ┌─────────────────────────────────┐
+# │       STAFF GROUP LIMITS        │
+# └─────────────────────────────────┘
 #
-# Groups define what staff members can and cannot do.
-# Higher weights mean more authority.
+#  Groups define what staff members can and cannot do.
+#  Higher weights mean more authority.
 #
-# Staff with frostcore.moderation.group.unlimited bypass all limits.
-# Staff with frostcore.moderation.cooldown.bypass bypass cooldowns.
+#  Staff with frostcore.moderation.group.unlimited bypass all limits.
+#  Staff with frostcore.moderation.cooldown.bypass bypass cooldowns.
 #
-# When use-group-weights is enabled in config.yml:
-#   Lower-weight staff CANNOT punish higher-weight staff.
-#   Lower-weight staff CANNOT remove punishments by higher-weight staff.
+#  When use-group-weights is enabled in config.yml:
+#    Lower-weight staff CANNOT punish higher-weight staff.
+#    Lower-weight staff CANNOT remove punishments by higher-weight staff.
 
 groups:
 
+  # ── Admin ──
   admin:
     permission: frostcore.moderation.group.admin
     weight: 100
@@ -152,6 +157,7 @@ groups:
       mute: 0s
       warn: 0s
 
+  # ── Moderator ──
   moderator:
     permission: frostcore.moderation.group.moderator
     weight: 50
@@ -164,6 +170,7 @@ groups:
       mute: 10s
       warn: 5s
 
+  # ── Helper ──
   helper:
     permission: frostcore.moderation.group.helper
     weight: 10
