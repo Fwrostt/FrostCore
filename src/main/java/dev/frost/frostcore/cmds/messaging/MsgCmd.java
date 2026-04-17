@@ -51,6 +51,14 @@ public class MsgCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // /msgtoggle check — admins with frostcore.message.bypass can always send
+        if (sender instanceof Player player && pmm.isMsgBlocked(target.getUniqueId())) {
+            if (!player.hasPermission("frostcore.message.bypass")) {
+                mm.send(player, "message.msgtoggle-blocked");
+                return true;
+            }
+        }
+
         if (sender instanceof Player player && pmm.isIgnoring(target.getUniqueId(), player.getUniqueId())) {
             mm.send(player, "message.ignored");
             return true;

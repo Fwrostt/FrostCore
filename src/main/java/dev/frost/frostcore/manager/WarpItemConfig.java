@@ -14,14 +14,17 @@ public class WarpItemConfig {
     private List<String> lore;
     private boolean glow;
     private String permission;
+    /** Content-slot index (0-based within the GUI content area). -1 = auto-place. */
+    private int slot;
 
     public WarpItemConfig(String displayName, Material material,
-                          List<String> lore, boolean glow, String permission) {
+                          List<String> lore, boolean glow, String permission, int slot) {
         this.displayName = displayName;
         this.material    = material;
         this.lore        = new ArrayList<>(lore);
         this.glow        = glow;
         this.permission  = permission == null ? "" : permission;
+        this.slot        = slot;
     }
 
     
@@ -36,7 +39,8 @@ public class WarpItemConfig {
                 Material.ENDER_PEARL,
                 lore,
                 false,
-                ""
+                "",
+                -1
         );
     }
 
@@ -47,6 +51,7 @@ public class WarpItemConfig {
         section.set("lore", lore);
         section.set("glow", glow);
         section.set("permission", permission);
+        section.set("slot", slot);
     }
 
     
@@ -69,8 +74,9 @@ public class WarpItemConfig {
 
         boolean glow       = section.getBoolean("glow", false);
         String  permission = section.getString("permission", "");
+        int     slot       = section.getInt("slot", -1);
 
-        return new WarpItemConfig(displayName, material, lore, glow, permission);
+        return new WarpItemConfig(displayName, material, lore, glow, permission, slot);
     }
 
     public String       getDisplayName()              { return displayName; }
@@ -88,7 +94,11 @@ public class WarpItemConfig {
     public String       getPermission()               { return permission; }
     public void         setPermission(String p)       { this.permission = p == null ? "" : p; }
 
+    public int          getSlot()                     { return slot; }
+    public void         setSlot(int s)                { this.slot = s; }
+
     
     public boolean requiresPermission()               { return !permission.isEmpty(); }
+    public boolean isPinned()                         { return slot >= 0; }
 }
 

@@ -409,6 +409,16 @@ public final class Main extends JavaPlugin {
         IgnoreCmd ignoreCmd = new IgnoreCmd();
         cmdUtil.registerCommand("ignore", ignoreCmd, ignoreCmd);
 
+        MsgToggleCmd msgToggleCmd = new MsgToggleCmd();
+        cmdUtil.registerCommand("msgtoggle", msgToggleCmd, msgToggleCmd);
+        cmdUtil.registerCommand("msgoff", msgToggleCmd, msgToggleCmd);
+        cmdUtil.registerCommand("msgon", msgToggleCmd, msgToggleCmd);
+
+        ChatToggleCmd chatToggleCmd = new ChatToggleCmd();
+        cmdUtil.registerCommand("chattoggle", chatToggleCmd, chatToggleCmd);
+        cmdUtil.registerCommand("chatoff", chatToggleCmd, chatToggleCmd);
+        cmdUtil.registerCommand("chaton", chatToggleCmd, chatToggleCmd);
+
         GlowCmd glowCmd = new GlowCmd();
         cmdUtil.registerCommand("glow", glowCmd, glowCmd);
 

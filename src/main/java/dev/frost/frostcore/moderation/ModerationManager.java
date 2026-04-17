@@ -170,10 +170,18 @@ public class ModerationManager {
             modDb.deactivatePunishment(punishmentId, staffUuid, staffName, reason);
         }
 
-        
+        // Clear caches (handles UUID map + IP map)
         removeCacheEntry(p);
 
-        
+        // Notify the target if online and this was a mute
+        if (p.type().getCategory().equals("MUTE") && p.targetUuid() != null) {
+            Player target = Bukkit.getPlayer(p.targetUuid());
+            if (target != null && target.isOnline()) {
+                Main.getMessageManager().sendRaw(target,
+                        "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>You have been unmuted.");
+            }
+        }
+
         if (webhookManager != null) {
             webhookManager.sendUnpunishWebhookAsync(p, staffName);
         }
@@ -187,16 +195,52 @@ public class ModerationManager {
         UUID staffUuid = (staff instanceof Player pl) ? pl.getUniqueId() : null;
         String staffName = staff != null ? staff.getName() : "CONSOLE";
 
-        
+        // Grab the active record before deactivating (for webhook + display name)
         Punishment active = modDb.getActivePunishment(targetUuid, category);
 
-        int count = modDb.deactivateAllActive(targetUuid, category, staffUuid, staffName);
-        if (count == 0) return false;
+        // If no UUID-linked punishment, check whether there's an IP-mute on the player's current IP
+        // (covers the case where player was /muteip'd but /unmute is used by name)
+        if (active == null && category.equalsIgnoreCase("MUTE")) {
+            Player onlineTarget = Bukkit.getPlayer(targetUuid);
+            if (onlineTarget != null && onlineTarget.getAddress() != null) {
+                String ip = onlineTarget.getAddress().getAddress().getHostAddress();
+                active = modDb.getActiveIpPunishment(ip, "MUTE");
+            }
+        }
 
-        
+        int count = modDb.deactivateAllActive(targetUuid, category, staffUuid, staffName);
+
+        // Also deactivate any IP-mute linked to the player's current IP
+        boolean ipMuteCleared = false;
+        if (category.equalsIgnoreCase("MUTE")) {
+            Player onlineTarget = Bukkit.getPlayer(targetUuid);
+            if (onlineTarget != null && onlineTarget.getAddress() != null) {
+                String ip = onlineTarget.getAddress().getAddress().getHostAddress();
+                Punishment ipMute = activeIpMutes.get(ip);
+                if (ipMute != null) {
+                    modDb.deactivatePunishment(ipMute.id(), staffUuid, staffName, reason);
+                    activeIpMutes.remove(ip);
+                    ipMuteCleared = true;
+                    if (active == null) active = ipMute;
+                }
+            }
+        }
+
+        if (count == 0 && !ipMuteCleared) return false;
+
+        // Clear UUID-level caches
         switch (category.toUpperCase()) {
             case "BAN" -> activeBans.remove(targetUuid);
             case "MUTE" -> activeMutes.remove(targetUuid);
+        }
+
+        // Notify the target if online and this was a mute removal
+        if (category.equalsIgnoreCase("MUTE")) {
+            Player onlineTarget = Bukkit.getPlayer(targetUuid);
+            if (onlineTarget != null && onlineTarget.isOnline()) {
+                Main.getMessageManager().sendRaw(onlineTarget,
+                        "<#D4727A>MOD <dark_gray>»</dark_gray> <#7ECFA0>You have been unmuted.");
+            }
         }
 
         if (active != null && webhookManager != null) {

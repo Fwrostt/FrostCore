@@ -901,27 +901,39 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
         if (args.length == 2) {
             String sub = args[0].toLowerCase();
 
-            if (sub.equals("invite") || sub.equals("kick") || sub.equals("promote") || sub.equals("demote")) {
+            // ── invite: online players NOT already in any team ──────────────
+            if (sub.equals("invite")) {
+                return filter(args[1],
+                        Bukkit.getOnlinePlayers().stream()
+                                .filter(p -> p != sender)
+                                .filter(p -> !manager.hasTeam(p.getUniqueId()))
+                                .map(Player::getName)
+                                .collect(Collectors.toList()));
+            }
+
+            // ── kick: online team members, excluding self ─────────────────────
+            if (sub.equals("kick")) {
                 if (sender instanceof Player p) {
                     try {
                         Team team = manager.getTeam(p.getUniqueId());
-                        Set<UUID> all = new HashSet<>();
-                        all.addAll(team.getOwners());
-                        all.addAll(team.getAdmins());
-                        all.addAll(team.getMembers());
-                        return all.stream()
-                                .map(Bukkit::getPlayer)
-                                .filter(Objects::nonNull)
-                                .map(Player::getName)
-                                .filter(name -> !name.equals(p.getName()))
-                                .toList();
-                    } catch (Exception e) {
-                        return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
-                    }
+                        return filter(args[1], onlineMembersOf(team, p, true));
+                    } catch (Exception ignored) {}
                 }
-                return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
+                return filter(args[1], Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
             }
 
+            // ── promote / demote: online team members ─────────────────────────
+            if (sub.equals("promote") || sub.equals("demote")) {
+                if (sender instanceof Player p) {
+                    try {
+                        Team team = manager.getTeam(p.getUniqueId());
+                        return filter(args[1], onlineMembersOf(team, p, false));
+                    } catch (Exception ignored) {}
+                }
+                return filter(args[1], Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
+            }
+
+            // ── join / accept / decline: pending invite senders / team names ──
             if (sub.equals("join") || sub.equals("accept") || sub.equals("decline")) {
                 if (sender instanceof Player p) {
                     List<Invite> pending = inviteManager.getAllInvites(p.getUniqueId());
@@ -934,50 +946,88 @@ public class TeamCmd implements CommandExecutor, TabCompleter {
                         String senderTeamMeta = inv.getMeta("senderTeam");
                         if (senderTeamMeta != null) suggestions.add(senderTeamMeta);
                     }
-                    return new ArrayList<>(suggestions);
+                    return filter(args[1], new ArrayList<>(suggestions));
                 }
             }
 
+            // ── warp / delwarp: team's warp names ────────────────────────────
             if (sub.equals("warp") || sub.equals("delwarp")) {
                 if (sender instanceof Player p) {
                     try {
                         Team team = manager.getTeam(p.getUniqueId());
-                        return new ArrayList<>(team.getWarps().keySet());
+                        return filter(args[1], new ArrayList<>(team.getWarps().keySet()));
                     } catch (Exception ignored) {}
                 }
             }
 
+            // ── ally / enemy: all teams except own ───────────────────────────
             if (sub.equals("ally") || sub.equals("enemy")) {
-                return manager.getAllTeams().stream().map(Team::getName).toList();
+                String ownTeam = null;
+                if (sender instanceof Player p) {
+                    try { ownTeam = manager.getTeam(p.getUniqueId()).getName(); } catch (Exception ignored) {}
+                }
+                final String own = ownTeam;
+                return filter(args[1], manager.getAllTeams().stream()
+                        .map(Team::getName)
+                        .filter(n -> !n.equalsIgnoreCase(own))
+                        .collect(Collectors.toList()));
             }
 
+            // ── unally: current allies ────────────────────────────────────────
             if (sub.equals("unally")) {
                 if (sender instanceof Player p) {
                     try {
                         Team team = manager.getTeam(p.getUniqueId());
-                        return new ArrayList<>(team.getAllies());
+                        return filter(args[1], new ArrayList<>(team.getAllies()));
                     } catch (Exception ignored) {}
                 }
             }
 
+            // ── unenemy: current enemies ──────────────────────────────────────
             if (sub.equals("unenemy")) {
                 if (sender instanceof Player p) {
                     try {
                         Team team = manager.getTeam(p.getUniqueId());
-                        return new ArrayList<>(team.getEnemies());
+                        return filter(args[1], new ArrayList<>(team.getEnemies()));
                     } catch (Exception ignored) {}
                 }
             }
 
+            // ── info: all team names ──────────────────────────────────────────
             if (sub.equals("info")) {
-                return manager.getAllTeams().stream().map(Team::getName).toList();
-            }
-
-            if (sub.equals("chat")) {
-                return List.of("on", "off");
+                return filter(args[1], manager.getAllTeams().stream()
+                        .map(Team::getName)
+                        .collect(Collectors.toList()));
             }
         }
         return Collections.emptyList();
+    }
+
+    // ── private helpers ───────────────────────────────────────────────────────
+
+    /** Filter a list to entries starting with the typed prefix (case-insensitive). */
+    private List<String> filter(String typed, List<String> options) {
+        String lower = typed.toLowerCase();
+        return options.stream()
+                .filter(s -> s.toLowerCase().startsWith(lower))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Return names of online players who are in the given team, optionally
+     * excluding the executing player.
+     */
+    private List<String> onlineMembersOf(Team team, Player executor, boolean excludeSelf) {
+        Set<UUID> all = new HashSet<>();
+        all.addAll(team.getOwners());
+        all.addAll(team.getAdmins());
+        all.addAll(team.getMembers());
+        return all.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
+                .filter(p -> !excludeSelf || !p.getUniqueId().equals(executor.getUniqueId()))
+                .map(Player::getName)
+                .collect(Collectors.toList());
     }
 }
 

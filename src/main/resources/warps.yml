@@ -26,6 +26,12 @@
 #  permission     Permission node required to use this warp.
 #                 Leave blank ("") to make the warp public.
 #                 Applies to BOTH /warp <name> and the GUI.
+#
+#  slot           Content-slot index (0-based) to pin this warp to a fixed GUI position.
+#                 -1 (default) = auto-place and paginate normally.
+#                 0  = first content slot (top-left of content area).
+#                 If two warps share the same slot, a warning is logged and
+#                 the last loaded warp wins; the other is moved to auto.
 
 
 # ┌─────────────────────────────────┐
@@ -44,6 +50,52 @@
 #        - ""
 #      glow: true
 #      permission: ""
+
+
+# ┌─────────────────────────────────┐
+# │          GUI SETTINGS           │
+# └─────────────────────────────────┘
+#  Controls the chrome (border, header, navigation) of the Warps GUI.
+#  Changes take effect after /frostcore reload.
+
+gui:
+
+  # ── Size ──────────────────────────────────────────────────────
+  rows: 5                # Number of inventory rows (3–6). Min 3 required for border + nav.
+                         # Content rows = rows - 2 (top border row + bottom nav row).
+
+  # Optional: override which slots warp items can fill (advanced).
+  # Defaults auto-compute based on rows above — omit to use defaults.
+  #content:
+  #  start-row: 1        # First row available for warp items (0-indexed). Default: 1
+  #  end-row: 3          # Last row for warp items. Default: rows - 2
+  #  start-col: 1        # First column (0-indexed). Default: 1
+  #  end-col: 7          # Last column. Default: 7
+
+
+  # ── Border ────────────────────────────────────────────────────
+  border:
+    enabled: true          # Set to false to remove the glass-pane border entirely.
+    material: BLACK_STAINED_GLASS_PANE
+
+  # ── Header item (compass in slot 0,4) ─────────────────────────
+  header:
+    enabled: true          # Set to false to hide the compass header item.
+    material: COMPASS
+    name: "<!italic><white>Server Warps"
+    lore:
+      - "<!italic><dark_gray>{total} warp{s} available"
+      - "<!italic><gray>Browse and teleport instantly"
+    glow: false
+
+  # ── Page indicator (paper in the nav row centre) ───────────────
+  page-item:
+    enabled: true          # Set to false to hide the page-number paper.
+    material: PAPER
+    name: "<!italic><gray>Page <white>{page} <dark_gray>/ <gray>{total_pages}"
+    lore:
+      - "<!italic><dark_gray>{total} warp{s} total"
+    glow: false
 
 
 # ┌─────────────────────────────────┐

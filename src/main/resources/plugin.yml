@@ -284,6 +284,16 @@ commands:
     description: Ignore a player
     usage: /ignore <player>
     permission: frostcore.message
+  msgtoggle:
+    description: Toggle incoming private messages
+    usage: /msgtoggle
+    aliases: [msgoff, msgon]
+    permission: frostcore.msgtoggle
+  chattoggle:
+    description: Toggle global chat visibility
+    usage: /chattoggle
+    aliases: [chatoff, chaton]
+    permission: frostcore.chattoggle
   seen:
     description: Check when a player was last online
     usage: /seen <player>
@@ -474,6 +484,15 @@ permissions:
     default: op
   frostcore.message:
     description: Allows using private messaging
+    default: true
+  frostcore.message.bypass:
+    description: Allows messaging players who have /msgtoggle active
+    default: op
+  frostcore.msgtoggle:
+    description: Allows toggling incoming private messages
+    default: true
+  frostcore.chattoggle:
+    description: Allows toggling global chat visibility
     default: true
   frostcore.admin.vanish:
     description: Allows toggling vanish

@@ -46,6 +46,12 @@ public class ReplyCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // /msgtoggle check — admins with frostcore.message.bypass can always reply
+        if (pmm.isMsgBlocked(target.getUniqueId()) && !player.hasPermission("frostcore.message.bypass")) {
+            mm.send(player, "message.msgtoggle-blocked");
+            return true;
+        }
+
         if (pmm.isIgnoring(target.getUniqueId(), player.getUniqueId())) {
             mm.send(player, "message.ignored");
             return true;

@@ -294,3 +294,27 @@ mace-limiter:
   # Material types tracked by the mace limiter system
   tracked-materials:
     - MACE
+
+# ┌─────────────────────────────────┐
+# │              CHAT               │
+# └─────────────────────────────────┘
+
+chat:
+  mentions:
+    enabled: true
+    # If true, players must use @ before a name to mention them. If false, typing an exact username triggers a mention implicitly.
+    require-at-symbol: true
+    # Format of the mention for the player who was mentioned (using MiniMessage tags)
+    format-self: "<yellow>@{player}</yellow>"
+    # Format of the mention for everyone else who sees the message
+    format-others: "<#AAAAAA>@{player}</#AAAAAA>"
+    # Give the mentioned player an actionbar message
+    actionbar: true
+    actionbar-message: "<yellow>You were mentioned by {player}!"
+    # Play a sound for the mentioned player
+    sound: true
+    sound-type: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    sound-volume: 2.0
+    sound-pitch: 1.0
+    # Enable @everyone tagging (requires frostcore.mention.everyone permission)
+    everyone-tag: true

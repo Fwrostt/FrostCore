@@ -280,6 +280,15 @@ message:
   ignore-on: "{message.prefix}<#8FA3BF>You are now ignoring <white>{player}</white>."
   ignore-off: "{message.prefix}<#8FA3BF>You are no longer ignoring <white>{player}</white>."
 
+  # ── Msg Toggle (/msgtoggle) ──
+  msgtoggle-off: "{message.prefix}<#D4727A>Private messages <bold>disabled</bold>. <dark_gray>(admins can still reach you)"
+  msgtoggle-on: "{message.prefix}<#7ECFA0>Private messages <bold>enabled</bold>."
+  msgtoggle-blocked: "{message.prefix}<#D4727A>That player has their private messages <bold>disabled</bold>."
+
+  # ── Chat Toggle (/chattoggle) ──
+  chattoggle-off: "{message.prefix}<#D4727A>Global chat <bold>hidden</bold>. <dark_gray>(msgs, teams & announcements still work)"
+  chattoggle-on: "{message.prefix}<#7ECFA0>Global chat <bold>visible</bold>."
+
 
 # ┌─────────────────────────────────┐
 # │       UTILITY COMMANDS          │

@@ -127,6 +127,18 @@ public class WarpManager {
         return warpConfigs.getOrDefault(name.toLowerCase(), WarpItemConfig.defaultFor(name));
     }
 
+    /** Returns the {@code gui:} section of warps.yml, or {@code null} if absent. */
+    public org.bukkit.configuration.ConfigurationSection getGuiSection() {
+        return warpsYml.getConfigurationSection("gui");
+    }
+
+    /** Returns the configured GUI row count (clamped 3–6, default 5). */
+    public int getGuiRows() {
+        org.bukkit.configuration.ConfigurationSection sec = getGuiSection();
+        int rows = sec != null ? sec.getInt("rows", 5) : 5;
+        return Math.max(3, Math.min(6, rows));
+    }
+
     
     public void setWarpConfig(String name, WarpItemConfig config) {
         String key = name.toLowerCase();
