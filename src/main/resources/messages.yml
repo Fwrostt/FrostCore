@@ -378,3 +378,76 @@ moderation:
 
   # ── Staff Chat ──
   staffchat-format: "<dark_gray>[<#D4727A>Staff</#D4727A>] <white>{player}</white> <dark_gray>» <#D4C4A8>{message}"
+
+# ┌─────────────────────────────────┐
+# │       CHAT FILTER & SPAM        │
+# └─────────────────────────────────┘
+
+chat-filter:
+  prefix: "<#D4727A>CHAT <dark_gray>»</dark_gray> "
+  cooldown-active: "{chat-filter.prefix}<#8FA3BF>Please wait <white>{time}</white> before sending another message."
+  spam-burst: "{chat-filter.prefix}<#D4727A>You are sending messages too quickly! Slow down."
+  caps-detected: "{chat-filter.prefix}<#8FA3BF>Please reduce your caps usage."
+  similarity: "{chat-filter.prefix}<#8FA3BF>Please do not repeat the same message."
+  repeat-chars: "{chat-filter.prefix}<#8FA3BF>Please avoid repeating characters excessively."
+  blocked-message: "{chat-filter.prefix}<#D4727A>Your message violates our chat filters."
+  blocked-domain: "{chat-filter.prefix}<#D4727A>Advertising or external links are not allowed here."
+  blocked-ip: "{chat-filter.prefix}<#D4727A>Posting IP addresses is not permitted."
+
+
+# ┌─────────────────────────────────┐
+# │          BOUNTY SYSTEM          │
+# └─────────────────────────────────┘
+
+bounty:
+  prefix: "<#8FA3BF>BOUNTY <dark_gray>»</dark_gray> "
+
+  # ── Feature Guards ──
+  disabled: "{bounty.prefix}<#D4727A>The bounty system is currently disabled."
+  no-economy: "{bounty.prefix}<#D4727A>Economy is not available. Bounties are disabled."
+
+  # ── Place ──
+  bounty-placed: "{bounty.prefix}<#7ECFA0>Bounty placed on <white>{target}</white>! <dark_gray>(<white>{amount}</white> added — total: <white>{total}</white>)"
+  cannot-target-self: "{bounty.prefix}<#D4727A>You cannot place a bounty on yourself."
+  amount-too-low: "{bounty.prefix}<#D4727A>Minimum bounty amount is <white>{min}</white>."
+  amount-too-high: "{bounty.prefix}<#D4727A>Maximum bounty amount is <white>{max}</white>."
+  invalid-amount: "{bounty.prefix}<#D4727A>Invalid amount. Use a number or suffix like <white>1k</white>, <white>5m</white>."
+  insufficient-funds: "{bounty.prefix}<#D4727A>You do not have enough funds. (<white>{amount}</white> required)"
+  place-cooldown: "{bounty.prefix}<#D4727A>Please wait <white>{seconds}s</white> before placing another bounty."
+  max-contributors-reached: "{bounty.prefix}<#D4727A>This bounty has reached the maximum of <white>{max}</white> contributors."
+  error-db: "{bounty.prefix}<#D4727A>An internal error occurred. Your funds have been refunded."
+  usage-place: "{bounty.prefix}<#8FA3BF>Usage: <white>/bounty place <player> <amount></white>"
+
+  # ── Remove ──
+  bounty-removed: "{bounty.prefix}<#D4727A>The bounty on <white>{target}</white> has been removed."
+  no-bounty-on-target: "{bounty.prefix}<#D4727A>That player does not have an active bounty."
+  usage-remove: "{bounty.prefix}<#8FA3BF>Usage: <white>/bounty remove <player></white>"
+
+  # ── Claim ──
+  bounty-claimed: "{bounty.prefix}<#7ECFA0>You killed <white>{target}</white> and earned <white>{amount}</white>!"
+  cannot-claim-own: "{bounty.prefix}<#D4727A>You cannot claim a bounty you contributed to!"
+
+  # ── Refund ──
+  bounty-refunded: "{bounty.prefix}<#8FA3BF>Your contribution to the bounty on <white>{target}</white> was refunded: <white>{amount}</white>."
+
+  # ── Info / Top ──
+  usage-info: "{bounty.prefix}<#8FA3BF>Usage: <white>/bounty info <player></white>"
+  no-active-bounties: "{bounty.prefix}<#8FA3BF>There are no active bounties right now."
+  top-header: "{bounty.prefix}<#8FA3BF>Top Active Bounties:"
+  top-entry: " <dark_gray>#{rank} <white>{target}</white> <dark_gray>— <white>{amount}</white> <dark_gray>(<#8FA3BF>{contributors} contributors</#8FA3BF>)"
+
+  # ── Help ──
+  help: |
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    <#8FA3BF>  Bounty System</#8FA3BF>
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    <dark_gray> » <white>/bounty place <player> <amount>
+    <dark_gray> » <white>/bounty remove <player>
+    <dark_gray> » <white>/bounty info [player]
+    <dark_gray> » <white>/bounty list
+    <dark_gray> » <white>/bounty top
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  # ── Broadcast announcements ──
+  announce-place: "{bounty.prefix}<white>{placer}</white> <#8FA3BF>placed a <white>{amount}</white> bounty on <white>{target}</white>! <dark_gray>(total: <white>{total}</white>)"
+  announce-claim: "{bounty.prefix}<white>{killer}</white> <#7ECFA0>claimed the <white>{amount}</white> bounty on <white>{target}</white>!"

@@ -37,6 +37,20 @@ public class ChatListener implements Listener {
         Player player = event.getPlayer();
         String rawMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
         
+        ChatContext ctx = chatManager.getPipeline().process(player, rawMessage);
+        
+        if (ctx.isCancelled()) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (dev.frost.frostcore.moderation.ModerationManager.getInstance().isShadowMuted(player.getUniqueId())) {
+            event.viewers().clear();
+            event.viewers().add(player);
+        }
+        
+        rawMessage = ctx.getMessage();
+        
         FileConfiguration config = Main.getConfigManager().getConfig();
         boolean mentionsEnabled = config.getBoolean("chat.mentions.enabled", false);
         boolean requireAt = config.getBoolean("chat.mentions.require-at-symbol", true);
@@ -104,37 +118,68 @@ public class ChatListener implements Listener {
         String format = chatManager.buildFormat(player);
         String processedMessage = chatManager.processMessage(player, rawMessage);
         String finalString = format.replace("{message}", processedMessage);
+        
+        final String effectiveMessage = rawMessage;
+        
+        final boolean isMentionsEnabled = mentionsEnabled;
+        final String formatSelf = config.getString("chat.mentions.format-self", "<yellow><bold>@{player}</bold></yellow>");
+        final String formatOthers = config.getString("chat.mentions.format-others", "<yellow>@{player}</yellow>");
+        final boolean tagsEveryone = config.getBoolean("chat.mentions.everyone-tag", true) && effectiveMessage.toLowerCase().contains("@everyone");
 
         event.renderer((source, sourceDisplayName, message, audience) -> {
             String renderString = finalString;
             
-            if (mentionsEnabled && !mentionedPlayers.isEmpty()) {
-                String formatSelf = config.getString("chat.mentions.format-self", "<yellow><bold>@{player}</bold></yellow>");
-                String formatOthers = config.getString("chat.mentions.format-others", "<yellow>@{player}</yellow>");
-                
-                for (Player p : mentionedPlayers) {
-                    boolean isTarget = audience instanceof Player target && target.equals(p);
-                    String rep = isTarget 
-                        ? formatSelf.replace("{player}", p.getName()) 
-                        : formatOthers.replace("{player}", p.getName());
-                    
-                    String regex = requireAt 
-                        ? "(?i)@" + Pattern.quote(p.getName()) + "\\b"
-                        : "(?i)(?<![A-Za-z0-9_])@?" + Pattern.quote(p.getName()) + "\\b";
-                        
-                    renderString = renderString.replaceAll(regex, Matcher.quoteReplacement(rep));
-                }
-
-                if (config.getBoolean("chat.mentions.everyone-tag", true) && player.hasPermission("frostcore.mention.everyone") && rawMessage.toLowerCase().contains("@everyone")) {
-                    boolean isTarget = audience instanceof Player target && mentionedPlayers.contains(target);
-                    String rep = isTarget 
-                        ? formatSelf.replace("{player}", "everyone") 
-                        : formatOthers.replace("{player}", "everyone");
-                    renderString = renderString.replaceAll("(?i)@everyone\\b", Matcher.quoteReplacement(rep));
-                }
+            if (isMentionsEnabled) {
+                renderString = applyMentions(renderString, mentionedPlayers, player, audience, requireAt, formatSelf, formatOthers, tagsEveryone);
             }
-
             return ChatColorUtil.toComponent(renderString);
         });
+    }
+            
+    private String applyMentions(String input, Set<Player> mentionedPlayers, Player source, net.kyori.adventure.audience.Audience audience, boolean requireAt, String formatSelf, String formatOthers, boolean tagsEveryone) {
+        if (mentionedPlayers.isEmpty()) return input;
+
+        String result = input;
+        for (Player p : mentionedPlayers) {
+            String regex = requireAt
+                ? "(?i)@" + Pattern.quote(p.getName()) + "\\b"
+                : "(?i)(?<![A-Za-z0-9_])@?" + Pattern.quote(p.getName()) + "\\b";
+
+            boolean isTarget = audience instanceof Player target && target.equals(p);
+            String replacement = Matcher.quoteReplacement(
+                isTarget
+                    ? formatSelf.replace("{player}", p.getName())
+                    : formatOthers.replace("{player}", p.getName())
+            );
+
+            Matcher m = Pattern.compile(regex).matcher(result);
+            StringBuilder sb = new StringBuilder();
+            while (m.find()) {
+                m.appendReplacement(sb, replacement);
+            }
+            m.appendTail(sb);
+            result = sb.toString();
+        }
+
+        if (tagsEveryone && source.hasPermission("frostcore.mention.everyone")) {
+            String regex = "(?i)@everyone\\b";
+            
+            boolean isTarget = audience instanceof Player target && mentionedPlayers.contains(target);
+            String replacement = Matcher.quoteReplacement(
+                isTarget
+                    ? formatSelf.replace("{player}", "everyone")
+                    : formatOthers.replace("{player}", "everyone")
+            );
+
+            Matcher m = Pattern.compile(regex).matcher(result);
+            StringBuilder sb = new StringBuilder();
+            while (m.find()) {
+                m.appendReplacement(sb, replacement);
+            }
+            m.appendTail(sb);
+            result = sb.toString();
+        }
+
+        return result;
     }
 }

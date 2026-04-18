@@ -106,9 +106,26 @@ public class ModerationManager {
     
 
     
+    /**
+     * Applies a punishment. The player receives the default on-screen notification.
+     */
     public Punishment punish(PunishmentType type, UUID targetUuid, String targetName,
                              String ip, String reason, CommandSender staff,
                              long duration, boolean silent) {
+        return punish(type, targetUuid, targetName, ip, reason, staff, duration, silent, true);
+    }
+
+    /**
+     * Applies a punishment with optional player notification control.
+     *
+     * @param notifyTarget when {@code false}, the player-facing on-screen message from
+     *                     {@link #handleOnlineEffects} is suppressed. Use this when a
+     *                     separate violation-message-ref already informs the player
+     *                     (e.g. chat anti-spam auto-punish WARNs).
+     */
+    public Punishment punish(PunishmentType type, UUID targetUuid, String targetName,
+                             String ip, String reason, CommandSender staff,
+                             long duration, boolean silent, boolean notifyTarget) {
 
         UUID staffUuid = (staff instanceof Player p) ? p.getUniqueId() : null;
         String staffName = staff != null ? staff.getName() : "CONSOLE";
@@ -128,25 +145,22 @@ public class ModerationManager {
         int id = modDb.insertPunishment(p);
         if (id == -1) return null;
 
-        
         p = new Punishment(
                 id, type, targetUuid, targetName, ip,
                 p.reason(), staffUuid, staffName, duration, now, expiresAt,
                 true, null, null, null, null, server, silent, randomId
         );
 
-        
         updateCacheAfterPunish(p);
 
-        
-        handleOnlineEffects(p);
+        if (notifyTarget) {
+            handleOnlineEffects(p);
+        }
 
-        
         if (config.getBoolean("moderation.broadcast-to-staff", true)) {
             broadcastToStaff(p, silent);
         }
 
-        
         if (webhookManager != null) {
             Player target = p.targetUuid() != null ? Bukkit.getPlayer(p.targetUuid()) : null;
             String playerStatus = (target != null && target.isOnline()) ? target.getGameMode().name() : "Offline";
@@ -198,35 +212,33 @@ public class ModerationManager {
         // Grab the active record before deactivating (for webhook + display name)
         Punishment active = modDb.getActivePunishment(targetUuid, category);
 
-        // If no UUID-linked punishment, check whether there's an IP-mute on the player's current IP
-        // (covers the case where player was /muteip'd but /unmute is used by name)
-        if (active == null && category.equalsIgnoreCase("MUTE")) {
-            Player onlineTarget = Bukkit.getPlayer(targetUuid);
-            if (onlineTarget != null && onlineTarget.getAddress() != null) {
-                String ip = onlineTarget.getAddress().getAddress().getHostAddress();
-                active = modDb.getActiveIpPunishment(ip, "MUTE");
+        // If no UUID-linked punishment, check through DB for any IP punishments associated with their known IPs
+        if (active == null) {
+            for (String ip : modDb.getIpsByUuid(targetUuid)) {
+                Punishment ipPunishment = category.equalsIgnoreCase("MUTE") ? activeIpMutes.get(ip) : activeIpBans.get(ip);
+                if (ipPunishment != null) {
+                    active = ipPunishment;
+                    break;
+                }
             }
         }
 
         int count = modDb.deactivateAllActive(targetUuid, category, staffUuid, staffName);
 
-        // Also deactivate any IP-mute linked to the player's current IP
-        boolean ipMuteCleared = false;
-        if (category.equalsIgnoreCase("MUTE")) {
-            Player onlineTarget = Bukkit.getPlayer(targetUuid);
-            if (onlineTarget != null && onlineTarget.getAddress() != null) {
-                String ip = onlineTarget.getAddress().getAddress().getHostAddress();
-                Punishment ipMute = activeIpMutes.get(ip);
-                if (ipMute != null) {
-                    modDb.deactivatePunishment(ipMute.id(), staffUuid, staffName, reason);
-                    activeIpMutes.remove(ip);
-                    ipMuteCleared = true;
-                    if (active == null) active = ipMute;
-                }
+        // Also deactivate any IP-punishment linked to the player's known IPs
+        boolean ipPunishmentCleared = false;
+        for (String ip : modDb.getIpsByUuid(targetUuid)) {
+            Punishment ipPunishment = category.equalsIgnoreCase("MUTE") ? activeIpMutes.get(ip) : activeIpBans.get(ip);
+            if (ipPunishment != null) {
+                modDb.deactivatePunishment(ipPunishment.id(), staffUuid, staffName, reason);
+                if (category.equalsIgnoreCase("MUTE")) activeIpMutes.remove(ip);
+                else activeIpBans.remove(ip);
+                ipPunishmentCleared = true;
+                if (active == null) active = ipPunishment;
             }
         }
 
-        if (count == 0 && !ipMuteCleared) return false;
+        if (count == 0 && !ipPunishmentCleared) return false;
 
         // Clear UUID-level caches
         switch (category.toUpperCase()) {
@@ -261,7 +273,7 @@ public class ModerationManager {
                 if (p.ip() != null) activeIpBans.put(p.ip(), p);
                 if (p.targetUuid() != null) activeBans.put(p.targetUuid(), p);
             }
-            case MUTE, TEMPMUTE -> {
+            case MUTE, TEMPMUTE, SHADOWMUTE -> {
                 if (p.targetUuid() != null) activeMutes.put(p.targetUuid(), p);
             }
             case IPMUTE -> {
@@ -390,6 +402,21 @@ public class ModerationManager {
     public boolean isMuted(UUID uuid) {
         Punishment p = activeMutes.get(uuid);
         if (p == null) return false;
+        if (p.type() == PunishmentType.SHADOWMUTE) return false; // Shadow mutes shouldn't show as normal mutes
+
+        if (p.isExpired()) {
+            activeMutes.remove(uuid);
+            modDb.deactivatePunishmentAsync(p.id(), null, "SYSTEM", "Expired");
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isShadowMuted(UUID uuid) {
+        Punishment p = activeMutes.get(uuid);
+        if (p == null) return false;
+        if (p.type() != PunishmentType.SHADOWMUTE) return false;
+
         if (p.isExpired()) {
             activeMutes.remove(uuid);
             modDb.deactivatePunishmentAsync(p.id(), null, "SYSTEM", "Expired");
@@ -532,4 +559,9 @@ public class ModerationManager {
 
     public ModerationDatabase getDatabase() { return modDb; }
     public WebhookManager getWebhookManager() { return webhookManager; }
+
+    public Map<UUID, Punishment> getActiveBans() { return activeBans; }
+    public Map<String, Punishment> getActiveIpBans() { return activeIpBans; }
+    public Map<UUID, Punishment> getActiveMutes() { return activeMutes; }
+    public Map<String, Punishment> getActiveIpMutes() { return activeIpMutes; }
 }

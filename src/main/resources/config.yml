@@ -318,3 +318,153 @@ chat:
     sound-pitch: 1.0
     # Enable @everyone tagging (requires frostcore.mention.everyone permission)
     everyone-tag: true
+
+  # ┌─────────────────────────────────┐
+  # │   ANTI-SPAM & CHAT FILTERING    │
+  # └─────────────────────────────────┘
+
+  anti-spam:
+    enabled: true
+    # Send a warning message if a spam check fails
+    send-warning: true
+    # Cooldown between chat messages
+    cooldown:
+      enabled: true
+      punish: false # If false, just cancels message without moderation points
+      time-ms: 1500
+      # Cooldown scaling: cooldown * (1 + violationCount * scale) up to max-cooldown-ms
+      scale: 0.35
+      max-cooldown-ms: 8000
+    # Checks if message is significantly similar to their previous message
+    similarity:
+      enabled: true
+      punish: true
+      threshold: 0.85
+    # Checks if message has excessive capitalized letters
+    caps:
+      enabled: true
+      punish: true
+      max-percentage: 70
+      min-length: 5 # Only checks messages over 5 characters long
+    # Detects Zalgo or aaaabbbbb repetition
+    repeat:
+      enabled: true
+      punish: true
+      max-chars: 5
+    # Detects multiple fast messages that circumvent cooldown barely
+    burst:
+      enabled: true
+      punish: true
+      max-messages: 5
+      interval-ms: 3000
+
+  filter:
+    enabled: true
+    send-warning: true
+    # If true, matches blacklist words inside other words (e.g. 'bad' matches 'badboy')
+    in-word-detection: true
+    # Words to completely block regardless of context (supports * wildcards internally)
+    blacklist:
+      - "nigger"
+      - "faggot"
+      - "nigga"
+      # These words are proactively matched against obfuscation
+    # Custom Regex patterns
+    regex:
+      - "(?i).*discord\\.gg/.*"
+    # Block IP Addresses
+    block-ips: true
+    # Block external domains
+    block-domains: true
+    # Allowed domains
+    whitelisted-domains:
+      - "youtube.com"
+      - "twitch.tv"
+    # Action when a filter triggers
+    actions:
+      cancel-message: false
+      replace: "***" # Only applies if cancel-message is false
+
+  punishments:
+    enabled: true
+    # Time (in seconds) until a violation point decays automatically.
+    # E.g. If a player is clean for 900 seconds (15 minutes), 1 violation point is removed.
+    decay-seconds: 180
+    # Weights define how many violation points a specific check triggers.
+    weights:
+      CAPS: 1
+      BURST: 1
+      SIMILARITY: 1
+      DOMAIN: 2
+      IP: 2
+      BLACKLIST: 3
+      REGEX: 2
+      REPEAT: 2
+    # Escalation levels for chat violations. When a player receives a violation point
+    # (e.g. from caps, spam, or swearing), they gain +1 level.
+    # The actions below execute based on their current level.
+    # Supported Actions: WARN, MUTE, KICK
+    # Time Formats: s (seconds), m (minutes), h (hours), d (days). Use 0s for permanent/indefinite.
+    # NOTE: Violations are automatically reset to 0 once they hit the maximum defined level here.
+    levels:
+      1:
+        action: WARN
+        duration: 0s
+      3:
+        action: MUTE
+        duration: 5m
+      5:
+        action: MUTE
+        duration: 30m
+
+# ##############################################################################
+# #                            BOUNTY SYSTEM                                    #
+# ##############################################################################
+
+bounty:
+
+  # Set to false to disable the entire bounty system.
+  # Also disabled automatically if Vault/Economy is unavailable.
+  enabled: true
+
+  # Minimum amount a player can place as a bounty.
+  min-amount: 100.0
+
+  # Maximum amount a player can place as a bounty.
+  max-amount: 1000000.0
+
+  # Cooldown between placing bounties (in milliseconds). 0 = no cooldown.
+  place-cooldown-ms: 30000
+
+  # Maximum number of contributors per bounty target. 0 = unlimited.
+  max-contributors: 0
+
+  # Prevent players from placing a bounty on themselves.
+  prevent-self-bounty: true
+
+  # How long a bounty stays active (milliseconds). -1 = never expires.
+  # 86400000 = 24 hours.
+  expiry-ms: -1
+
+  # If true, contributors are refunded when a bounty is removed or expires.
+  refund-on-remove: false
+  refund-on-expire: false
+
+  # Percentage of their contribution to refund (0-100).
+  refund-percentage: 100.0
+
+  # -- Announcements ---------------------------------------------------------
+  announce:
+    # Broadcast when a bounty is placed.
+    on-place: false
+    # Broadcast when a bounty is claimed.
+    on-claim: true
+    # true = full server broadcast; false = no broadcast (still sends to participants).
+    broadcast: true
+    # Only broadcast if the total bounty value is at or above this threshold.
+    min-amount-threshold: 0.0
+
+  # -- Optional anti-abuse settings ------------------------------------------
+  anti-abuse:
+    # Prevent claiming a bounty you also contributed to.
+    prevent-self-claim: true

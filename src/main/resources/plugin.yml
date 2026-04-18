@@ -6,6 +6,7 @@ authors: [ Frost ]
 softdepend:
   - PlaceholderAPI
   - LuckPerms
+  - Vault
 commands:
   team:
     description: Main team management command
@@ -453,6 +454,11 @@ commands:
     description: Toggle glow effect with color
     usage: /glow [color] or /glow <player> <color>
     aliases: [glowcolor]
+  bounty:
+    description: Bounty board — place, remove, list, and claim bounties
+    usage: /bounty <place|remove|list|info|top> [args]
+    aliases: [bounties, bountyhunter]
+    permission: frostcore.bounty.list
 
 permissions:
   frostcore.ping:
@@ -767,6 +773,18 @@ permissions:
   frostcore.glow.purple:
     description: Purple glow color
     default: false
+  frostcore.bounty.list:
+    description: View active bounties and leaderboard
+    default: true
+  frostcore.bounty.place:
+    description: Place a bounty on another player
+    default: true
+  frostcore.bounty.remove:
+    description: Remove any bounty (staff)
+    default: op
+  frostcore.bounty.admin:
+    description: Full bounty admin access
+    default: op
 
 libraries:
   - com.zaxxer:HikariCP:5.1.0

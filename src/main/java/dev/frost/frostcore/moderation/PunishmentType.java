@@ -11,7 +11,8 @@ public enum PunishmentType {
     KICK("Kick", "kicked", "frostcore.moderation.kick"),
     IPBAN("IP Ban", "IP banned", "frostcore.moderation.ipban"),
     IPMUTE("IP Mute", "IP muted", "frostcore.moderation.ipmute"),
-    JAIL("Jail", "jailed", "frostcore.moderation.jail");
+    JAIL("Jail", "jailed", "frostcore.moderation.jail"),
+    SHADOWMUTE("Shadow Mute", "shadow muted", "frostcore.moderation.shadowmute");
 
     private final String displayName;
     private final String pastTense;
@@ -46,7 +47,7 @@ public enum PunishmentType {
     public String getCategory() {
         return switch (this) {
             case BAN, TEMPBAN, IPBAN -> "BAN";
-            case MUTE, TEMPMUTE, IPMUTE -> "MUTE";
+            case MUTE, TEMPMUTE, IPMUTE, SHADOWMUTE -> "MUTE";
             case WARN -> "WARN";
             case KICK -> "KICK";
             case JAIL -> "JAIL";

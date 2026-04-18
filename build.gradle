@@ -27,6 +27,7 @@ dependencies {
     compileOnly 'org.xerial:sqlite-jdbc:3.47.1.0'
     compileOnly 'com.google.code.gson:gson:2.11.0'
     compileOnly 'net.luckperms:api:5.4'
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
 }
 
 tasks {

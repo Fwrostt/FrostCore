@@ -28,7 +28,38 @@ public class FrostCoreCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (args.length == 0 || !args[0].equalsIgnoreCase("reload")) {
+        if (args.length == 0) {
+            sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
+                    .deserialize("<#B0C4FF>/frostcore reload"));
+            sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
+                    .deserialize("<#B0C4FF>/frostcore chat <reload|debug>"));
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("chat")) {
+            if (args.length > 1) {
+                if (args[1].equalsIgnoreCase("reload")) {
+                    if (Main.getChatManager() != null && Main.getChatManager().getPipeline() != null) {
+                        Main.getChatManager().getPipeline().reload();
+                        sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
+                                .deserialize("<green><bold>✔</bold></green> <white>Chat filter pipeline reloaded.</white>"));
+                    }
+                } else if (args[1].equalsIgnoreCase("debug")) {
+                    dev.frost.frostcore.chat.ChatPipeline.DEBUG = !dev.frost.frostcore.chat.ChatPipeline.DEBUG;
+                    sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
+                            .deserialize("<green><bold>✔</bold></green> <white>Chat filter debug is now: " + dev.frost.frostcore.chat.ChatPipeline.DEBUG + "</white>"));
+                } else {
+                    sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
+                            .deserialize("<#B0C4FF>/frostcore chat <reload|debug>"));
+                }
+            } else {
+                sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
+                        .deserialize("<#B0C4FF>/frostcore chat <reload|debug>"));
+            }
+            return true;
+        }
+
+        if (!args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
                     .deserialize("<#B0C4FF>/frostcore reload"));
             return true;
@@ -60,9 +91,13 @@ public class FrostCoreCmd implements CommandExecutor, TabCompleter {
             Main.getChatManager().reload();
         }
 
+        if (Main.getCommandManager() != null) {
+            Main.getCommandManager().reload();
+        }
+
         FrostLogger.info("Configuration reloaded by " + sender.getName() + ".");
         sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
-                .deserialize("<green><bold>✔</bold></green> <white>FrostCore configuration reloaded.</white> <gray>(config.yml, messages.yml, chat-format.yml, warps.yml, webhooks, mace limiter)"));
+                .deserialize("<green><bold>✔</bold></green> <white>FrostCore configuration reloaded.</white> <gray>(config.yml, messages.yml, chat-format.yml, commands.yml, warps.yml, webhooks, mace limiter)"));
         return true;
     }
 
@@ -71,7 +106,13 @@ public class FrostCoreCmd implements CommandExecutor, TabCompleter {
                                       @NotNull String alias, @NotNull String[] args) {
         if (!sender.hasPermission(PERMISSION)) return Collections.emptyList();
         if (args.length == 1) {
-            return List.of("reload");
+            return java.util.stream.Stream.of("reload", "chat")
+                    .filter(s -> s.startsWith(args[0].toLowerCase()))
+                    .toList();
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("chat")) {
+            return java.util.stream.Stream.of("reload", "debug")
+                    .filter(s -> s.startsWith(args[1].toLowerCase()))
+                    .toList();
         }
         return Collections.emptyList();
     }

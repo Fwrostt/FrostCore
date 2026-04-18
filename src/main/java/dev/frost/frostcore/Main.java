@@ -2,6 +2,12 @@ package dev.frost.frostcore;
 
 import dev.frost.frostcore.chat.ChatListener;
 import dev.frost.frostcore.chat.ChatManager;
+import dev.frost.frostcore.bounty.BountyListener;
+import dev.frost.frostcore.bounty.BountyManager;
+import dev.frost.frostcore.bounty.BountyPlaceholderExpansion;
+import dev.frost.frostcore.bounty.BountyRepository;
+import dev.frost.frostcore.bounty.BountyService;
+import dev.frost.frostcore.bounty.cmds.BountyCmd;
 import dev.frost.frostcore.cmds.admin.*;
 import dev.frost.frostcore.cmds.item.*;
 import dev.frost.frostcore.cmds.messaging.*;
@@ -25,6 +31,7 @@ import dev.frost.frostcore.placeholderapi.TeamExpansion;
 import dev.frost.frostcore.utils.CmdUtil;
 import dev.frost.frostcore.utils.FrostLogger;
 import dev.frost.frostcore.utils.TeleportUtil;
+import dev.frost.frostcore.utils.EconomyUtil;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -51,8 +58,11 @@ public final class Main extends JavaPlugin {
     @Getter private static MaceManager maceManager;
     @Getter private static GlowManager glowManager;
     @Getter private static ChatManager chatManager;
-    private static CmdUtil cmdUtil;
+    @lombok.Getter private static dev.frost.frostcore.manager.CommandManager commandManager;
+    @Getter private static BountyManager bountyManager;
+    private BountyService bountyService;
     private TeamExpansion teamExpansion;
+    private BountyPlaceholderExpansion bountyExpansion;
 
     @Override
     public void onEnable() {
@@ -68,6 +78,8 @@ public final class Main extends JavaPlugin {
         } else {
             teamExpansion = new TeamExpansion();
             teamExpansion.register();
+            bountyExpansion = new BountyPlaceholderExpansion(bountyManager);
+            bountyExpansion.register();
         }
     }
 
@@ -113,7 +125,14 @@ public final class Main extends JavaPlugin {
 
         chatManager = new ChatManager(this);
 
-        cmdUtil = new CmdUtil();
+        commandManager = new dev.frost.frostcore.manager.CommandManager(this);
+
+        // ── Bounty system ──────────────────────────────────────────────────────
+        EconomyUtil.init();
+        BountyRepository bountyRepo = new BountyRepository(databaseManager);
+        bountyManager = new BountyManager(bountyRepo);
+        bountyService = new BountyService(bountyManager);
+        bountyManager.loadAsync();
     }
 
     private void setupInviteHandlers() {
@@ -148,285 +167,291 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MaceListener(), this);
         getServer().getPluginManager().registerEvents(new GlowListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(chatManager), this);
+        // Bounty listener (registered only if economy is eventually enabled — checked inside)
+        getServer().getPluginManager().registerEvents(
+                new BountyListener(bountyManager, bountyService), this);
     }
 
     private void setupCmds() {
-        cmdUtil.registerCommand("team", new TeamCmd(), new TeamCmd());
+        commandManager.registerCommand("team", new TeamCmd(), new TeamCmd());
 
         TpaCmd tpaCmd = new TpaCmd();
-        cmdUtil.registerCommand("tpa", tpaCmd, tpaCmd);
+        commandManager.registerCommand("tpa", tpaCmd, tpaCmd);
 
         TpaHereCmd tpahereCmd = new TpaHereCmd();
-        cmdUtil.registerCommand("tpahere", tpahereCmd, tpahereCmd);
+        commandManager.registerCommand("tpahere", tpahereCmd, tpahereCmd);
 
         TpaToggleCmd tpaToggleCmd = new TpaToggleCmd();
-        cmdUtil.registerCommand("tpatoggle", tpaToggleCmd, tpaToggleCmd);
-        cmdUtil.registerCommand("tpaoff", tpaToggleCmd, tpaToggleCmd);
-        cmdUtil.registerCommand("tpaon", tpaToggleCmd, tpaToggleCmd);
+        commandManager.registerCommand("tpatoggle", tpaToggleCmd, tpaToggleCmd);
+        commandManager.registerCommand("tpaoff", tpaToggleCmd, tpaToggleCmd);
+        commandManager.registerCommand("tpaon", tpaToggleCmd, tpaToggleCmd);
 
         TpAcceptCmd tpacceptCmd = new TpAcceptCmd();
-        cmdUtil.registerCommand("tpaccept", tpacceptCmd, tpacceptCmd);
+        commandManager.registerCommand("tpaccept", tpacceptCmd, tpacceptCmd);
 
         TpDeclineCmd tpdeclineCmd = new TpDeclineCmd();
-        cmdUtil.registerCommand("tpdecline", tpdeclineCmd, tpdeclineCmd);
+        commandManager.registerCommand("tpdecline", tpdeclineCmd, tpdeclineCmd);
 
         WarpCmd warpCmd = new WarpCmd();
-        cmdUtil.registerCommand("warp", warpCmd, warpCmd);
+        commandManager.registerCommand("warp", warpCmd, warpCmd);
 
         WarpsCmd warpsCmd = new WarpsCmd();
-        cmdUtil.registerCommand("warps", warpsCmd, warpsCmd);
+        commandManager.registerCommand("warps", warpsCmd, warpsCmd);
 
         SpawnCmd spawnCmd = new SpawnCmd();
-        cmdUtil.registerCommand("spawn", spawnCmd, spawnCmd);
+        commandManager.registerCommand("spawn", spawnCmd, spawnCmd);
 
         TpCmd tpCmd = new TpCmd();
-        cmdUtil.registerCommand("tp", tpCmd, tpCmd);
-        cmdUtil.registerCommand("tp2p", tpCmd, tpCmd);
-        cmdUtil.registerCommand("tphere", tpCmd, tpCmd);
+        commandManager.registerCommand("tp", tpCmd, tpCmd);
+        commandManager.registerCommand("tp2p", tpCmd, tpCmd);
+        commandManager.registerCommand("tphere", tpCmd, tpCmd);
 
         OfflineTpCmd otpCmd = new OfflineTpCmd();
-        cmdUtil.registerCommand("otp", otpCmd, otpCmd);
-        cmdUtil.registerCommand("offlinetp", otpCmd, otpCmd);
+        commandManager.registerCommand("otp", otpCmd, otpCmd);
+        commandManager.registerCommand("offlinetp", otpCmd, otpCmd);
 
         SetWarpCmd setwarpCmd = new SetWarpCmd();
-        cmdUtil.registerCommand("setwarp", setwarpCmd, setwarpCmd);
-        cmdUtil.registerCommand("delwarp", setwarpCmd, setwarpCmd);
+        commandManager.registerCommand("setwarp", setwarpCmd, setwarpCmd);
+        commandManager.registerCommand("delwarp", setwarpCmd, setwarpCmd);
 
         SetHomeCmd sethomeCmd = new SetHomeCmd();
-        cmdUtil.registerCommand("sethome", sethomeCmd, sethomeCmd);
+        commandManager.registerCommand("sethome", sethomeCmd, sethomeCmd);
 
         HomeCmd homeCmd = new HomeCmd();
-        cmdUtil.registerCommand("home", homeCmd, homeCmd);
+        commandManager.registerCommand("home", homeCmd, homeCmd);
 
         DelHomeCmd delhomeCmd = new DelHomeCmd();
-        cmdUtil.registerCommand("delhome", delhomeCmd, delhomeCmd);
+        commandManager.registerCommand("delhome", delhomeCmd, delhomeCmd);
 
         RenameHomeCmd renamehomeCmd = new RenameHomeCmd();
-        cmdUtil.registerCommand("renamehome", renamehomeCmd, renamehomeCmd);
+        commandManager.registerCommand("renamehome", renamehomeCmd, renamehomeCmd);
 
         HomesCmd homesCmd = new HomesCmd();
-        cmdUtil.registerCommand("homes", homesCmd, homesCmd);
+        commandManager.registerCommand("homes", homesCmd, homesCmd);
 
         SetSpawnCmd setspawnCmd = new SetSpawnCmd();
-        cmdUtil.registerCommand("setspawn", setspawnCmd, setspawnCmd);
+        commandManager.registerCommand("setspawn", setspawnCmd, setspawnCmd);
 
         FrostCoreCmd frostCoreCmd = new FrostCoreCmd();
-        cmdUtil.registerCommand("frostcore", frostCoreCmd, frostCoreCmd);
+        commandManager.registerCommand("frostcore", frostCoreCmd, frostCoreCmd);
 
         GamemodeCmd gmCmd = new GamemodeCmd();
-        cmdUtil.registerCommand("gm", gmCmd, gmCmd);
-        cmdUtil.registerCommand("gms", gmCmd, gmCmd);
-        cmdUtil.registerCommand("gmc", gmCmd, gmCmd);
-        cmdUtil.registerCommand("gma", gmCmd, gmCmd);
-        cmdUtil.registerCommand("gmsp", gmCmd, gmCmd);
+        commandManager.registerCommand("gm", gmCmd, gmCmd);
+        commandManager.registerCommand("gms", gmCmd, gmCmd);
+        commandManager.registerCommand("gmc", gmCmd, gmCmd);
+        commandManager.registerCommand("gma", gmCmd, gmCmd);
+        commandManager.registerCommand("gmsp", gmCmd, gmCmd);
 
         FlyCmd flyCmd = new FlyCmd();
-        cmdUtil.registerCommand("fly", flyCmd, flyCmd);
+        commandManager.registerCommand("fly", flyCmd, flyCmd);
         HealCmd healCmd = new HealCmd();
-        cmdUtil.registerCommand("heal", healCmd, healCmd);
+        commandManager.registerCommand("heal", healCmd, healCmd);
         FeedCmd feedCmd = new FeedCmd();
-        cmdUtil.registerCommand("feed", feedCmd, feedCmd);
+        commandManager.registerCommand("feed", feedCmd, feedCmd);
         GodCmd godCmd = new GodCmd();
-        cmdUtil.registerCommand("god", godCmd, godCmd);
+        commandManager.registerCommand("god", godCmd, godCmd);
         ClearCmd clearCmd = new ClearCmd();
-        cmdUtil.registerCommand("clear", clearCmd, clearCmd);
+        commandManager.registerCommand("clear", clearCmd, clearCmd);
         SpeedCmd speedCmd = new SpeedCmd();
-        cmdUtil.registerCommand("speed", speedCmd, speedCmd);
+        commandManager.registerCommand("speed", speedCmd, speedCmd);
 
         NickCmd nickCmd = new NickCmd();
-        cmdUtil.registerCommand("nick", nickCmd, nickCmd);
-        cmdUtil.registerCommand("unnick", nickCmd, nickCmd);
+        commandManager.registerCommand("nick", nickCmd, nickCmd);
+        commandManager.registerCommand("unnick", nickCmd, nickCmd);
 
         ItemRenameCmd itemRenameCmd = new ItemRenameCmd();
-        cmdUtil.registerCommand("itemrename", itemRenameCmd, itemRenameCmd);
+        commandManager.registerCommand("itemrename", itemRenameCmd, itemRenameCmd);
         LoreCmd loreCmd = new LoreCmd();
-        cmdUtil.registerCommand("lore", loreCmd, loreCmd);
+        commandManager.registerCommand("lore", loreCmd, loreCmd);
         RepairCmd repairCmd = new RepairCmd();
-        cmdUtil.registerCommand("repair", repairCmd, repairCmd);
+        commandManager.registerCommand("repair", repairCmd, repairCmd);
 
         
         MuteCmd muteCmd = new MuteCmd();
-        cmdUtil.registerCommand("mute", muteCmd, muteCmd);
+        commandManager.registerCommand("mute", muteCmd, muteCmd);
         TempMuteCmd tempMuteCmd = new TempMuteCmd();
-        cmdUtil.registerCommand("tempmute", tempMuteCmd, tempMuteCmd);
+        commandManager.registerCommand("tempmute", tempMuteCmd, tempMuteCmd);
         UnmuteCmd unmuteCmd = new UnmuteCmd();
-        cmdUtil.registerCommand("unmute", unmuteCmd, unmuteCmd);
+        commandManager.registerCommand("unmute", unmuteCmd, unmuteCmd);
         LockchatCmd lockchatCmd = new LockchatCmd();
-        cmdUtil.registerCommand("lockchat", lockchatCmd, lockchatCmd);
+        commandManager.registerCommand("lockchat", lockchatCmd, lockchatCmd);
         UnlockchatCmd unlockchatCmd = new UnlockchatCmd();
-        cmdUtil.registerCommand("unlockchat", unlockchatCmd, unlockchatCmd);
+        commandManager.registerCommand("unlockchat", unlockchatCmd, unlockchatCmd);
         FreezeCmd freezeCmd = new FreezeCmd();
-        cmdUtil.registerCommand("freeze", freezeCmd, freezeCmd);
+        commandManager.registerCommand("freeze", freezeCmd, freezeCmd);
         ScreenshareCmd screenshareCmd = new ScreenshareCmd();
-        cmdUtil.registerCommand("screenshare", screenshareCmd, screenshareCmd);
-        cmdUtil.registerCommand("ss", screenshareCmd, screenshareCmd);
+        commandManager.registerCommand("screenshare", screenshareCmd, screenshareCmd);
+        commandManager.registerCommand("ss", screenshareCmd, screenshareCmd);
 
         KickCmd kickCmd = new KickCmd();
-        cmdUtil.registerCommand("kick", kickCmd, kickCmd);
+        commandManager.registerCommand("kick", kickCmd, kickCmd);
         BanCmd banCmd = new BanCmd();
-        cmdUtil.registerCommand("ban", banCmd, banCmd);
+        commandManager.registerCommand("ban", banCmd, banCmd);
         TempBanCmd tempBanCmd = new TempBanCmd();
-        cmdUtil.registerCommand("tempban", tempBanCmd, tempBanCmd);
+        commandManager.registerCommand("tempban", tempBanCmd, tempBanCmd);
         UnbanCmd unbanCmd = new UnbanCmd();
-        cmdUtil.registerCommand("unban", unbanCmd, unbanCmd);
+        commandManager.registerCommand("unban", unbanCmd, unbanCmd);
         WarnCmd warnCmd = new WarnCmd();
-        cmdUtil.registerCommand("warn", warnCmd, warnCmd);
+        commandManager.registerCommand("warn", warnCmd, warnCmd);
         UnwarnCmd unwarnCmd = new UnwarnCmd();
-        cmdUtil.registerCommand("unwarn", unwarnCmd, unwarnCmd);
+        commandManager.registerCommand("unwarn", unwarnCmd, unwarnCmd);
 
         IpBanCmd ipBanCmd = new IpBanCmd();
-        cmdUtil.registerCommand("ipban", ipBanCmd, ipBanCmd);
-        cmdUtil.registerCommand("banip", ipBanCmd, ipBanCmd);
+        commandManager.registerCommand("ipban", ipBanCmd, ipBanCmd);
+        commandManager.registerCommand("banip", ipBanCmd, ipBanCmd);
         IpMuteCmd ipMuteCmd = new IpMuteCmd();
-        cmdUtil.registerCommand("ipmute", ipMuteCmd, ipMuteCmd);
-        cmdUtil.registerCommand("muteip", ipMuteCmd, ipMuteCmd);
+        commandManager.registerCommand("ipmute", ipMuteCmd, ipMuteCmd);
+        commandManager.registerCommand("muteip", ipMuteCmd, ipMuteCmd);
 
         
         JailCmd jailCmd = new JailCmd();
-        cmdUtil.registerCommand("jail", jailCmd, jailCmd);
+        commandManager.registerCommand("jail", jailCmd, jailCmd);
         UnjailCmd unjailCmd = new UnjailCmd();
-        cmdUtil.registerCommand("unjail", unjailCmd, unjailCmd);
+        commandManager.registerCommand("unjail", unjailCmd, unjailCmd);
         SetJailCmd setJailCmd = new SetJailCmd();
-        cmdUtil.registerCommand("setjail", setJailCmd, setJailCmd);
+        commandManager.registerCommand("setjail", setJailCmd, setJailCmd);
         DelJailCmd delJailCmd = new DelJailCmd();
-        cmdUtil.registerCommand("deljail", delJailCmd, delJailCmd);
+        commandManager.registerCommand("deljail", delJailCmd, delJailCmd);
 
         
         ReportCmd reportCmd = new ReportCmd();
-        cmdUtil.registerCommand("report", reportCmd, reportCmd);
+        commandManager.registerCommand("report", reportCmd, reportCmd);
 
         
         CheckBanCmd checkBanCmd = new CheckBanCmd();
-        cmdUtil.registerCommand("checkban", checkBanCmd, checkBanCmd);
+        commandManager.registerCommand("checkban", checkBanCmd, checkBanCmd);
         CheckPunishmentCmd checkMuteCmd = new CheckPunishmentCmd("MUTE");
-        cmdUtil.registerCommand("checkmute", checkMuteCmd, checkMuteCmd);
+        commandManager.registerCommand("checkmute", checkMuteCmd, checkMuteCmd);
         CheckPunishmentCmd checkWarnCmd = new CheckPunishmentCmd("WARN");
-        cmdUtil.registerCommand("checkwarn", checkWarnCmd, checkWarnCmd);
+        commandManager.registerCommand("checkwarn", checkWarnCmd, checkWarnCmd);
         HistoryCmd historyCmd = new HistoryCmd();
-        cmdUtil.registerCommand("history", historyCmd, historyCmd);
+        commandManager.registerCommand("history", historyCmd, historyCmd);
         StaffHistoryCmd staffHistoryCmd = new StaffHistoryCmd();
-        cmdUtil.registerCommand("staffhistory", staffHistoryCmd, staffHistoryCmd);
+        commandManager.registerCommand("staffhistory", staffHistoryCmd, staffHistoryCmd);
         WarningsCmd warningsCmd = new WarningsCmd();
-        cmdUtil.registerCommand("warnings", warningsCmd, warningsCmd);
+        commandManager.registerCommand("warnings", warningsCmd, warningsCmd);
 
         
         PunishmentListCmd banListCmd = new PunishmentListCmd("BAN", "Active Bans");
-        cmdUtil.registerCommand("banlist", banListCmd, banListCmd);
+        commandManager.registerCommand("banlist", banListCmd, banListCmd);
         PunishmentListCmd muteListCmd = new PunishmentListCmd("MUTE", "Active Mutes");
-        cmdUtil.registerCommand("mutelist", muteListCmd, muteListCmd);
+        commandManager.registerCommand("mutelist", muteListCmd, muteListCmd);
         PunishmentListCmd warnListCmd = new PunishmentListCmd("WARN", "Active Warnings");
-        cmdUtil.registerCommand("warnlist", warnListCmd, warnListCmd);
+        commandManager.registerCommand("warnlist", warnListCmd, warnListCmd);
 
         
         AltsCmd altsCmd = new AltsCmd();
-        cmdUtil.registerCommand("alts", altsCmd, altsCmd);
+        commandManager.registerCommand("alts", altsCmd, altsCmd);
         
         NameHistoryCmd nameHistoryCmd = new NameHistoryCmd();
-        cmdUtil.registerCommand("namehistory", nameHistoryCmd, null);
+        commandManager.registerCommand("namehistory", nameHistoryCmd, null);
         IpHistoryCmd ipHistoryCmd = new IpHistoryCmd();
-        cmdUtil.registerCommand("iphistory", ipHistoryCmd, ipHistoryCmd);
+        commandManager.registerCommand("iphistory", ipHistoryCmd, ipHistoryCmd);
 
         
         ReportsCmd reportsCmd = new ReportsCmd();
-        cmdUtil.registerCommand("reports", reportsCmd, reportsCmd);
+        commandManager.registerCommand("reports", reportsCmd, reportsCmd);
 
         
         LockdownCmd lockdownCmd = new LockdownCmd();
-        cmdUtil.registerCommand("lockdown", lockdownCmd, lockdownCmd);
+        commandManager.registerCommand("lockdown", lockdownCmd, lockdownCmd);
         PruneHistoryCmd pruneHistoryCmd = new PruneHistoryCmd();
-        cmdUtil.registerCommand("prunehistory", pruneHistoryCmd, pruneHistoryCmd);
+        commandManager.registerCommand("prunehistory", pruneHistoryCmd, pruneHistoryCmd);
         StaffRollbackCmd staffRollbackCmd = new StaffRollbackCmd();
-        cmdUtil.registerCommand("staffrollback", staffRollbackCmd, staffRollbackCmd);
+        commandManager.registerCommand("staffrollback", staffRollbackCmd, staffRollbackCmd);
         ModerationCmd moderationCmd = new ModerationCmd();
-        cmdUtil.registerCommand("moderation", moderationCmd, moderationCmd);
+        commandManager.registerCommand("moderation", moderationCmd, moderationCmd);
         StaffChatCmd staffChatCmd = new StaffChatCmd();
-        cmdUtil.registerCommand("staffchat", staffChatCmd, staffChatCmd);
-        cmdUtil.registerCommand("sc", staffChatCmd, staffChatCmd);
+        commandManager.registerCommand("staffchat", staffChatCmd, staffChatCmd);
+        commandManager.registerCommand("sc", staffChatCmd, staffChatCmd);
 
         SudoCmd sudoCmd = new SudoCmd();
-        cmdUtil.registerCommand("sudo", sudoCmd, sudoCmd);
+        commandManager.registerCommand("sudo", sudoCmd, sudoCmd);
         BroadcastCmd broadcastCmd = new BroadcastCmd();
-        cmdUtil.registerCommand("broadcast", broadcastCmd, broadcastCmd);
+        commandManager.registerCommand("broadcast", broadcastCmd, broadcastCmd);
         ChatCmd chatCmd = new ChatCmd();
-        cmdUtil.registerCommand("chat", chatCmd, chatCmd);
+        commandManager.registerCommand("chat", chatCmd, chatCmd);
         TimeCmd timeCmd = new TimeCmd();
-        cmdUtil.registerCommand("day", timeCmd, timeCmd);
-        cmdUtil.registerCommand("night", timeCmd, timeCmd);
-        cmdUtil.registerCommand("time", timeCmd, timeCmd);
+        commandManager.registerCommand("day", timeCmd, timeCmd);
+        commandManager.registerCommand("night", timeCmd, timeCmd);
+        commandManager.registerCommand("time", timeCmd, timeCmd);
         WeatherCmd weatherCmd = new WeatherCmd();
-        cmdUtil.registerCommand("weather", weatherCmd, weatherCmd);
+        commandManager.registerCommand("weather", weatherCmd, weatherCmd);
 
         BackCmd backCmd = new BackCmd();
-        cmdUtil.registerCommand("back", backCmd, backCmd);
+        commandManager.registerCommand("back", backCmd, backCmd);
 
         InvseeCmd invseeCmd = new InvseeCmd();
-        cmdUtil.registerCommand("invsee", invseeCmd, invseeCmd);
+        commandManager.registerCommand("invsee", invseeCmd, invseeCmd);
         EnderchestCmd ecCmd = new EnderchestCmd();
-        cmdUtil.registerCommand("enderchest", ecCmd, ecCmd);
-        cmdUtil.registerCommand("ec", ecCmd, ecCmd);
+        commandManager.registerCommand("enderchest", ecCmd, ecCmd);
+        commandManager.registerCommand("ec", ecCmd, ecCmd);
         HatCmd hatCmd = new HatCmd();
-        cmdUtil.registerCommand("hat", hatCmd, hatCmd);
+        commandManager.registerCommand("hat", hatCmd, hatCmd);
         WhoisCmd whoisCmd = new WhoisCmd();
-        cmdUtil.registerCommand("whois", whoisCmd, whoisCmd);
+        commandManager.registerCommand("whois", whoisCmd, whoisCmd);
         SeenCmd seenCmd = new SeenCmd();
-        cmdUtil.registerCommand("seen", seenCmd, seenCmd);
+        commandManager.registerCommand("seen", seenCmd, seenCmd);
         SmiteCmd smiteCmd = new SmiteCmd();
-        cmdUtil.registerCommand("smite", smiteCmd, smiteCmd);
+        commandManager.registerCommand("smite", smiteCmd, smiteCmd);
         VanishCmd vanishCmd = new VanishCmd();
-        cmdUtil.registerCommand("vanish", vanishCmd, vanishCmd);
-        cmdUtil.registerCommand("v", vanishCmd, vanishCmd);
+        commandManager.registerCommand("vanish", vanishCmd, vanishCmd);
+        commandManager.registerCommand("v", vanishCmd, vanishCmd);
         TpallCmd tpallCmd = new TpallCmd();
-        cmdUtil.registerCommand("tpall", tpallCmd, tpallCmd);
+        commandManager.registerCommand("tpall", tpallCmd, tpallCmd);
         PingCmd pingCmd = new PingCmd();
-        cmdUtil.registerCommand("ping", pingCmd, pingCmd);
+        commandManager.registerCommand("ping", pingCmd, pingCmd);
         SkullCmd skullCmd = new SkullCmd();
-        cmdUtil.registerCommand("skull", skullCmd, skullCmd);
+        commandManager.registerCommand("skull", skullCmd, skullCmd);
         SocialSpyCmd ssCmd = new SocialSpyCmd();
-        cmdUtil.registerCommand("socialspy", ssCmd, ssCmd);
+        commandManager.registerCommand("socialspy", ssCmd, ssCmd);
         RamCmd ramCmd = new RamCmd();
-        cmdUtil.registerCommand("ram", ramCmd, ramCmd);
+        commandManager.registerCommand("ram", ramCmd, ramCmd);
         TopCmd topCmd = new TopCmd();
-        cmdUtil.registerCommand("top", topCmd, topCmd);
+        commandManager.registerCommand("top", topCmd, topCmd);
         BottomCmd bottomCmd = new BottomCmd();
-        cmdUtil.registerCommand("bottom", bottomCmd, bottomCmd);
+        commandManager.registerCommand("bottom", bottomCmd, bottomCmd);
         NearCmd nearCmd = new NearCmd();
-        cmdUtil.registerCommand("near", nearCmd, nearCmd);
+        commandManager.registerCommand("near", nearCmd, nearCmd);
         CoordsCmd coordsCmd = new CoordsCmd();
-        cmdUtil.registerCommand("coords", coordsCmd, coordsCmd);
+        commandManager.registerCommand("coords", coordsCmd, coordsCmd);
 
         MaceCmd maceCmd = new MaceCmd();
-        cmdUtil.registerCommand("mace", maceCmd, maceCmd);
+        commandManager.registerCommand("mace", maceCmd, maceCmd);
 
         MsgCmd msgCmd = new MsgCmd();
-        cmdUtil.registerCommand("msg", msgCmd, msgCmd);
-        cmdUtil.registerCommand("tell", msgCmd, msgCmd);
-        cmdUtil.registerCommand("w", msgCmd, msgCmd);
-        cmdUtil.registerCommand("whisper", msgCmd, msgCmd);
-        cmdUtil.registerCommand("pm", msgCmd, msgCmd);
+        commandManager.registerCommand("msg", msgCmd, msgCmd);
+        commandManager.registerCommand("tell", msgCmd, msgCmd);
+        commandManager.registerCommand("w", msgCmd, msgCmd);
+        commandManager.registerCommand("whisper", msgCmd, msgCmd);
+        commandManager.registerCommand("pm", msgCmd, msgCmd);
         ReplyCmd replyCmd = new ReplyCmd();
-        cmdUtil.registerCommand("r", replyCmd, replyCmd);
-        cmdUtil.registerCommand("reply", replyCmd, replyCmd);
+        commandManager.registerCommand("r", replyCmd, replyCmd);
+        commandManager.registerCommand("reply", replyCmd, replyCmd);
         IgnoreCmd ignoreCmd = new IgnoreCmd();
-        cmdUtil.registerCommand("ignore", ignoreCmd, ignoreCmd);
+        commandManager.registerCommand("ignore", ignoreCmd, ignoreCmd);
 
         MsgToggleCmd msgToggleCmd = new MsgToggleCmd();
-        cmdUtil.registerCommand("msgtoggle", msgToggleCmd, msgToggleCmd);
-        cmdUtil.registerCommand("msgoff", msgToggleCmd, msgToggleCmd);
-        cmdUtil.registerCommand("msgon", msgToggleCmd, msgToggleCmd);
+        commandManager.registerCommand("msgtoggle", msgToggleCmd, msgToggleCmd);
+        commandManager.registerCommand("msgoff", msgToggleCmd, msgToggleCmd);
+        commandManager.registerCommand("msgon", msgToggleCmd, msgToggleCmd);
 
         ChatToggleCmd chatToggleCmd = new ChatToggleCmd();
-        cmdUtil.registerCommand("chattoggle", chatToggleCmd, chatToggleCmd);
-        cmdUtil.registerCommand("chatoff", chatToggleCmd, chatToggleCmd);
-        cmdUtil.registerCommand("chaton", chatToggleCmd, chatToggleCmd);
+        commandManager.registerCommand("chattoggle", chatToggleCmd, chatToggleCmd);
+        commandManager.registerCommand("chatoff", chatToggleCmd, chatToggleCmd);
+        commandManager.registerCommand("chaton", chatToggleCmd, chatToggleCmd);
 
         GlowCmd glowCmd = new GlowCmd();
-        cmdUtil.registerCommand("glow", glowCmd, glowCmd);
+        commandManager.registerCommand("glow", glowCmd, glowCmd);
 
-        cmdUtil.printSummary();
+        BountyCmd bountyCmd = new BountyCmd(bountyManager, bountyService);
+        commandManager.registerCommand("bounty", bountyCmd, bountyCmd);
+
+        commandManager.reload();
     }
 
-    @Override
     public void onDisable() {
+        dev.frost.frostcore.utils.SignPrompt.cleanupAll();
         if (inviteManager != null) {
             inviteManager.shutdown();
         }
@@ -444,6 +469,12 @@ public final class Main extends JavaPlugin {
         }
         if (glowManager != null) {
             glowManager.cleanup();
+        }
+        if (bountyManager != null) {
+            bountyManager.shutdown();
+        }
+        if (bountyExpansion != null) {
+            bountyExpansion.unregister();
         }
     }
 }

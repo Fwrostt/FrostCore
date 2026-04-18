@@ -60,6 +60,15 @@ public class UnbanCmd implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return args.length == 1 ? Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(n -> n.toLowerCase().startsWith(args[0].toLowerCase())).collect(Collectors.toList()) : Collections.emptyList();
+        if (args.length == 1) {
+            Set<String> names = ModerationManager.getInstance().getActiveBans().values().stream()
+                    .map(Punishment::targetName)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            return names.stream()
+                    .filter(n -> n.toLowerCase().startsWith(args[0].toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }
