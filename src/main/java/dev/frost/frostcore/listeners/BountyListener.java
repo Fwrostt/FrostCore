@@ -1,5 +1,7 @@
-package dev.frost.frostcore.bounty;
+package dev.frost.frostcore.listeners;
 
+import dev.frost.frostcore.manager.BountyManager;
+import dev.frost.frostcore.bounty.BountyService;
 import dev.frost.frostcore.bounty.model.Bounty;
 import dev.frost.frostcore.bounty.model.BountyContributor;
 import dev.frost.frostcore.utils.EconomyUtil;

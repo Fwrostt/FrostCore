@@ -3,8 +3,10 @@ package dev.frost.frostcore.manager;
 import dev.frost.frostcore.glow.GlowColor;
 import dev.frost.frostcore.Main;
 import dev.frost.frostcore.utils.FrostLogger;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -12,33 +14,54 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Glow system using per-viewer private scoreboards.
+ * Glow system using per-viewer private scoreboards with per-player glow teams.
  *
- * Why: A player can only belong to one scoreboard Team at a time.
- * LuckPerms assigns players to rank teams on the MAIN scoreboard for prefix
- * colouring — overwriting any glow team we set there, making the glow colour
- * follow the rank colour.
+ * <h3>Problem</h3>
+ * Minecraft ties glow outline colour to the scoreboard Team colour of the glowing
+ * entity.  LuckPerms assigns players to rank-based teams for prefix colouring.
+ * If we simply add a player to a shared glow team, they lose their LP prefix/suffix.
+ * If LP overwrites our scoreboard, glow colours revert to the rank colour.
  *
- * Fix: every online player gets their own private Scoreboard.  We register
- * all glow_* teams on that board and manage glowing players' entries there.
- * LuckPerms never touches private boards, so glow colours are always correct.
+ * <h3>Solution</h3>
+ * <ol>
+ *   <li>Wait for LuckPerms to finish setting up its scoreboard (delayed init).</li>
+ *   <li>Create a private Scoreboard per viewer by <b>copying all LP teams</b>
+ *       so nametag prefixes, suffixes, and sort order are preserved.</li>
+ *   <li>For each glowing player, create a <b>per-player glow team</b> ({@code fg_<name>})
+ *       that carries the LP prefix/suffix but uses the selected glow colour.</li>
+ *   <li>A periodic sync task updates prefix/suffix if LP changes a player's rank.</li>
+ * </ol>
  */
 public class GlowManager {
 
     private static GlowManager instance;
 
+    private final Main plugin;
+
     /** UUID of the glowing player → their chosen GlowColor. */
     private final Map<UUID, GlowColor> activeGlows = new ConcurrentHashMap<>();
 
-    /** UUID of a viewer → their private Scoreboard (with glow teams on it). */
+    /** UUID of a viewer → their private Scoreboard. */
     private final Map<UUID, Scoreboard> viewerBoards = new ConcurrentHashMap<>();
 
-    public GlowManager() {
+    /** UUID of glowing player → their original LP team name (for restoration on glow removal). */
+    private final Map<UUID, String> originalTeamNames = new ConcurrentHashMap<>();
+
+    /** Periodic task handle for LP prefix/suffix sync. */
+    private BukkitTask syncTask;
+
+    public GlowManager(Main plugin) {
+        this.plugin = plugin;
         instance = this;
+
         // Give every already-online player a board (reload-safe).
         for (Player p : Bukkit.getOnlinePlayers()) {
-            initBoard(p);
+            scheduleInitBoard(p);
         }
+
+        // Periodic sync: every 5 seconds, refresh LP prefix/suffix on glow teams.
+        syncTask = Bukkit.getScheduler().runTaskTimer(plugin, this::syncGlowPrefixes, 200L, 100L);
+
         FrostLogger.info("Glow system initialised (per-viewer boards) with "
                 + GlowColor.values().length + " colours.");
     }
@@ -48,32 +71,28 @@ public class GlowManager {
     // ── Board lifecycle ────────────────────────────────────────────────────────
 
     /**
-     * Called when a player joins: creates their private board, registers all
-     * glow teams, and populates it with whoever is currently glowing.
+     * Called when a player joins: schedules private board creation after LP finishes.
      */
     public void handleJoin(Player viewer) {
-        initBoard(viewer);
+        scheduleInitBoard(viewer);
     }
 
     /**
-     * Called when a player quits: remove their glow (if any) from all other
-     * viewers' boards, then discard their own board.
+     * Called when a player quits: remove their glow from all viewers' boards,
+     * then discard their own board.
      */
     public void handleQuit(Player player) {
-        // Remove this player's entry from every other viewer's board.
         GlowColor color = activeGlows.remove(player.getUniqueId());
         if (color != null) {
+            String glowTeamName = glowTeamName(player);
             for (Map.Entry<UUID, Scoreboard> entry : viewerBoards.entrySet()) {
                 if (entry.getKey().equals(player.getUniqueId())) continue;
-                Team team = entry.getValue().getTeam("glow_" + color.name().toLowerCase());
-                if (team != null) team.removeEntry(player.getName());
+                removeGlowTeamFromBoard(entry.getValue(), player, glowTeamName);
             }
+            originalTeamNames.remove(player.getUniqueId());
         }
         player.setGlowing(false);
-
-        // Discard this player's private board (set them back to the main board).
         viewerBoards.remove(player.getUniqueId());
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
     // ── Glow API ───────────────────────────────────────────────────────────────
@@ -84,11 +103,9 @@ public class GlowManager {
         activeGlows.put(player.getUniqueId(), color);
         player.setGlowing(true);
 
-        // Add this player's name to the matching glow team on every viewer's board.
-        String teamName = "glow_" + color.name().toLowerCase();
+        // Apply per-player glow team on every viewer's board.
         for (Map.Entry<UUID, Scoreboard> entry : viewerBoards.entrySet()) {
-            Team team = entry.getValue().getTeam(teamName);
-            if (team != null) team.addEntry(player.getName());
+            applyGlowOnBoard(entry.getValue(), player, color);
         }
     }
 
@@ -123,50 +140,174 @@ public class GlowManager {
     // ── Cleanup ────────────────────────────────────────────────────────────────
 
     public void cleanup() {
-        for (Map.Entry<UUID, Scoreboard> entry : viewerBoards.entrySet()) {
-            Player p = Bukkit.getPlayer(entry.getKey());
-            if (p != null) p.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+        if (syncTask != null) syncTask.cancel();
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (activeGlows.containsKey(p.getUniqueId())) {
+                p.setGlowing(false);
+            }
         }
         activeGlows.clear();
         viewerBoards.clear();
+        originalTeamNames.clear();
     }
 
     // ── Internals ──────────────────────────────────────────────────────────────
 
-    /** Create a fresh private Scoreboard for this viewer, register glow teams,
-     *  populate with whoever is currently glowing, and assign it to the player. */
+    /**
+     * Schedules board creation with a 20-tick delay so LuckPerms has time
+     * to finish setting up its scoreboard teams on the player.
+     */
+    private void scheduleInitBoard(Player viewer) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (viewer.isOnline()) initBoard(viewer);
+        }, 20L);
+    }
+
+    /**
+     * Creates a fresh private Scoreboard by cloning all teams from the viewer's
+     * current (LP-managed) board, then injects per-player glow teams for every
+     * actively glowing player.
+     */
     private void initBoard(Player viewer) {
+        Scoreboard source = viewer.getScoreboard();
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
-        // Register a team for every glow colour.
-        for (GlowColor color : GlowColor.values()) {
-            String teamName = "glow_" + color.name().toLowerCase();
-            Team team = board.registerNewTeam(teamName);
-            team.color(color.getNamedColor());
-            team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
+        // Clone every LP team (preserves nametag prefixes, suffixes, sort order).
+        for (Team src : source.getTeams()) {
+            Team copy = board.registerNewTeam(src.getName());
+            copy.color(src.color() instanceof net.kyori.adventure.text.format.NamedTextColor named
+                    ? named : net.kyori.adventure.text.format.NamedTextColor.WHITE);
+            copy.prefix(src.prefix());
+            copy.suffix(src.suffix());
+            copy.setAllowFriendlyFire(src.allowFriendlyFire());
+            copy.setCanSeeFriendlyInvisibles(src.canSeeFriendlyInvisibles());
+            try {
+                copy.setOption(Team.Option.NAME_TAG_VISIBILITY,
+                        src.getOption(Team.Option.NAME_TAG_VISIBILITY));
+                copy.setOption(Team.Option.COLLISION_RULE,
+                        src.getOption(Team.Option.COLLISION_RULE));
+                copy.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY,
+                        src.getOption(Team.Option.DEATH_MESSAGE_VISIBILITY));
+            } catch (Exception ignored) { /* older API guard */ }
+            for (String entry : src.getEntries()) {
+                copy.addEntry(entry);
+            }
         }
 
-        // Add every currently-glowing player to the correct team.
+        // Inject per-player glow teams for all actively glowing players.
         for (Map.Entry<UUID, GlowColor> glow : activeGlows.entrySet()) {
-            Player glowingPlayer = Bukkit.getPlayer(glow.getKey());
-            if (glowingPlayer == null) continue;
-            Team team = board.getTeam("glow_" + glow.getValue().name().toLowerCase());
-            if (team != null) team.addEntry(glowingPlayer.getName());
+            Player glowing = Bukkit.getPlayer(glow.getKey());
+            if (glowing != null) applyGlowOnBoard(board, glowing, glow.getValue());
         }
 
         viewerBoards.put(viewer.getUniqueId(), board);
         viewer.setScoreboard(board);
     }
 
-    /** Remove a player's name from all glow teams on every viewer's board,
-     *  and clear them from the activeGlows map. */
+    /**
+     * Creates (or updates) a per-player glow team on the given board.
+     * Preserves the player's LP prefix/suffix while setting the glow colour.
+     */
+    private void applyGlowOnBoard(Scoreboard board, Player glowing, GlowColor color) {
+        String teamName = glowTeamName(glowing);
+
+        // Read the player's current LP team info before we move them.
+        Team lpTeam = board.getEntryTeam(glowing.getName());
+        Component prefix = Component.empty();
+        Component suffix = Component.empty();
+
+        if (lpTeam != null) {
+            prefix = lpTeam.prefix();
+            suffix = lpTeam.suffix();
+            originalTeamNames.putIfAbsent(glowing.getUniqueId(), lpTeam.getName());
+            lpTeam.removeEntry(glowing.getName());
+        }
+
+        // Create or update the per-player glow team.
+        Team glowTeam = board.getTeam(teamName);
+        if (glowTeam == null) glowTeam = board.registerNewTeam(teamName);
+
+        glowTeam.color(color.getNamedColor());
+        glowTeam.prefix(prefix);
+        glowTeam.suffix(suffix);
+        try {
+            glowTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
+        } catch (Exception ignored) {}
+
+        if (!glowTeam.hasEntry(glowing.getName())) {
+            glowTeam.addEntry(glowing.getName());
+        }
+    }
+
+    /**
+     * Removes a player's per-player glow team from a board and restores
+     * their original LP team membership.
+     */
+    private void removeGlowTeamFromBoard(Scoreboard board, Player player, String teamName) {
+        Team glowTeam = board.getTeam(teamName);
+        if (glowTeam == null) return;
+
+        glowTeam.removeEntry(player.getName());
+        glowTeam.unregister();
+
+        // Restore to original LP team.
+        String origName = originalTeamNames.get(player.getUniqueId());
+        if (origName != null) {
+            Team lpTeam = board.getTeam(origName);
+            if (lpTeam != null) lpTeam.addEntry(player.getName());
+        }
+    }
+
+    /**
+     * Removes a player's glow from all viewer boards and restores LP teams.
+     */
     private void removeGlowEntry(Player player) {
         GlowColor old = activeGlows.remove(player.getUniqueId());
         if (old == null) return;
-        String teamName = "glow_" + old.name().toLowerCase();
+
+        String teamName = glowTeamName(player);
         for (Scoreboard board : viewerBoards.values()) {
-            Team team = board.getTeam(teamName);
-            if (team != null) team.removeEntry(player.getName());
+            removeGlowTeamFromBoard(board, player, teamName);
+        }
+        originalTeamNames.remove(player.getUniqueId());
+    }
+
+    /** Generates a unique per-player glow team name. */
+    private String glowTeamName(Player player) {
+        return "fg_" + player.getName();
+    }
+
+    /**
+     * Periodic sync: refreshes LP prefix/suffix on all glow teams to catch
+     * rank changes, prefix updates, etc.  Reads from the main scoreboard
+     * (where LP maintains canonical team data).
+     */
+    private void syncGlowPrefixes() {
+        Scoreboard mainBoard = Bukkit.getScoreboardManager().getMainScoreboard();
+
+        for (Map.Entry<UUID, GlowColor> glow : activeGlows.entrySet()) {
+            Player glowing = Bukkit.getPlayer(glow.getKey());
+            if (glowing == null) continue;
+
+            // Read current LP prefix/suffix from the main scoreboard.
+            String origTeam = originalTeamNames.get(glowing.getUniqueId());
+            if (origTeam == null) continue;
+
+            Team lpTeam = mainBoard.getTeam(origTeam);
+            if (lpTeam == null) continue;
+
+            Component prefix = lpTeam.prefix();
+            Component suffix = lpTeam.suffix();
+            String teamName = glowTeamName(glowing);
+
+            // Push updated prefix/suffix to every viewer's glow team.
+            for (Scoreboard board : viewerBoards.values()) {
+                Team glowTeam = board.getTeam(teamName);
+                if (glowTeam != null) {
+                    glowTeam.prefix(prefix);
+                    glowTeam.suffix(suffix);
+                }
+            }
         }
     }
 }

@@ -459,6 +459,11 @@ commands:
     usage: /bounty <place|remove|list|info|top> [args]
     aliases: [bounties, bountyhunter]
     permission: frostcore.bounty.list
+  rtp:
+    description: Randomly teleport to a safe location
+    usage: /rtp [world|reload|cancel|force|forceall]
+    aliases: [randomtp, wild]
+    permission: frostcore.rtp
 
 permissions:
   frostcore.ping:
@@ -784,6 +789,18 @@ permissions:
     default: op
   frostcore.bounty.admin:
     description: Full bounty admin access
+    default: op
+  frostcore.rtp:
+    description: Allows using /rtp
+    default: true
+  frostcore.rtp.admin:
+    description: Allows /rtp reload
+    default: op
+  frostcore.rtp.bypass.cooldown:
+    description: Bypass RTP cooldown
+    default: op
+  frostcore.rtp.bypass.cost:
+    description: Bypass RTP cost
     default: op
 
 libraries:

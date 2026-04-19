@@ -1,0 +1,92 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  FrostCore — RTP GUI Configuration
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+#  Configures the appearance of the RTP world-selection GUI.
+#  Gameplay settings (radius, cost, cooldown) are in config.yml.
+#  Changes take effect after /rtp reload or /frostcore reload.
+#
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+# ┌─────────────────────────────────┐
+# │          GUI SETTINGS           │
+# └─────────────────────────────────┘
+
+gui:
+
+  # ── Title ────────────────────────────────────────────────────
+  # MiniMessage formatted title shown at the top of the inventory.
+  title: "<!italic><gradient:#60A5FA:#A78BFA><bold>✦</bold> RTP Selection</gradient>"
+
+  # ── Filler ───────────────────────────────────────────────────
+  # Material and name for all empty/background slots in the GUI.
+  filler:
+    material: AIR
+    name: " "
+
+  # ── Dynamic Lore ─────────────────────────────────────────────
+  # Templates for the dynamic info appended to each world item.
+  # Leave empty to disable a specific line.
+  dynamic-lore:
+    separator: "<!italic><dark_gray> <strikethrough>                             </strikethrough>"
+    cost: "<!italic><dark_gray>  ■ <gray>Cost: <#FBBF24>⛃ {cost}"
+    cost-free: " " # <!italic><dark_gray>  ■ <gray>Cost: <#34D399>Free
+    cost-bypass: "<!italic><dark_gray>  ■ <gray>Cost: <#34D399>Free <dark_gray>(Bypass)"
+    cooldown: "<!italic><dark_gray>  ■ <gray>Cooldown: <#F87171>⏳ {time}s"
+    cooldown-ready: "<!italic><dark_gray>  ■ <gray>Cooldown: <#34D399>Ready"
+    cooldown-bypass: "<!italic><dark_gray>  ■ <gray>Cooldown: <#34D399>Ready <dark_gray>(Bypass)"
+    radius: "<!italic><dark_gray>  ■ <gray>Radius: <white>{min} - {max}"
+    cached: " " # <!italic><dark_gray>  ■ <gray>Cached: <white>{count} locations
+    footer: "<!italic>  <gradient:#34D399:#10B981>▶ Click to initiate jump!</gradient>"
+
+
+# ┌─────────────────────────────────┐
+# │     PER-WORLD ITEM DISPLAY      │
+# └─────────────────────────────────┘
+#
+#  Customize the GUI icon for each RTP world.
+#  World names MUST match those in config.yml under rtp.worlds.
+#
+#  Fields:
+#    material    Bukkit Material name for the icon.
+#                See: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+#
+#    name        MiniMessage formatted display name.
+#
+#    lore        Static description lines (MiniMessage formatted).
+#                Dynamic info (cost, cooldown, radius, cached) is appended automatically.
+#
+#    glow        true/false — whether the item has an enchantment glow effect.
+
+worlds:
+
+  world:
+    material: GRASS_BLOCK
+    name: "<!italic><gradient:#4ADE80:#22C55E><bold>🌍 Overworld</bold></gradient>"
+    lore:
+      - ""
+      - "<!italic><dark_gray>  | <gray>Venture into the lush surface</gray>"
+      - "<!italic><dark_gray>  | <gray>world for resources & building.</gray>"
+      - ""
+    glow: true
+
+  world_nether:
+    material: MAGMA_BLOCK
+    name: "<!italic><gradient:#F87171:#DC2626><bold>🔥 The Nether</bold></gradient>"
+    lore:
+      - ""
+      - "<!italic><dark_gray>  | <gray>Brave the infernal depths to</gray>"
+      - "<!italic><dark_gray>  | <gray>gather ancient debris & loot.</gray>"
+      - ""
+    glow: true
+
+  world_the_end:
+    material: END_PORTAL_FRAME
+    name: "<!italic><gradient:#A78BFA:#8B5CF6><bold>🌌 The End</bold></gradient>"
+    lore:
+      - ""
+      - "<!italic><dark_gray>  | <gray>Explore the barren void to</gray>"
+      - "<!italic><dark_gray>  | <gray>discover end cities & elytra.</gray>"
+      - ""
+    glow: true

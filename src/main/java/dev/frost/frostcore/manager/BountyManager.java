@@ -1,6 +1,7 @@
-package dev.frost.frostcore.bounty;
+package dev.frost.frostcore.manager;
 
 import dev.frost.frostcore.Main;
+import dev.frost.frostcore.bounty.BountyRepository;
 import dev.frost.frostcore.bounty.model.Bounty;
 import dev.frost.frostcore.bounty.model.BountyContributor;
 import dev.frost.frostcore.utils.FrostLogger;

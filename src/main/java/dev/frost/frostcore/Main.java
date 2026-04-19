@@ -2,12 +2,17 @@ package dev.frost.frostcore;
 
 import dev.frost.frostcore.chat.ChatListener;
 import dev.frost.frostcore.chat.ChatManager;
-import dev.frost.frostcore.bounty.BountyListener;
-import dev.frost.frostcore.bounty.BountyManager;
 import dev.frost.frostcore.bounty.BountyPlaceholderExpansion;
 import dev.frost.frostcore.bounty.BountyRepository;
 import dev.frost.frostcore.bounty.BountyService;
-import dev.frost.frostcore.bounty.cmds.BountyCmd;
+import dev.frost.frostcore.cmds.player.BountyCmd;
+import dev.frost.frostcore.cmds.teleport.RTPCommand;
+import dev.frost.frostcore.listeners.BountyListener;
+import dev.frost.frostcore.listeners.RTPListener;
+import dev.frost.frostcore.rtp.RTPConfig;
+import dev.frost.frostcore.rtp.RTPLocationService;
+import dev.frost.frostcore.rtp.RTPService;
+import dev.frost.frostcore.rtp.RTPStateTracker;
 import dev.frost.frostcore.cmds.admin.*;
 import dev.frost.frostcore.cmds.item.*;
 import dev.frost.frostcore.cmds.messaging.*;
@@ -60,6 +65,7 @@ public final class Main extends JavaPlugin {
     @Getter private static ChatManager chatManager;
     @lombok.Getter private static dev.frost.frostcore.manager.CommandManager commandManager;
     @Getter private static BountyManager bountyManager;
+    @Getter private static RTPService rtpService;
     private BountyService bountyService;
     private TeamExpansion teamExpansion;
     private BountyPlaceholderExpansion bountyExpansion;
@@ -121,7 +127,7 @@ public final class Main extends JavaPlugin {
         maceDb.createTable();
         maceManager = new MaceManager(maceDb);
 
-        glowManager = new GlowManager();
+        glowManager = new GlowManager(this);
 
         chatManager = new ChatManager(this);
 
@@ -133,6 +139,12 @@ public final class Main extends JavaPlugin {
         bountyManager = new BountyManager(bountyRepo);
         bountyService = new BountyService(bountyManager);
         bountyManager.loadAsync();
+
+        // ── RTP system ────────────────────────────────────────────────────────
+        RTPConfig rtpConfig = new RTPConfig(this);
+        RTPLocationService rtpLocationService = new RTPLocationService(this, rtpConfig);
+        RTPStateTracker rtpStateTracker = new RTPStateTracker();
+        rtpService = new RTPService(this, rtpConfig, rtpLocationService, rtpStateTracker);
     }
 
     private void setupInviteHandlers() {
@@ -170,6 +182,9 @@ public final class Main extends JavaPlugin {
         // Bounty listener (registered only if economy is eventually enabled — checked inside)
         getServer().getPluginManager().registerEvents(
                 new BountyListener(bountyManager, bountyService), this);
+
+        // RTP listener
+        getServer().getPluginManager().registerEvents(new RTPListener(rtpService), this);
     }
 
     private void setupCmds() {
@@ -447,6 +462,11 @@ public final class Main extends JavaPlugin {
         BountyCmd bountyCmd = new BountyCmd(bountyManager, bountyService);
         commandManager.registerCommand("bounty", bountyCmd, bountyCmd);
 
+        RTPCommand rtpCmd = new RTPCommand(rtpService);
+        commandManager.registerCommand("rtp", rtpCmd, rtpCmd);
+        commandManager.registerCommand("randomtp", rtpCmd, rtpCmd);
+        commandManager.registerCommand("wild", rtpCmd, rtpCmd);
+
         commandManager.reload();
     }
 
@@ -475,6 +495,9 @@ public final class Main extends JavaPlugin {
         }
         if (bountyExpansion != null) {
             bountyExpansion.unregister();
+        }
+        if (rtpService != null) {
+            rtpService.shutdown();
         }
     }
 }

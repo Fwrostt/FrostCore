@@ -136,3 +136,6 @@ commands:
   chatoff: true
   chaton: true
   glow: true
+  rtp: true
+  randomtp: true
+  wild: true

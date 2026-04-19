@@ -1,10 +1,10 @@
-package dev.frost.frostcore.bounty.cmds;
+package dev.frost.frostcore.cmds.player;
 
 import dev.frost.frostcore.Main;
-import dev.frost.frostcore.bounty.BountyManager;
+import dev.frost.frostcore.manager.BountyManager;
 import dev.frost.frostcore.bounty.BountyService;
-import dev.frost.frostcore.bounty.gui.BountyDetailGui;
-import dev.frost.frostcore.bounty.gui.BountyListGui;
+import dev.frost.frostcore.gui.impls.BountyDetailGui;
+import dev.frost.frostcore.gui.impls.BountyListGui;
 import dev.frost.frostcore.bounty.model.Bounty;
 import dev.frost.frostcore.manager.MessageManager;
 import dev.frost.frostcore.utils.EconomyUtil;

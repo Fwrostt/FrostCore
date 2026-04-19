@@ -451,3 +451,33 @@ bounty:
   # ── Broadcast announcements ──
   announce-place: "{bounty.prefix}<white>{placer}</white> <#8FA3BF>placed a <white>{amount}</white> bounty on <white>{target}</white>! <dark_gray>(total: <white>{total}</white>)"
   announce-claim: "{bounty.prefix}<white>{killer}</white> <#7ECFA0>claimed the <white>{amount}</white> bounty on <white>{target}</white>!"
+
+
+# ┌─────────────────────────────────┐
+# │        RANDOM TELEPORT          │
+# └─────────────────────────────────┘
+
+rtp:
+  prefix: "<#6B8DAE>RTP <dark_gray>»</dark_gray> "
+
+  searching: "{rtp.prefix}<#8FA3BF>Searching for a safe location..."
+  wait: "{rtp.prefix}<#8FA3BF>Teleporting in <white>{time}s</white> <#8FA3BF>— don't move!"
+  teleport: "{rtp.prefix}<#7ECFA0>Teleported to <white>{x}, {y}, {z}</white> <dark_gray>(<#8FA3BF>{world}</#8FA3BF>)</dark_gray>"
+  failed: "{rtp.prefix}<#D4727A>Could not find a safe location after <white>{attempts}</white> attempts."
+  cooldown: "{rtp.prefix}<#D4727A>On cooldown! <dark_gray>(<white>{time}s</white> remaining)"
+  cancelled: "{rtp.prefix}<#D4727A>Teleport cancelled! <dark_gray>(you moved)"
+  already-pending: "{rtp.prefix}<#D4727A>You already have an RTP in progress."
+  disabled: "{rtp.prefix}<#D4727A>RTP is currently disabled."
+  world-not-found: "{rtp.prefix}<#D4727A>World <white>{world}</white> is not available for RTP."
+  no-permission: "{rtp.prefix}<#D4727A>You don't have permission to RTP to <white>{world}</white>."
+  insufficient-funds: "{rtp.prefix}<#D4727A>You need <white>{cost}</white> to RTP. <dark_gray>(balance: <white>{balance}</white>)"
+  refunded: "{rtp.prefix}<#8FA3BF>Your <white>{cost}</white> has been refunded."
+  reloaded: "{rtp.prefix}<#7ECFA0>RTP configuration reloaded."
+
+  # ── Admin Force ──
+  force-rtp: "{rtp.prefix}<#8FA3BF>Force-teleporting <white>{player}</white> to <white>{world}</white>..."
+  force-rtp-target: "{rtp.prefix}<#8FA3BF>You are being force-teleported by an admin..."
+  force-rtp-success: "{rtp.prefix}<#7ECFA0>Force-teleported <white>{player}</white> to <white>{x}, {y}, {z}</white>."
+  force-rtp-failed: "{rtp.prefix}<#D4727A>Failed to find a safe location for <white>{player}</white>."
+  force-all: "{rtp.prefix}<#8FA3BF>Force-teleporting <white>{count}</white> players..."
+  player-not-found: "{rtp.prefix}<#D4727A>Player not found."

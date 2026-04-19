@@ -1,6 +1,7 @@
 package dev.frost.frostcore.bounty;
 
 import dev.frost.frostcore.Main;
+import dev.frost.frostcore.manager.BountyManager;
 import dev.frost.frostcore.bounty.model.Bounty;
 import dev.frost.frostcore.bounty.model.BountyContributor;
 import dev.frost.frostcore.manager.MessageManager;

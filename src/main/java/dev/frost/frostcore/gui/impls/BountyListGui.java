@@ -1,6 +1,6 @@
-package dev.frost.frostcore.bounty.gui;
+package dev.frost.frostcore.gui.impls;
 
-import dev.frost.frostcore.bounty.BountyManager;
+import dev.frost.frostcore.manager.BountyManager;
 import dev.frost.frostcore.bounty.model.Bounty;
 import dev.frost.frostcore.bounty.model.BountyContributor;
 import dev.frost.frostcore.gui.*;

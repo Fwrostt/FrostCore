@@ -468,3 +468,81 @@ bounty:
   anti-abuse:
     # Prevent claiming a bounty you also contributed to.
     prevent-self-claim: true
+
+
+# ┌─────────────────────────────────┐
+# │       RANDOM TELEPORT (RTP)     │
+# └─────────────────────────────────┘
+
+rtp:
+  enabled: true
+  gui-enabled: true                  # If true, /rtp opens a world-selection GUI
+  cooldown: 60                       # Seconds before /rtp can be used again
+  delay: 3                           # Warmup delay before teleporting (cancelled on movement)
+  cancel-on-move: true               # Cancel RTP if the player moves during warmup
+  max-attempts: 50                   # Maximum location search attempts before failure
+
+  # ── Location Pool ─────────────────────────────────────────────
+  # Pre-generates safe locations in the background for instant RTP.
+  pool:
+    size: 10                         # Number of pre-generated locations per world
+    refill-interval: 100             # Ticks between pool refill checks (100 = 5 seconds)
+
+  # ── Default World Settings ────────────────────────────────────
+  # These defaults apply to all RTP worlds unless overridden per-world below.
+  defaults:
+    min-radius: 500                  # Minimum distance from center (creates donut shape)
+    max-radius: 5000                 # Maximum distance from center
+    min-y: 60                        # Lowest allowed Y coordinate
+    max-y: 200                       # Highest allowed Y coordinate
+    cost: 0                          # Cost per RTP (0 = free). Requires Vault economy.
+    allow-water: false               # Allow teleporting onto water surfaces
+    allow-lava: false                # Allow teleporting near lava
+    center-x: 0                      # Center X of the RTP area
+    center-z: 0                      # Center Z of the RTP area
+
+  # ── Unsafe Blocks ─────────────────────────────────────────────
+  # Blocks that should never be at the player's feet or head position.
+  unsafe-blocks:
+    - LAVA
+    - FIRE
+    - SOUL_FIRE
+    - CAMPFIRE
+    - SOUL_CAMPFIRE
+    - MAGMA_BLOCK
+    - CACTUS
+    - SWEET_BERRY_BUSH
+    - WITHER_ROSE
+    - POWDER_SNOW
+
+  # ── Per-World Settings ────────────────────────────────────────
+  # Only worlds listed here are eligible for RTP.
+  # Each world inherits from 'defaults' unless overridden.
+  # GUI display settings (material, name, lore) are in rtp.yml.
+  # frostcore.rtp.<world>
+  worlds:
+    world:
+      min-radius: 500
+      max-radius: 5000
+      min-y: 60
+      max-y: 200
+      cost: 0
+      allow-water: false
+      allow-lava: false
+    world_nether:
+      min-radius: 200
+      max-radius: 2000
+      min-y: 32
+      max-y: 120
+      cost: 0
+      allow-water: false
+      allow-lava: false
+    # ── Enable The End by uncommenting below ──
+    # world_the_end:
+    #   min-radius: 200
+    #   max-radius: 3000
+    #   min-y: 50
+    #   max-y: 100
+    #   cost: 0
+    #   allow-water: false
+    #   allow-lava: false

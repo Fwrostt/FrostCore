@@ -1,5 +1,6 @@
 package dev.frost.frostcore.bounty;
 
+import dev.frost.frostcore.manager.BountyManager;
 import dev.frost.frostcore.bounty.model.Bounty;
 import dev.frost.frostcore.utils.EconomyUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
